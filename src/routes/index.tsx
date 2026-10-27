@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles, Presentation, LayoutTemplate, Share2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/pf/Logo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,15 +16,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
-
-export function Logo() {
-  return (
-    <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">P</span>
-      PitchFolio
-    </Link>
-  );
-}
 
 function Index() {
   return (
