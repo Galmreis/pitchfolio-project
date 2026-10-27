@@ -40,7 +40,7 @@ export const structurePortfolio = createServerFn({ method: "POST" })
   .inputValidator((input: RawAnswers) => input)
   .handler(async ({ data }): Promise<{ portfolio: Portfolio; ai: boolean }> => {
     const fallback = localStructure(data);
-    const key = process.env.LOVABLE_API_KEY;
+    const key = process.env['LOVABLE_API_KEY'];
     if (!key) return { portfolio: fallback, ai: false };
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {

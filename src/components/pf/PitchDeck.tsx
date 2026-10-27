@@ -89,10 +89,10 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
     <div className={`theme-${theme}`}>
       <div
         className="relative aspect-video w-full overflow-hidden rounded-2xl border border-pf-line bg-pf-bg text-pf-fg shadow-2xl"
-        onTouchStart={(e) => (touch.current = e.touches[0].clientX)}
+        onTouchStart={(e) => (touch.current = e.touches[0]?.clientX ?? null)}
         onTouchEnd={(e) => {
           if (touch.current == null) return;
-          const dx = e.changedTouches[0].clientX - touch.current;
+          const dx = (e.changedTouches[0]?.clientX ?? touch.current) - touch.current;
           if (dx < -40) next();
           if (dx > 40) prev();
           touch.current = null;
