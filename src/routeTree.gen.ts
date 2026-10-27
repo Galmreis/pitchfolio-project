@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CriarRouteImport } from './routes/criar'
+import { Route as EditorRouteImport } from './routes/editor'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,49 @@ const CriarRoute = CriarRouteImport.update({
   path: '/criar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditorRoute = EditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
+  '/editor': typeof EditorRoute
+  '/p/$slug': typeof PSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
+  '/editor': typeof EditorRoute
+  '/p/$slug': typeof PSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
+  '/editor': typeof EditorRoute
+  '/p/$slug': typeof PSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/criar'
+  fullPaths: '/' | '/criar' | '/editor' | '/p/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/criar'
-  id: '__root__' | '/' | '/criar'
+  to: '/' | '/criar' | '/editor' | '/p/$slug'
+  id: '__root__' | '/' | '/criar' | '/editor' | '/p/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CriarRoute: typeof CriarRoute
+  EditorRoute: typeof EditorRoute
+  PSlugRoute: typeof PSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CriarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/editor': {
+      id: '/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof EditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CriarRoute: CriarRoute,
+  EditorRoute: EditorRoute,
+  PSlugRoute: PSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
