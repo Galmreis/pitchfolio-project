@@ -1,0 +1,60 @@
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState } from "react";
+import { Globe, Presentation } from "lucide-react";
+import { getPublicPortfolio } from "@/lib/public.functions";
+import { PortfolioSite } from "@/components/pf/PortfolioSite";
+import { PitchDeck } from "@/components/pf/PitchDeck";
+
+export const Route = createFileRoute("/p/$slug")({
+  loader: async ({ params }) => {
+    const r = await getPublicPortfolio({ data: { slug: params.slug } });
+    if (!r) throw notFound();
+    return r;
+  },
+  head: ({ loaderData }) => {
+    const p = loaderData?.portfolio;
+    const title = p ? `${p.name} — ${p.role} | PitchFolio` : "Portfólio indisponível | PitchFolio";
+    const desc = p?.headline ?? "Portfólio profissional criado com PitchFolio.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "profile" },
+        { name: "twitter:card", content: "summary" },
+        ...(p ? [] : [{ name: "robots", content: "noindex" }]),
+      ],
+    };
+  },
+  notFoundComponent: () => (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
+      <h1 className="text-3xl font-bold">Portfólio não encontrado</h1>
+      <Link to="/" className="text-primary underline">Criar o meu no PitchFolio</Link>
+    </div>
+  ),
+  component: PublicPage,
+});
+
+function PublicPage() {
+  const { portfolio, theme } = Route.useLoaderData();
+  const [view, setView] = useState<"site" | "deck">("site");
+  return (
+    <div className={`theme-${theme} min-h-screen bg-pf-bg`}>
+      <div className="sticky top-0 z-10 flex justify-center py-3">
+        <div className="inline-flex rounded-full border border-pf-line bg-pf-card p-1 text-pf-fg shadow">
+          <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "site" ? "bg-pf-accent text-pf-accent-fg" : ""}`}><Globe className="h-4 w-4" /> Portfólio</button>
+          <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "deck" ? "bg-pf-accent text-pf-accent-fg" : ""}`}><Presentation className="h-4 w-4" /> Pitch</button>
+        </div>
+      </div>
+      {view === "site" ? (
+        <PortfolioSite p={portfolio} theme={theme} />
+      ) : (
+        <div className="mx-auto max-w-5xl px-4 py-8"><PitchDeck p={portfolio} theme={theme} /></div>
+      )}
+      <p className="py-6 text-center text-xs text-pf-muted">
+        Feito com <Link to="/" className="underline">PitchFolio</Link>
+      </p>
+    </div>
+  );
+}
