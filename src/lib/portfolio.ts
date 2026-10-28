@@ -82,7 +82,7 @@ export function localStructure(a: RawAnswers): Portfolio {
     result: cap(a.result),
     metrics: nums,
     skills,
-    journey: [cap(a.bio), cap(a.action), cap(a.goal)].filter(Boolean),
+    journey: [cap(a.bio).slice(0, 500), cap(a.action).slice(0, 500), cap(a.goal).slice(0, 500)].filter(Boolean),
     goal: cap(a.goal),
     linkedin: a.linkedin.trim(),
     github: a.github.trim(),
