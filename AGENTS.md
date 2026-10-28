@@ -15,3 +15,4 @@
 - Publish portfolios and their derived five-slide decks through one authenticated PostgreSQL RPC transaction. Why: both views must stay consistent and enforce owner access.
 - Use additive columns and preserve the existing /p/$slug sharing route. Why: published links and older clients remain compatible.
 - Upload files only under owner UUID prefixes with storage RLS and a durable SQL usage budget. Why: direct storage writes must not bypass access and usage rules.
+- Imported portfolio sections (projects, skills, certifications, timeline) keep every item with is_visible/display_order; public RLS exposes only visible items of published portfolios, and curation changes go through one RPC transaction. Why: users curate without losing data and hidden items never leak.
