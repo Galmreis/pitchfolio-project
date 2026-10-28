@@ -34,9 +34,9 @@ export const Route = createFileRoute("/editor")({
 type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey">;
 
 const THEME_SWATCHES: Record<string, { bg: string; accent: string }> = {
-  moderno: { bg: "#181b28", accent: "#b8f23a" },
-  quente: { bg: "#f4ece1", accent: "#d95326" },
-  minimal: { bg: "#ffffff", accent: "#1f1f1f" },
+  moderno: { bg: "#141720", accent: "#f2f4f8" },
+  quente: { bg: "#f6f2eb", accent: "#3f2e26" },
+  minimal: { bg: "#ffffff", accent: "#171717" },
 };
 
 function ListEditor({ label, items, onChange, max = 6 }: { label: string; items: string[]; onChange: (v: string[]) => void; max?: number }) {

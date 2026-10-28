@@ -12,10 +12,11 @@ function Frame({ n, isFullscreen, onToggleFullscreen, children }: { n: number; i
     <div className="flex h-full flex-col justify-between p-6 sm:p-10">
       <div className="flex items-center justify-between border-b border-pf-line pb-3 text-xs text-pf-muted">
         <div className="flex items-center gap-2.5">
-          <span className="rounded-md bg-pf-accent px-2 py-0.5 font-mono text-[11px] font-bold text-pf-accent-fg">
+          <span className="font-mono text-[11px] font-medium text-pf-muted">
             0{n + 1} / 05
           </span>
-          <span className="font-semibold text-pf-fg">{info.title}</span>
+          <span className="text-pf-line">·</span>
+          <span className="font-medium text-pf-fg">{info.title}</span>
         </div>
         <div className="flex items-center gap-3">
           {info.subtitle ? (
@@ -27,7 +28,7 @@ function Frame({ n, isFullscreen, onToggleFullscreen, children }: { n: number; i
               onClick={onToggleFullscreen}
               aria-label={isFullscreen ? "Sair da tela cheia" : "Apresentar em tela cheia"}
               title={isFullscreen ? "Sair da tela cheia (Esc)" : "Tela cheia (F)"}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-pf-line bg-pf-card text-pf-muted transition hover:border-pf-accent hover:text-pf-fg print:hidden"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-pf-line bg-pf-card text-pf-muted transition hover:text-pf-fg print:hidden"
             >
               {isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
             </button>
@@ -83,20 +84,22 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
 
   const slides = [
     <Frame n={0} key={0} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <p className="text-sm font-semibold text-pf-muted sm:text-base">{s1.role}</p>
-      <h2 className="mt-2 font-display text-3xl font-bold leading-[1.05] sm:text-5xl">{s1.name}</h2>
-      <p className="mt-4 max-w-xl text-base text-pf-muted sm:text-xl">{s1.headline}</p>
-      <p className="mt-6 max-w-xl text-sm leading-relaxed sm:text-base">{s1.bio}</p>
+      <p className="font-mono text-xs text-pf-muted sm:text-sm">{s1.role}</p>
+      <h2 className="mt-2 font-display text-3xl font-semibold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
+      {s1.headline && s1.headline !== s1.role && (
+        <p className="mt-3 max-w-xl font-serif-editorial text-xl text-pf-fg sm:text-2xl">{s1.headline}</p>
+      )}
+      <p className="mt-5 max-w-xl text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
     </Frame>,
     <Frame n={1} key={1} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <h2 className="font-display text-2xl font-bold sm:text-4xl">{s4.title || "Projeto de maior impacto"}</h2>
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+      <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">{s4.title || "Projeto de maior impacto"}</h2>
+      <div className="mt-6 grid gap-5 border-t border-pf-line pt-5 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-pf-line">
         {[
           ["01", "Desafio", s2.challenge],
           ["02", "Ação na prática", s2.action],
           ["03", "Resultado", s2.result],
-        ].map(([num, title, value]) => (
-          <div key={num} className="rounded-xl border border-pf-line bg-pf-card p-4">
+        ].map(([num, title, value], idx) => (
+          <div key={num} className={`${idx > 0 ? "sm:pl-5" : ""} ${idx < 2 ? "sm:pr-5" : ""}`}>
             <span className="font-mono text-xs text-pf-muted">{num}</span>
             <p className="mt-1 text-sm font-semibold">{title}</p>
             <p className="mt-1.5 text-xs leading-relaxed text-pf-muted sm:text-sm">{value}</p>
@@ -105,28 +108,29 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       </div>
     </Frame>,
     <Frame n={2} key={2} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <h2 className="font-display text-2xl font-bold sm:text-4xl">O que eu trago para o time</h2>
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Competências que trago para o time</h2>
+      <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
         {s3.skills.map((s, k) => (
-          <div key={k} className="rounded-xl border border-pf-line bg-pf-card p-3 text-sm font-semibold sm:p-4 sm:text-base">
-            <span className="mb-1 block font-display text-pf-muted">0{k + 1}</span>{s}
+          <div key={k} className="rounded-lg border border-pf-line bg-pf-card px-3.5 py-3 text-sm font-medium">
+            <span className="mb-1 block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
+            {s}
           </div>
         ))}
       </div>
     </Frame>,
     <Frame n={3} key={3} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <h2 className="font-display text-2xl font-bold sm:text-4xl">{s4.title || "Destaques e trajetória"}</h2>
+      <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">{s4.title || "Destaques e trajetória"}</h2>
       {s4.metrics.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
           {s4.metrics.map((m, k) => (
-            <span key={k} className="rounded-full bg-pf-accent px-3 py-1 text-xs font-semibold text-pf-accent-fg sm:text-sm">{m}</span>
+            <span key={k} className="rounded-md border border-pf-line bg-pf-card px-3 py-1 font-mono text-xs font-medium text-pf-fg">{m}</span>
           ))}
         </div>
       )}
-      <ol className="mt-6 space-y-3 border-l-2 border-pf-line pl-5">
+      <ol className="mt-6 space-y-3 border-l border-pf-line pl-5">
         {s4.journey.map((j, k) => (
-          <li key={k} className="relative text-sm sm:text-base">
-            <span className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full bg-pf-accent" />
+          <li key={k} className="relative text-sm leading-relaxed sm:text-base">
+            <span className="absolute -left-[23px] top-2 h-1.5 w-1.5 rounded-full bg-pf-fg" />
             {j}
           </li>
         ))}
@@ -134,7 +138,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     </Frame>,
     <Frame n={4} key={4} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <p className="font-mono text-xs text-pf-muted">Próximo passo & Contato</p>
-      <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-tight sm:text-4xl">{s5.goal}</h2>
+      <h2 className="mt-3 max-w-2xl font-serif-editorial text-2xl leading-snug sm:text-4xl">{s5.goal}</h2>
       <ContactLinks p={{ ...p, ...s5 }} className="mt-8" />
     </Frame>,
   ];
