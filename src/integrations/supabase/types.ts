@@ -14,33 +14,164 @@ export type Database = {
   }
   public: {
     Tables: {
-      portfolios: {
+      pitch_decks: {
         Row: {
           created_at: string
-          data: Json
           id: string
+          pdf_export_url: string | null
+          portfolio_id: string
+          slide_1_who_i_am: Json
+          slide_2_what_i_did: Json
+          slide_3_skills: Json
+          slide_4_highlight: Json
+          slide_5_contact: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pdf_export_url?: string | null
+          portfolio_id: string
+          slide_1_who_i_am: Json
+          slide_2_what_i_did: Json
+          slide_3_skills: Json
+          slide_4_highlight: Json
+          slide_5_contact: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pdf_export_url?: string | null
+          portfolio_id?: string
+          slide_1_who_i_am?: Json
+          slide_2_what_i_did?: Json
+          slide_3_skills?: Json
+          slide_4_highlight?: Json
+          slide_5_contact?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pitch_decks_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: true
+            referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pitch_decks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolios: {
+        Row: {
+          about_me: string
+          created_at: string
+          data: Json
+          experience: Json
+          id: string
+          input_method: Database["public"]["Enums"]["portfolio_input_method"]
+          is_published: boolean
+          name: string
+          photo_url: string | null
+          selected_theme: Database["public"]["Enums"]["portfolio_theme"]
           slug: string
           theme: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          about_me?: string
           created_at?: string
           data: Json
+          experience?: Json
           id?: string
+          input_method?: Database["public"]["Enums"]["portfolio_input_method"]
+          is_published?: boolean
+          name?: string
+          photo_url?: string | null
+          selected_theme?: Database["public"]["Enums"]["portfolio_theme"]
           slug: string
           theme?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          about_me?: string
           created_at?: string
           data?: Json
+          experience?: Json
           id?: string
+          input_method?: Database["public"]["Enums"]["portfolio_input_method"]
+          is_published?: boolean
+          name?: string
+          photo_url?: string | null
+          selected_theme?: Database["public"]["Enums"]["portfolio_theme"]
           slug?: string
           theme?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolios_profile_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      usage_windows: {
+        Row: {
+          scope: string
+          used: number
+          window_start: string
+        }
+        Insert: {
+          scope: string
+          used?: number
+          window_start: string
+        }
+        Update: {
+          scope?: string
+          used?: number
+          window_start?: string
         }
         Relationships: []
       }
@@ -49,10 +180,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      consume_pitchfolio_budget: { Args: { p_kind: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      portfolio_input_method:
+        | "pdf_upload"
+        | "linkedin_text"
+        | "guided_questions"
+      portfolio_theme: "moderno" | "quente" | "minimal"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -179,6 +314,13 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      portfolio_input_method: [
+        "pdf_upload",
+        "linkedin_text",
+        "guided_questions",
+      ],
+      portfolio_theme: ["moderno", "quente", "minimal"],
+    },
   },
 } as const

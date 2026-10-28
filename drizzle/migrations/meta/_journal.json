@@ -8,6 +8,13 @@
       "when": 1793128753428,
       "tag": "0000_create_portfolios",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793190246126,
+      "tag": "0001_pitchfolio_schema",
+      "breakpoints": true
     }
   ]
 }
