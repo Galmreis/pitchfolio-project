@@ -1,0 +1,2 @@
+// Shared anonymous budget avoids treating user-supplied headers as trusted identity.
+export const LIMITS = { anonymousAiPerHour: 60, userAiPerHour: 20, uploadsPerHour: 20, resumeBytes: 5 * 1024 * 1024, avatarBytes: 2 * 1024 * 1024, pdfBytes: 10 * 1024 * 1024 } as const;
