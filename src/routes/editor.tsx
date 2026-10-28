@@ -195,7 +195,7 @@ function Editor() {
 
   const form = (
     <div className="space-y-6">
-      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+      <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">
           <span className="font-mono text-xs font-bold text-primary">01</span>
           <h3 className="font-display text-base font-bold">Identidade & Posicionamento</h3>
@@ -205,7 +205,7 @@ function Editor() {
         {txt("headline", "Headline")}
         {txt("bio", "Bio", 4)}
       </section>
-      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+      <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">
           <span className="font-mono text-xs font-bold text-primary">02</span>
           <h3 className="font-display text-base font-bold">Projeto Estrela (Método STAR)</h3>
@@ -216,7 +216,7 @@ function Editor() {
         {txt("result", "Resultado", 3)}
         <ListEditor label="Métricas em destaque" items={p.metrics} onChange={(metrics) => upd({ metrics })} max={4} />
       </section>
-      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+      <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">
           <span className="font-mono text-xs font-bold text-primary">03</span>
           <h3 className="font-display text-base font-bold">Habilidades & Trajetória</h3>
@@ -224,7 +224,7 @@ function Editor() {
         <ListEditor label="Habilidades" items={p.skills} onChange={(skills) => upd({ skills })} />
         <ListEditor label="Trajetória" items={p.journey} onChange={(journey) => upd({ journey })} max={5} />
       </section>
-      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+      <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">
           <span className="font-mono text-xs font-bold text-primary">04</span>
           <h3 className="font-display text-base font-bold">Objetivo & Contato</h3>
@@ -239,22 +239,22 @@ function Editor() {
 
   const toolbar = (
     <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
-      <div className="inline-flex rounded-full border border-border bg-card p-1 shadow-xs">
-        <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition ${view === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
+      <div className="inline-flex rounded-lg border border-border bg-card p-1 shadow-xs">
+        <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition ${view === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
           <Globe className="h-4 w-4" /> Site do Portfólio
         </button>
-        <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition ${view === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
+        <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition ${view === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
           <Presentation className="h-4 w-4" /> Pitch Deck (5 Slides)
         </button>
       </div>
-      <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card p-1 shadow-xs">
+      <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-1 shadow-xs">
         {THEMES.map((t) => {
           const sw = THEME_SWATCHES[t.id];
           return (
             <button
               key={t.id}
               onClick={() => setDraft({ ...draft, theme: t.id })}
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition ${draft.theme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
+              className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition ${draft.theme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
             >
               {sw && (
                 <span className="relative flex h-3.5 w-3.5 items-center justify-center rounded-full border border-border/60" style={{ backgroundColor: sw.bg }}>
@@ -273,7 +273,7 @@ function Editor() {
     <div className="space-y-4">
       {toolbar}
       {view === "site" ? (
-        <div className="overflow-hidden rounded-2xl border border-border shadow-xl"><PortfolioSite p={p} theme={draft.theme} /></div>
+        <div className="overflow-hidden rounded-xl border border-border shadow-lg"><PortfolioSite p={p} theme={draft.theme} /></div>
       ) : (
         <PitchDeck p={p} deck={draft.deck} theme={draft.theme} />
       )}
@@ -286,10 +286,10 @@ function Editor() {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 sm:px-6">
           <Logo />
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => window.print()} className="rounded-full">
+            <Button variant="outline" size="sm" onClick={() => window.print()} className="rounded-lg">
               <Printer className="mr-1.5 h-4 w-4" /> Exportar PDF
             </Button>
-            <Button onClick={publish} disabled={publishing} className="rounded-full">
+            <Button onClick={publish} disabled={publishing} className="rounded-lg">
               {publishing ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Rocket className="mr-1 h-4 w-4" />}
               {draft.slug ? "Atualizar publicação" : "Publicar portfólio"}
             </Button>
@@ -299,7 +299,7 @@ function Editor() {
 
       {/* Desktop split */}
       <div className="mx-auto hidden max-w-[1400px] gap-6 px-6 py-6 lg:grid lg:grid-cols-[380px_1fr] print:block print:max-w-none print:p-0">
-        <aside className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-card p-6 print:hidden">{form}</aside>
+        <aside className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto rounded-xl border border-border bg-card p-5 print:hidden">{form}</aside>
         <main>{preview}</main>
       </div>
 
@@ -311,7 +311,7 @@ function Editor() {
             <TabsTrigger value="edit"><Pencil className="mr-1 h-4 w-4" /> Editar</TabsTrigger>
           </TabsList>
           <TabsContent value="preview" className="mt-4">{preview}</TabsContent>
-          <TabsContent value="edit" className="mt-4 rounded-2xl border border-border bg-card p-5">{form}</TabsContent>
+          <TabsContent value="edit" className="mt-4 rounded-xl border border-border bg-card p-5">{form}</TabsContent>
         </Tabs>
       </div>
 

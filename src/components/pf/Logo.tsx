@@ -6,8 +6,8 @@ export function Logo() {
       <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary font-mono text-xs font-bold text-primary-foreground shadow-xs transition-transform duration-150 group-hover:scale-105">
         PF
       </span>
-      <span className="font-display">
-        Pitch<span className="font-serif-editorial italic font-normal text-primary">Folio</span>
+      <span className="font-display font-extrabold tracking-tight">
+        Pitch<span className="text-primary">Folio</span>
       </span>
     </Link>
   );

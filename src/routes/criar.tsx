@@ -205,8 +205,8 @@ function Criar() {
   if (loading) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
-        <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-primary text-primary-foreground">
-          <Sparkles className="h-9 w-9 animate-pulse" />
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+          <Sparkles className="h-8 w-8 animate-pulse" />
         </div>
         <h1 className="text-3xl font-bold">Estruturando seu portfólio…</h1>
         <p className="max-w-md text-muted-foreground">A IA está reescrevendo suas respostas com verbos de impacto e montando seus 5 slides.</p>
@@ -236,8 +236,8 @@ function Criar() {
         {step === 0 && (
           <div className="mb-6 space-y-3">
             <div className="grid gap-3 sm:grid-cols-3">
-              <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-primary/50 bg-primary/5 p-4 transition hover:bg-primary/10">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-primary/50 bg-primary/5 p-3.5 transition hover:bg-primary/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                   {importing ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileUp className="h-5 w-5" />}
                 </div>
                 <div className="min-w-0">
@@ -251,9 +251,9 @@ function Criar() {
                 type="button"
                 disabled={importing}
                 onClick={() => setPasteOpen((v) => !v)}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left transition hover:border-primary/50"
+                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3.5 text-left transition hover:border-primary/50"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
                   <Github className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
@@ -265,9 +265,9 @@ function Criar() {
               <button
                 type="button"
                 onClick={fillDemo}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left transition hover:border-primary/50"
+                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3.5 text-left transition hover:border-primary/50"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
                   <Wand2 className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
@@ -278,7 +278,7 @@ function Criar() {
             </div>
 
             {pasteOpen && (
-              <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
+              <div className="space-y-4 rounded-xl border border-border bg-card p-5">
                 <div className="space-y-1.5">
                   <Label className="flex items-center gap-1.5 text-sm font-semibold">
                     <Github className="h-4 w-4" /> Usuário ou link do GitHub (opcional)
@@ -313,7 +313,7 @@ function Criar() {
             )}
           </div>
         )}
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-10">
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-10">
           <h1 className="text-3xl font-bold sm:text-4xl">{STEPS[step]}</h1>
           <div className="mt-8 space-y-6">
             {step === 0 && (
@@ -328,7 +328,7 @@ function Criar() {
             )}
             {step === 1 && (
               <>
-                <div className="rounded-2xl border border-primary/25 bg-primary/5 px-4 py-3 text-xs leading-relaxed text-foreground">
+                <div className="rounded-lg border border-primary/25 bg-primary/5 px-4 py-3 text-xs leading-relaxed text-foreground">
                   <strong className="font-semibold text-primary">Ainda não teve emprego formal?</strong> Tudo bem! Use um trabalho de disciplina, TCC, iniciação científica, empresa júnior, hackathon ou projeto pessoal. O que importa é mostrar como você resolve problemas (Método STAR).
                 </div>
                 <Field label="Qual era o problema ou desafio? (Situação / Tarefa)">
@@ -387,11 +387,11 @@ function Criar() {
               <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
             </Button>
             {step < 2 ? (
-              <Button size="lg" className="rounded-full" disabled={!valid} onClick={() => setStep(step + 1)}>
+              <Button size="lg" className="rounded-lg" disabled={!valid} onClick={() => setStep(step + 1)}>
                 Continuar <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             ) : (
-              <Button size="lg" className="rounded-full" disabled={!valid} onClick={generate}>
+              <Button size="lg" className="rounded-lg" disabled={!valid} onClick={generate}>
                 <Sparkles className="mr-1 h-4 w-4" /> Gerar com IA
               </Button>
             )}

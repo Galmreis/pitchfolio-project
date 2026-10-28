@@ -43,8 +43,8 @@ function Index() {
           <p className="font-mono text-xs text-muted-foreground">
             01 · Dossiê STAR & Pitch Deck em 5 slides
           </p>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.06] tracking-tight sm:text-5xl">
-            Sua trajetória traduzida em um <span className="font-serif-editorial italic font-normal">dossiê executivo</span> e pitch de 5 slides.
+          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl">
+            Sua trajetória traduzida em um <span className="text-primary">dossiê executivo</span> e pitch de 5 slides.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
             Recrutadores descartam currículos genéricos em segundos. Sincronize seu GitHub, envie seu PDF do LinkedIn ou responda 3 perguntas para estruturar um estudo de caso pelo Método STAR e uma apresentação navegável.
@@ -65,7 +65,7 @@ function Index() {
         </div>
 
         {/* Live Interactive 5-Slide Deck right in the Hero */}
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
+        <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
           <div className="mb-3 flex items-center justify-between font-mono text-xs text-muted-foreground">
             <span>Prévia interativa · Ana Souza</span>
             <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="text-foreground underline underline-offset-4">
@@ -99,8 +99,8 @@ function Index() {
         <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="max-w-2xl">
             <p className="font-mono text-xs text-muted-foreground">02 · Modelo de negócio B2B2C</p>
-            <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-              Gratuito para quem busca a primeira vaga. <span className="font-serif-editorial italic font-normal">Escalável</span> para quem forma talentos.
+            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+              Gratuito para quem busca a primeira vaga. <span className="text-primary">Escalável</span> para quem forma talentos.
             </h2>
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-2">

@@ -84,9 +84,9 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
   const slides = [
     <Frame n={0} key={0} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <p className="font-mono text-xs text-pf-muted sm:text-sm">{s1.role}</p>
-      <h2 className="mt-2 font-display text-3xl font-semibold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
+      <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
       {s1.headline && s1.headline !== s1.role && (
-        <p className="mt-3 max-w-xl font-serif-editorial text-xl text-pf-fg sm:text-2xl">{s1.headline}</p>
+        <p className="mt-3 max-w-xl font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
       )}
       <p className="mt-5 max-w-xl text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
     </Frame>,
@@ -98,7 +98,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           ["02", "Ação na prática", s2.action],
           ["03", "Resultado", s2.result],
         ].map(([num, title, value]) => (
-          <div key={num} className="rounded-xl border border-pf-line bg-pf-card p-4">
+          <div key={num} className="rounded-lg border border-pf-line bg-pf-card p-4">
             <span className="inline-block rounded bg-pf-accent/20 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">{num}</span>
             <p className="mt-2 text-sm font-semibold">{title}</p>
             <p className="mt-1.5 text-xs leading-relaxed text-pf-muted sm:text-sm">{value}</p>
@@ -110,7 +110,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Competências que trago para o time</h2>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {s3.skills.map((s, k) => (
-          <div key={k} className="rounded-xl border border-pf-line bg-pf-card px-4 py-3 text-sm font-semibold">
+          <div key={k} className="rounded-lg border border-pf-line bg-pf-card px-4 py-3 text-sm font-semibold">
             <span className="mb-1 block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
             {s}
           </div>
@@ -122,7 +122,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       {s4.metrics.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
           {s4.metrics.map((m, k) => (
-            <span key={k} className="rounded-lg bg-pf-accent px-3 py-1 font-mono text-xs font-bold text-pf-accent-fg">{m}</span>
+            <span key={k} className="rounded-md bg-pf-accent px-3 py-1 font-mono text-xs font-bold text-pf-accent-fg">{m}</span>
           ))}
         </div>
       )}
@@ -137,7 +137,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     </Frame>,
     <Frame n={4} key={4} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <p className="font-mono text-xs text-pf-muted">Próximo passo & Contato</p>
-      <h2 className="mt-3 max-w-2xl font-serif-editorial text-2xl leading-snug sm:text-4xl">{s5.goal}</h2>
+      <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-snug tracking-tight sm:text-3xl">{s5.goal}</h2>
       <ContactLinks p={{ ...p, ...s5 }} className="mt-8" />
     </Frame>,
   ];
@@ -146,8 +146,8 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     <div className={`theme-${theme}`}>
       <div
         ref={containerRef}
-        className={`relative w-full overflow-hidden border border-pf-line bg-pf-bg text-pf-fg shadow-2xl print:hidden ${
-          isFs ? "flex h-screen items-center justify-center rounded-none border-0" : "aspect-video rounded-2xl"
+        className={`relative w-full overflow-hidden border border-pf-line bg-pf-bg text-pf-fg shadow-xl print:hidden ${
+          isFs ? "flex h-screen items-center justify-center rounded-none border-0" : "aspect-video rounded-xl"
         }`}
         onTouchStart={(e) => (touch.current = e.touches[0]?.clientX ?? null)}
         onTouchEnd={(e) => {
@@ -163,14 +163,14 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       </div>
       <div className="hidden space-y-6 print:block">
         {slides.map((s, idx) => (
-          <div key={idx} className="aspect-video w-full break-inside-avoid overflow-hidden rounded-2xl border border-pf-line bg-pf-bg text-pf-fg">
+          <div key={idx} className="aspect-video w-full break-inside-avoid overflow-hidden rounded-xl border border-pf-line bg-pf-bg text-pf-fg">
             {s}
           </div>
         ))}
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 print:hidden">
         <button onClick={prev} disabled={i === 0} aria-label="Slide anterior"
-          className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold transition hover:border-primary/50 disabled:opacity-40 sm:text-sm">
+          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold transition hover:border-primary/50 disabled:opacity-40 sm:text-sm">
           <ChevronLeft className="h-4 w-4" /> Anterior
         </button>
         <div className="flex flex-wrap items-center justify-center gap-1.5">
@@ -179,8 +179,8 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
               key={info.title}
               onClick={() => setI(k)}
               aria-label={info.title}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
-                k === i ? "bg-primary text-primary-foreground shadow-sm" : "border border-border bg-card text-muted-foreground hover:text-foreground"
+              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all ${
+                k === i ? "bg-primary text-primary-foreground shadow-xs" : "border border-border bg-card text-muted-foreground hover:text-foreground"
               }`}
             >
               <span className="font-mono text-[10px]">0{k + 1}</span>
@@ -189,7 +189,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           ))}
         </div>
         <button onClick={next} disabled={i === 4} aria-label="Próximo slide"
-          className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold transition hover:border-primary/50 disabled:opacity-40 sm:text-sm">
+          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold transition hover:border-primary/50 disabled:opacity-40 sm:text-sm">
           Próximo <ChevronRight className="h-4 w-4" />
         </button>
       </div>

@@ -9,7 +9,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
       <section className="mx-auto max-w-4xl px-6 pb-14 pt-12 md:px-10 md:pt-16">
         <div className="flex flex-wrap items-start justify-between gap-6 border-b border-pf-line pb-8">
           <div className="flex items-center gap-4">
-            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-xl bg-pf-accent font-mono text-sm font-bold text-pf-accent-fg shadow-xs">
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-lg bg-pf-accent font-mono text-sm font-bold text-pf-accent-fg shadow-xs">
               {initials || "PF"}
             </div>
             <div>
@@ -22,7 +22,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
 
         <div className="mt-10 max-w-2xl">
           {p.headline && p.headline !== p.role && (
-            <p className="font-serif-editorial text-3xl leading-[1.15] md:text-4xl">{p.headline}</p>
+            <p className="font-display text-2xl font-semibold leading-snug tracking-tight md:text-3xl">{p.headline}</p>
           )}
           <p className="mt-4 text-base leading-relaxed text-pf-muted md:text-lg">{p.bio}</p>
         </div>
@@ -98,7 +98,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
       {/* 03 · Next Step & Contact */}
       <section className="mx-auto max-w-4xl border-t border-pf-line px-6 py-14 pb-20 md:px-10">
         <span className="font-mono text-xs text-pf-muted">04 / Próximo passo</span>
-        <p className="mt-3 max-w-2xl font-serif-editorial text-2xl leading-snug md:text-3xl">{p.goal}</p>
+        <p className="mt-3 max-w-2xl font-display text-2xl font-semibold leading-snug tracking-tight md:text-3xl">{p.goal}</p>
         <ContactLinks p={p} className="mt-8" />
       </section>
     </div>
@@ -116,7 +116,7 @@ export function ContactLinks({ p, className = "" }: { p: Portfolio; className?: 
     <div className={`flex flex-wrap gap-3 ${className}`}>
       {items.map(({ icon: Icon, label, href }) => (
         <a key={label} href={href} target="_blank" rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-pf-line bg-pf-card px-4 py-2 text-sm font-medium transition hover:bg-pf-accent hover:text-pf-accent-fg">
+          className="inline-flex items-center gap-2 rounded-lg border border-pf-line bg-pf-card px-4 py-2 text-sm font-medium transition hover:bg-pf-accent hover:text-pf-accent-fg">
           <Icon className="h-4 w-4" /> {label}
         </a>
       ))}
