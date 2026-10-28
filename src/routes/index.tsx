@@ -24,8 +24,10 @@ export const Route = createFileRoute("/")({
 
 const DEMO_PORTFOLIO = {
   ...localStructure(DEMO_ANSWERS),
-  projectTitle: "App de Caronas Universitárias",
+  projectTitle: "UniRota · App de Caronas Universitárias",
   metrics: ["1.200 viagens", "4 meses", "-30% custo"],
+  avatarUrl: "/visuals/avatar-ana.svg",
+  projectImageUrl: "/visuals/project-caronas.svg",
 };
 const DEMO_DECK = createDeck(DEMO_PORTFOLIO);
 
@@ -127,15 +129,39 @@ function Index() {
 
       {/* Asymmetric 1/3 + 2/3 Editorial Ledger (replaces symmetrical 3-card feature row) */}
       <section className="border-t border-border bg-card">
-        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[0.8fr_1.4fr] lg:gap-16">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Como funciona</p>
-            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              Três etapas para sair do currículo genérico.
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Em vez de exigir que você saiba redigir um currículo corporativo do zero, traduzimos trabalhos práticos, TCC, iniciação científica ou repositórios em evidências claras.
-            </p>
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[0.85fr_1.35fr] lg:gap-16">
+          <div className="flex flex-col justify-between space-y-6">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Como funciona</p>
+              <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Três etapas para sair do currículo genérico.
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Em vez de exigir que você saiba redigir um currículo corporativo do zero, traduzimos trabalhos práticos, TCC, iniciação científica ou repositórios em evidências claras.
+              </p>
+            </div>
+
+            {/* Contextual Before -> After Visual Card */}
+            <div className="rounded-xl border border-border bg-background p-4 shadow-xs space-y-3">
+              <div className="rounded-lg border border-dashed border-border bg-muted/50 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Antes · Anotação solta / Repositório</span>
+                <p className="mt-1 text-xs italic text-muted-foreground">
+                  "Fiz um app de caronas na disciplina de Engenharia de Software com React e bastante gente do campus usou…"
+                </p>
+              </div>
+              <div className="flex items-center justify-center text-xs font-bold text-primary">
+                ↓ Estruturação STAR Fact-Safe
+              </div>
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary">Depois · Caso Executivo</span>
+                  <span className="rounded bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold text-primary-foreground">-30% custo</span>
+                </div>
+                <p className="mt-1 text-xs font-semibold text-foreground">
+                  1.200 viagens combinadas em 4 meses com validação institucional.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="divide-y divide-border border-t border-border lg:border-t-0">
@@ -192,6 +218,26 @@ function Index() {
                 <span className="rounded-md border border-border bg-background px-3 py-1.5">Diretório de Talentos Verificados</span>
                 <span className="rounded-md border border-border bg-background px-3 py-1.5">Catálogo QR para Feiras</span>
                 <span className="rounded-md border border-border bg-background px-3 py-1.5">Métricas por Coorte</span>
+              </div>
+
+              {/* Contextual Institutional Directory Preview */}
+              <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
+                {[
+                  { img: "/visuals/avatar-ana.svg", name: "Ana Souza", course: "Eng. Software · 6º per.", metric: "1.200 viagens" },
+                  { img: "/visuals/avatar-dev.svg", name: "Lucas Mendes", course: "Ciência de Dados · 8º per.", metric: "-42% latência" },
+                  { img: "/visuals/avatar-design.svg", name: "Marina Costa", course: "Design Digital · 7º per.", metric: "94% precisão" },
+                ].map((st) => (
+                  <div key={st.name} className="flex items-center gap-2.5 rounded-lg border border-border bg-background p-2.5">
+                    <img src={st.img} alt={st.name} className="h-9 w-9 shrink-0 rounded-lg border border-border object-cover" />
+                    <div className="min-w-0">
+                      <p className="truncate text-xs font-bold text-foreground">{st.name}</p>
+                      <p className="truncate text-[11px] text-muted-foreground">{st.course}</p>
+                      <span className="mt-0.5 inline-block rounded bg-primary/10 px-1.5 py-0.2 font-mono text-[10px] font-semibold text-primary">
+                        {st.metric}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

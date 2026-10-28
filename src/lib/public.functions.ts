@@ -10,7 +10,12 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: slugSchema }).strict().parse(input))
   .handler(async ({ data }) => {
     if (data.slug === "ana-souza-demo") {
-      const demoPortfolio: Portfolio = localStructure(DEMO_ANSWERS);
+      const demoPortfolio: Portfolio = {
+        ...localStructure(DEMO_ANSWERS),
+        projectTitle: "UniRota · App de Caronas Universitárias",
+        avatarUrl: "/visuals/avatar-ana.svg",
+        projectImageUrl: "/visuals/project-caronas.svg",
+      };
       const { applySectionsToDeck, EMPTY_SECTIONS } = await import("@/services/portfolioSections.service");
       return { slug: "ana-souza-demo", theme: "moderno" as ThemeName, portfolio: demoPortfolio, deck: applySectionsToDeck(createDeck(demoPortfolio), EMPTY_SECTIONS), sections: EMPTY_SECTIONS };
     }

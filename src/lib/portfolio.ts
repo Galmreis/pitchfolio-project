@@ -30,6 +30,18 @@ export const ACCENT_COLORS: { id: AccentColor; label: string; swatch: string }[]
   { id: "rosa", label: "Carmim", swatch: "#e11d48" },
 ];
 
+export const AVATAR_PRESETS: { label: string; url: string }[] = [
+  { label: "Ilustração 1", url: "/visuals/avatar-ana.svg" },
+  { label: "Ilustração 2", url: "/visuals/avatar-dev.svg" },
+  { label: "Ilustração 3", url: "/visuals/avatar-design.svg" },
+];
+
+export const PROJECT_IMAGE_PRESETS: { label: string; url: string }[] = [
+  { label: "App & Rotas", url: "/visuals/project-caronas.svg" },
+  { label: "Analytics & Dados", url: "/visuals/project-analytics.svg" },
+  { label: "Arquitetura Web", url: "/visuals/project-system.svg" },
+];
+
 export type RawAnswers = {
   name: string;
   area: string;
@@ -63,6 +75,8 @@ export type Portfolio = {
   accentColor?: AccentColor | undefined;
   sectionOrder?: SectionOrder | undefined;
   layoutStyle?: LayoutStyle | undefined;
+  avatarUrl?: string | undefined;
+  projectImageUrl?: string | undefined;
 };
 
 export const EMPTY_ANSWERS: RawAnswers = {

@@ -10,6 +10,14 @@ const link = text(500).refine((s) => {
   } catch { return false; }
 }, "Informe um link HTTP ou HTTPS válido.");
 const email = text(254).refine((s) => !s || z.string().email().safeParse(s).success, "E-mail inválido.");
+const imageRef = text(500).refine((s) => {
+  if (!s) return true;
+  if (/^\/visuals\/[a-z0-9-]+\.svg$/.test(s)) return true;
+  try {
+    const u = new URL(s);
+    return ["https:", "http:"].includes(u.protocol) && !u.username && !u.password && u.hostname.includes(".") && !/[\s<>]/.test(s);
+  } catch { return false; }
+}, "Informe uma imagem válida.");
 export const themeSchema = z.enum(["moderno", "quente", "minimal"]);
 export const accentColorSchema = z.enum(["laranja", "azul", "esmeralda", "violeta", "rosa"]);
 export const sectionOrderSchema = z.enum(["project_first", "journey_first"]);
@@ -23,6 +31,8 @@ export const portfolioSchema = z.object({
   accentColor: accentColorSchema.optional(),
   sectionOrder: sectionOrderSchema.optional(),
   layoutStyle: layoutStyleSchema.optional(),
+  avatarUrl: imageRef.optional(),
+  projectImageUrl: imageRef.optional(),
 }).strict();
 export const rawAnswersSchema = z.object({
   name: text(120, 1), area: text(200), bio: text(3000), challenge: text(3000),

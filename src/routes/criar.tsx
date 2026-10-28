@@ -192,7 +192,22 @@ function Criar() {
     setLoading(true);
     try {
       const { portfolio, deck, ai } = await structure({ data: a });
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ portfolio, deck, theme: "moderno" }));
+      const ghHandle = a.github
+        .trim()
+        .replace(/^(?:https?:\/\/)?(?:www\.)?github\.com\//i, "")
+        .split(/[/?#]/)[0]
+        ?.replace(/^@/, "");
+      const isDemo = a.name.trim() === DEMO_ANSWERS.name;
+      const enrichedPortfolio = {
+        ...portfolio,
+        avatarUrl: isDemo
+          ? "/visuals/avatar-ana.svg"
+          : ghHandle && /^[a-z0-9-]+$/i.test(ghHandle)
+            ? `https://github.com/${ghHandle}.png`
+            : "/visuals/avatar-dev.svg",
+        projectImageUrl: isDemo ? "/visuals/project-caronas.svg" : "/visuals/project-system.svg",
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ portfolio: enrichedPortfolio, deck, theme: "moderno" }));
       if (!ai) toast.message("Usamos a estruturação automática básica — você pode editar tudo.");
       navigate({ to: "/editor" });
     } catch {

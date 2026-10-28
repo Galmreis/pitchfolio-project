@@ -1,8 +1,39 @@
 import { Github, Linkedin, Mail } from "lucide-react";
 import { normalizeUrl, resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
 
-export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) {
+export function AvatarBadge({ p, size = "md" }: { p: Portfolio; size?: "sm" | "md" | "lg" }) {
   const initials = p.name.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  const dim = size === "lg" ? "h-16 w-16 rounded-xl text-base" : size === "sm" ? "h-11 w-11 rounded-lg text-xs" : "h-14 w-14 rounded-xl text-sm";
+  if (p.avatarUrl) {
+    return (
+      <img
+        src={p.avatarUrl}
+        alt={p.name || "Foto de perfil"}
+        className={`${dim} shrink-0 border border-pf-line bg-pf-card object-cover shadow-xs`}
+      />
+    );
+  }
+  return (
+    <div className={`flex ${dim} shrink-0 items-center justify-center bg-pf-accent font-display font-bold text-pf-accent-fg shadow-xs`}>
+      {initials || "PF"}
+    </div>
+  );
+}
+
+function ProjectVisual({ p }: { p: Portfolio }) {
+  if (!p.projectImageUrl) return null;
+  return (
+    <div className="mt-5 overflow-hidden rounded-xl border border-pf-line bg-pf-card shadow-sm">
+      <img
+        src={p.projectImageUrl}
+        alt={p.projectTitle || "Prévia visual do projeto"}
+        className="aspect-video w-full object-cover"
+      />
+    </div>
+  );
+}
+
+export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) {
   const accentClass = p.accentColor ? `pf-accent-${p.accentColor}` : "";
   const journeyFirst = p.sectionOrder === "journey_first";
   const layout = resolveLayoutStyle(theme, p.layoutStyle);
@@ -17,6 +48,8 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
           <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Caso em destaque · Método STAR</span>
           <h2 className="mt-1 font-display text-2xl font-bold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
         </div>
+
+        <ProjectVisual p={p} />
 
         <div className="space-y-4">
           <div className="rounded-lg border border-pf-line bg-pf-card p-5">
@@ -68,9 +101,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
         <div className="mx-auto grid max-w-5xl gap-10 px-6 py-12 md:grid-cols-[280px_1fr] md:px-10 md:py-16">
           {/* Left Sticky Profile Column */}
           <aside className="space-y-6 md:sticky md:top-8 md:self-start rounded-xl border border-pf-line bg-pf-card p-6">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-pf-accent font-display text-base font-bold text-pf-accent-fg shadow-xs">
-              {initials || "PF"}
-            </div>
+            <AvatarBadge p={p} size="lg" />
             <div>
               <h1 className="font-display text-2xl font-bold leading-tight tracking-tight">{p.name || "Seu nome"}</h1>
               <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-pf-muted">{p.role || "Área de atuação"}</p>
@@ -136,6 +167,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
         </div>
         <div className="space-y-6">
           <h3 className="font-display text-xl font-bold md:text-2xl">{p.projectTitle || "Projeto em destaque"}</h3>
+          <ProjectVisual p={p} />
           <div className="divide-y divide-pf-line border-t border-pf-line">
             {[
               { label: "Contexto & Desafio", val: p.challenge },
@@ -188,10 +220,8 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
         <div className="mx-auto max-w-4xl px-6 py-12 md:px-10 md:py-16">
           <header className="grid gap-6 pb-10 md:grid-cols-[200px_1fr]">
             <div>
-              <span className="inline-block rounded bg-pf-accent px-2 py-0.5 font-mono text-xs font-bold text-pf-accent-fg">
-                {initials || "PF"}
-              </span>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-pf-muted">{p.role || "Área de atuação"}</p>
+              <AvatarBadge p={p} size="md" />
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-pf-muted">{p.role || "Área de atuação"}</p>
             </div>
             <div>
               <h1 className="font-display text-3xl font-extrabold tracking-tight md:text-4xl">{p.name || "Seu nome"}</h1>
@@ -230,7 +260,9 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
         <h2 className="mt-1 font-display text-2xl font-bold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
       </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-[0.95fr_1.15fr]">
+      <ProjectVisual p={p} />
+
+      <div className="mt-6 grid gap-4 md:grid-cols-[0.95fr_1.15fr]">
         <div className="rounded-lg border border-pf-line bg-pf-card p-5 space-y-2.5">
           <div className="flex items-center gap-2">
             <span className="rounded bg-pf-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">S / T</span>
@@ -311,9 +343,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
         <div className="grid gap-4 md:grid-cols-[1.35fr_0.85fr]">
           <div className="rounded-xl border border-pf-line bg-pf-card p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-lg bg-pf-accent font-display text-sm font-bold text-pf-accent-fg shadow-xs">
-                {initials || "PF"}
-              </div>
+              <AvatarBadge p={p} size="md" />
               <div>
                 <h1 className="font-display text-2xl font-bold leading-tight tracking-tight md:text-3xl">{p.name || "Seu nome"}</h1>
                 <p className="mt-0.5 text-sm font-medium text-pf-muted">{p.role || "Área de atuação"}</p>

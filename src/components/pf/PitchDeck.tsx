@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from "lucide-react";
 import { resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
 import { DECK_SLIDES_METADATA, type FiveSlideDeck } from "@/types/pitchfolio";
-import { ContactLinks } from "./PortfolioSite";
+import { AvatarBadge, ContactLinks } from "./PortfolioSite";
 
 const SHORT_LABELS = ["Identidade", "Método STAR", "Habilidades", "Impacto", "Contato"];
 
@@ -88,11 +88,12 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     <Frame n={0} key={0} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       {layout === "split" ? (
         <div className="grid items-center gap-6 sm:grid-cols-[0.85fr_1.15fr] sm:divide-x sm:divide-pf-line">
-          <div className="sm:pr-6">
+          <div className="space-y-3 sm:pr-6">
+            <AvatarBadge p={p} size="lg" />
             <span className="inline-block rounded bg-pf-accent px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-pf-accent-fg">
               {s1.role}
             </span>
-            <h2 className="mt-3 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-4xl">{s1.name}</h2>
+            <h2 className="font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-4xl">{s1.name}</h2>
           </div>
           <div className="space-y-3 sm:pl-6">
             {s1.headline && s1.headline !== s1.role && (
@@ -103,9 +104,10 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         </div>
       ) : layout === "indice" ? (
         <div className="grid gap-4 border-l-2 border-pf-accent pl-5 sm:grid-cols-[180px_1fr]">
-          <div>
-            <span className="font-mono text-xs font-bold text-pf-accent">01 / PERFIL</span>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-pf-muted">{s1.role}</p>
+          <div className="space-y-2.5">
+            <AvatarBadge p={p} size="md" />
+            <span className="block font-mono text-xs font-bold text-pf-accent">01 / PERFIL</span>
+            <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted">{s1.role}</p>
           </div>
           <div>
             <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{s1.name}</h2>
@@ -116,13 +118,16 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           </div>
         </div>
       ) : (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted sm:text-sm">{s1.role}</p>
-          <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
-          {s1.headline && s1.headline !== s1.role && (
-            <p className="mt-3 max-w-xl font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
-          )}
-          <p className="mt-5 max-w-xl text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
+        <div className="flex flex-wrap items-center justify-between gap-6">
+          <div className="max-w-xl flex-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted sm:text-sm">{s1.role}</p>
+            <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
+            {s1.headline && s1.headline !== s1.role && (
+              <p className="mt-3 font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
+            )}
+            <p className="mt-4 text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
+          </div>
+          <AvatarBadge p={p} size="lg" />
         </div>
       )}
     </Frame>,
@@ -199,22 +204,31 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       )}
     </Frame>,
     <Frame n={3} key={3} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Destaques e trajetória"}</h2>
-      {s4.metrics.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {s4.metrics.map((m, k) => (
-            <span key={k} className="rounded-md bg-pf-accent px-3 py-1 text-xs font-bold text-pf-accent-fg">{m}</span>
-          ))}
+      <div className={`grid items-center gap-6 ${p.projectImageUrl ? "sm:grid-cols-[1fr_1.05fr]" : ""}`}>
+        <div>
+          <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Destaques e trajetória"}</h2>
+          {s4.metrics.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {s4.metrics.map((m, k) => (
+                <span key={k} className="rounded-md bg-pf-accent px-3 py-1 text-xs font-bold text-pf-accent-fg">{m}</span>
+              ))}
+            </div>
+          )}
+          <ol className="mt-5 space-y-2.5 border-l-2 border-pf-line pl-5">
+            {s4.journey.map((j, k) => (
+              <li key={k} className="relative text-xs leading-relaxed sm:text-sm">
+                <span className="absolute -left-[25px] top-1.5 h-2.5 w-2.5 rounded-full bg-pf-accent" />
+                {j}
+              </li>
+            ))}
+          </ol>
         </div>
-      )}
-      <ol className="mt-6 space-y-3 border-l-2 border-pf-line pl-5">
-        {s4.journey.map((j, k) => (
-          <li key={k} className="relative text-sm leading-relaxed sm:text-base">
-            <span className="absolute -left-[25px] top-1.5 h-2.5 w-2.5 rounded-full bg-pf-accent" />
-            {j}
-          </li>
-        ))}
-      </ol>
+        {p.projectImageUrl && (
+          <div className="overflow-hidden rounded-lg border border-pf-line bg-pf-card shadow-md">
+            <img src={p.projectImageUrl} alt={s4.title || "Prévia do projeto"} className="aspect-video w-full object-cover" />
+          </div>
+        )}
+      </div>
     </Frame>,
     <Frame n={4} key={4} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Próximo passo & Contato</p>

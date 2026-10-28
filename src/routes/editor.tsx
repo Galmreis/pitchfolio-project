@@ -15,7 +15,7 @@ import { Logo } from "@/components/pf/Logo";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
-import { ACCENT_COLORS, DEMO_ANSWERS, DRAFT_KEY, LAYOUT_STYLES, THEMES, localStructure, resolveLayoutStyle, type Draft, type Portfolio } from "@/lib/portfolio";
+import { ACCENT_COLORS, AVATAR_PRESETS, DEMO_ANSWERS, DRAFT_KEY, LAYOUT_STYLES, PROJECT_IMAGE_PRESETS, THEMES, localStructure, resolveLayoutStyle, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
   head: () => ({
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/editor")({
   component: Editor,
 });
 
-type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey" | "accentColor" | "sectionOrder" | "layoutStyle">;
+type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey" | "accentColor" | "sectionOrder" | "layoutStyle" | "avatarUrl" | "projectImageUrl">;
 
 const THEME_SWATCHES: Record<string, { bg: string; accent: string }> = {
   moderno: { bg: "#1c1715", accent: "#e05a2b" },
@@ -147,7 +147,12 @@ function Editor() {
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild><Link to="/criar">Criar meu portfólio</Link></Button>
           <Button variant="secondary" onClick={() => {
-            const demoP = localStructure(DEMO_ANSWERS);
+            const demoP: Portfolio = {
+              ...localStructure(DEMO_ANSWERS),
+              projectTitle: "UniRota · App de Caronas Universitárias",
+              avatarUrl: "/visuals/avatar-ana.svg",
+              projectImageUrl: "/visuals/project-caronas.svg",
+            };
             setDraft({ portfolio: demoP, deck: createDeck(demoP), theme: "moderno" });
           }}>
             Carregar exemplo (Demo)
@@ -221,6 +226,42 @@ function Editor() {
         {txt("role", "Área / curso")}
         {txt("headline", "Headline")}
         {txt("bio", "Bio", 4)}
+        <div className="space-y-2 pt-1">
+          <Label>Foto / Ilustração de Perfil</Label>
+          <div className="flex flex-wrap items-center gap-2">
+            {AVATAR_PRESETS.map((av) => {
+              const active = p.avatarUrl === av.url;
+              return (
+                <button
+                  key={av.url}
+                  type="button"
+                  onClick={() => upd({ avatarUrl: av.url })}
+                  className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                    active ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <img src={av.url} alt={av.label} className="h-5 w-5 rounded-full object-cover" />
+                  {av.label}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => upd({ avatarUrl: undefined })}
+              className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                !p.avatarUrl ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Apenas iniciais
+            </button>
+          </div>
+          <Input
+            value={p.avatarUrl ?? ""}
+            onChange={(e) => upd({ avatarUrl: e.target.value || undefined })}
+            placeholder="Ou cole link de foto (ex: https://github.com/usuario.png)"
+            className="text-xs"
+          />
+        </div>
       </section>
       <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">
@@ -228,6 +269,41 @@ function Editor() {
           <h3 className="font-display text-base font-bold">Projeto Estrela (Método STAR)</h3>
         </div>
         {txt("projectTitle", "Título do projeto")}
+        <div className="space-y-2">
+          <Label>Capa / Mockup Visual do Projeto</Label>
+          <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+            {PROJECT_IMAGE_PRESETS.map((pr) => {
+              const active = p.projectImageUrl === pr.url;
+              return (
+                <button
+                  key={pr.url}
+                  type="button"
+                  onClick={() => upd({ projectImageUrl: pr.url })}
+                  className={`rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition ${
+                    active ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {pr.label}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => upd({ projectImageUrl: undefined })}
+              className={`rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition ${
+                !p.projectImageUrl ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Sem capa
+            </button>
+          </div>
+          <Input
+            value={p.projectImageUrl ?? ""}
+            onChange={(e) => upd({ projectImageUrl: e.target.value || undefined })}
+            placeholder="Ou cole URL de imagem do projeto (https://…)"
+            className="text-xs"
+          />
+        </div>
         {txt("challenge", "Desafio", 3)}
         {txt("action", "O que fiz", 3)}
         {txt("result", "Resultado", 3)}
