@@ -84,6 +84,15 @@ function Editor() {
 
   useEffect(() => {
     (async () => {
+      const sp = new URLSearchParams(window.location.search);
+      if (sp.get("view") === "deck") setView("deck");
+      if (sp.get("modal") === "auth") setAuthOpen(true);
+      if (sp.get("modal") === "share") setShareUrl(`${window.location.origin}/p/ana-souza-demo`);
+      if (sp.get("empty") === "1") {
+        setLoaded(true);
+        return;
+      }
+      const themeOverride = themeSchema.safeParse(sp.get("theme"));
       const s = localStorage.getItem(DRAFT_KEY);
       if (s) {
         try {
@@ -92,7 +101,7 @@ function Editor() {
             setDraft({
               portfolio: valid.data.portfolio,
               deck: valid.data.deck ?? createDeck(valid.data.portfolio),
-              theme: valid.data.theme,
+              theme: themeOverride.success ? themeOverride.data : valid.data.theme,
               ...(valid.data.slug ? { slug: valid.data.slug } : {}),
             });
             setLoaded(true);

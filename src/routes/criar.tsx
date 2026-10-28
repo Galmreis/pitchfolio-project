@@ -52,6 +52,11 @@ function Criar() {
   useEffect(() => {
     const saved = localStorage.getItem(ANSWERS_KEY);
     if (saved) try { setA({ ...EMPTY_ANSWERS, ...JSON.parse(saved) }); } catch { /* ignore */ }
+    const sp = new URLSearchParams(window.location.search);
+    const s = Number(sp.get("step"));
+    if (s === 1 || s === 2) setStep(s);
+    if (sp.get("paste") === "1") setPasteOpen(true);
+    if (sp.get("loading") === "1") setLoading(true);
   }, []);
   useEffect(() => { localStorage.setItem(ANSWERS_KEY, JSON.stringify(a)); }, [a]);
 

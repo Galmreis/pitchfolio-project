@@ -1,27 +1,19 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Portfolio, ThemeName } from "@/lib/portfolio";
-import type { FiveSlideDeck } from "@/types/pitchfolio";
+import { DECK_SLIDES_METADATA, type FiveSlideDeck } from "@/types/pitchfolio";
 import { ContactLinks } from "./PortfolioSite";
 
-const SLIDE_INFO = [
-  { title: "Quem sou eu", badge: "Onde sei trabalhar & Identidade" },
-  { title: "O que fiz na prática", badge: "Meu potencial (Método STAR)" },
-  { title: "Habilidades", badge: "O que trago para o time" },
-  { title: "Destaques & Trajetória", badge: "Resultados comprovados" },
-  { title: "Objetivo & Contato", badge: "Meus objetivos de carreira" },
-];
-
 function Frame({ n, children }: { n: number; children: ReactNode }) {
-  const info = SLIDE_INFO[n] ?? { title: `Slide ${n + 1}`, badge: "" };
+  const info = DECK_SLIDES_METADATA[n] ?? { title: `Slide ${n + 1}`, subtitle: "" };
   return (
     <div className="flex h-full flex-col p-6 sm:p-10">
       <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-pf-muted">
         <span className="flex items-center gap-2">
           <span>{info.title}</span>
-          {info.badge ? (
-            <span className="hidden rounded-full border border-pf-line bg-pf-card px-2 py-0.5 text-[10px] font-normal text-pf-muted sm:inline-block">
-              {info.badge}
+          {info.subtitle ? (
+            <span className="hidden rounded-full border border-pf-line bg-pf-card px-2 py-0.5 text-[10px] font-normal normal-case tracking-normal text-pf-muted sm:inline-block">
+              {info.subtitle}
             </span>
           ) : null}
         </span>
@@ -134,7 +126,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           <ChevronLeft className="h-4 w-4" /> Anterior
         </button>
         <div className="flex gap-1.5">
-          {SLIDE_INFO.map((info, k) => (
+          {DECK_SLIDES_METADATA.map((info, k) => (
             <button key={info.title} onClick={() => setI(k)} aria-label={info.title}
               className={`h-2 rounded-full transition-all ${k === i ? "w-6 bg-primary" : "w-2 bg-border"}`} />
           ))}

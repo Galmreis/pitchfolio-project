@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { createDeck, draftSchema, portfolioSchema, slugSchema } from "@/validators/portfolio";
+import { createDeck, deckSchema, draftSchema, portfolioSchema, slugSchema } from "@/validators/portfolio";
 import { z } from "zod";
 import type { FiveSlideDeck } from "@/types/pitchfolio";
 
@@ -52,6 +52,7 @@ export const getPortfolioDeck = createServerFn({ method: "GET" })
       .eq("portfolio_id", row.id)
       .maybeSingle();
 
-    const deck: FiveSlideDeck = (deckRow as unknown as FiveSlideDeck | null) ?? createDeck(parsed.data);
+    const parsedDeck = deckSchema.safeParse(deckRow);
+    const deck: FiveSlideDeck = parsedDeck.success ? parsedDeck.data : createDeck(parsed.data);
     return { deck };
   });

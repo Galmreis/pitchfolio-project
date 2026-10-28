@@ -58,6 +58,14 @@ describe("PitchFolio business rules", () => {
   it("rejects an AI result containing an invented employer", () => {
     expect(groundedPortfolio({ ...p, bio: "Trabalhei na Microsoft" }, answers).bio).toBe("Sou estudante de Design.");
   });
+  it("accepts a grounded AI rewrite using natural Portuguese vocabulary", () => {
+    const rewritten = groundedPortfolio(
+      { ...p, bio: "Atuo com pesquisa e construção de soluções centradas nas pessoas.", action: "Conduzi entrevistas práticas com usuários." },
+      answers
+    );
+    expect(rewritten.bio).toBe("Atuo com pesquisa e construção de soluções centradas nas pessoas.");
+    expect(rewritten.action).toBe("Conduzi entrevistas práticas com usuários.");
+  });
   it("validates parsed PDF and LinkedIn text without signup and generates deck", () => {
     for (const method of ["pdf_upload", "linkedin_text"] as const) {
       const input = { method, name: "Ana", text: "Sou estudante de Design e organizei entrevistas." };

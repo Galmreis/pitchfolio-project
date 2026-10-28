@@ -38,7 +38,9 @@ export const Route = createFileRoute("/p/$slug")({
 
 function PublicPage() {
   const { portfolio, theme, deck } = Route.useLoaderData();
-  const [view, setView] = useState<"site" | "deck">("site");
+  const [view, setView] = useState<"site" | "deck">(() =>
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "deck" ? "deck" : "site"
+  );
   return (
     <div className={`theme-${theme} min-h-screen bg-pf-bg`}>
       <div className="sticky top-0 z-10 flex justify-center py-3 print:hidden">

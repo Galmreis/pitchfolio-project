@@ -1,14 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import type { Portfolio, ThemeName } from "./portfolio";
+import { DEMO_ANSWERS, localStructure, type Portfolio, type ThemeName } from "./portfolio";
 import { z } from "zod";
-import { createDeck, slugSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
+import { createDeck, deckSchema, slugSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
 import type { FiveSlideDeck } from "@/types/pitchfolio";
 
 export const getPublicPortfolio = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: slugSchema }).strict().parse(input))
   .handler(async ({ data }) => {
+    if (data.slug === "ana-souza-demo") {
+      const demoPortfolio: Portfolio = localStructure(DEMO_ANSWERS);
+      return { slug: "ana-souza-demo", theme: "moderno" as ThemeName, portfolio: demoPortfolio, deck: createDeck(demoPortfolio) };
+    }
     const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
     const sb = createClient<Database>(process.env["SUPABASE_URL"]!, key, {
       auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
@@ -38,7 +42,8 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
       .eq("portfolio_id", row.id)
       .maybeSingle();
 
-    const deck: FiveSlideDeck = (deckRow as unknown as FiveSlideDeck | null) ?? createDeck(portfolio.data);
+    const parsedDeck = deckSchema.safeParse(deckRow);
+    const deck: FiveSlideDeck = parsedDeck.success ? parsedDeck.data : createDeck(portfolio.data);
 
     return { slug: row.slug, theme: theme.data, portfolio: portfolio.data, deck };
   });
