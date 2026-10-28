@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listOwnedPortfolios, publishPortfolioDraft } from "@/controllers/portfolios.functions";
 import { createDeck, draftSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
-import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn } from "lucide-react";
+import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { Logo } from "@/components/pf/Logo";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
-import { DEMO_ANSWERS, DRAFT_KEY, THEMES, localStructure, type Draft, type Portfolio } from "@/lib/portfolio";
+import { ACCENT_COLORS, DEMO_ANSWERS, DRAFT_KEY, THEMES, localStructure, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
   head: () => ({
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/editor")({
   component: Editor,
 });
 
-type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey">;
+type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey" | "accentColor" | "sectionOrder">;
 
 const THEME_SWATCHES: Record<string, { bg: string; accent: string }> = {
   moderno: { bg: "#1c1715", accent: "#e05a2b" },
@@ -40,13 +40,30 @@ const THEME_SWATCHES: Record<string, { bg: string; accent: string }> = {
 };
 
 function ListEditor({ label, items, onChange, max = 6 }: { label: string; items: string[]; onChange: (v: string[]) => void; max?: number }) {
+  const move = (from: number, to: number) => {
+    if (to < 0 || to >= items.length) return;
+    const next = [...items];
+    const [picked] = next.splice(from, 1);
+    if (picked !== undefined) next.splice(to, 0, picked);
+    onChange(next);
+  };
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
       {items.map((it, i) => (
-        <div key={i} className="flex gap-2">
+        <div key={i} className="flex items-center gap-1.5">
           <Input value={it} onChange={(e) => onChange(items.map((x, k) => (k === i ? e.target.value : x)))} />
-          <Button size="icon" variant="ghost" onClick={() => onChange(items.filter((_, k) => k !== i))} aria-label="Remover"><X className="h-4 w-4" /></Button>
+          {items.length > 1 && (
+            <>
+              <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" disabled={i === 0} onClick={() => move(i, i - 1)} aria-label="Mover para cima">
+                <ArrowUp className="h-3.5 w-3.5" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" disabled={i === items.length - 1} onClick={() => move(i, i + 1)} aria-label="Mover para baixo">
+                <ArrowDown className="h-3.5 w-3.5" />
+              </Button>
+            </>
+          )}
+          <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" onClick={() => onChange(items.filter((_, k) => k !== i))} aria-label="Remover"><X className="h-4 w-4" /></Button>
         </div>
       ))}
       {items.length < max && (
@@ -217,12 +234,41 @@ function Editor() {
         <ListEditor label="Métricas em destaque" items={p.metrics} onChange={(metrics) => upd({ metrics })} max={4} />
       </section>
       <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
-        <div className="flex items-center gap-2 border-b border-border pb-2.5">
-          <span className="font-mono text-xs font-bold text-primary">03</span>
-          <h3 className="font-display text-base font-bold">Habilidades & Trajetória</h3>
+        <div className="flex items-center justify-between border-b border-border pb-2.5">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs font-bold text-primary">03</span>
+            <h3 className="font-display text-base font-bold">Habilidades & Trajetória</h3>
+          </div>
         </div>
-        <ListEditor label="Habilidades" items={p.skills} onChange={(skills) => upd({ skills })} />
-        <ListEditor label="Trajetória" items={p.journey} onChange={(journey) => upd({ journey })} max={5} />
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Ordem de destaque no portfólio</Label>
+          <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-border bg-card p-1">
+            <button
+              type="button"
+              onClick={() => upd({ sectionOrder: "project_first" })}
+              className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
+                (p.sectionOrder ?? "project_first") === "project_first"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Projeto STAR 1º
+            </button>
+            <button
+              type="button"
+              onClick={() => upd({ sectionOrder: "journey_first" })}
+              className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
+                p.sectionOrder === "journey_first"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Trajetória 1º
+            </button>
+          </div>
+        </div>
+        <ListEditor label="Habilidades (use ↑ ↓ para ordenar)" items={p.skills} onChange={(skills) => upd({ skills })} />
+        <ListEditor label="Trajetória / Experiências (use ↑ ↓ para ordenar)" items={p.journey} onChange={(journey) => upd({ journey })} max={5} />
       </section>
       <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">
@@ -247,24 +293,45 @@ function Editor() {
           <Presentation className="h-4 w-4" /> Pitch Deck (5 Slides)
         </button>
       </div>
-      <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-1 shadow-xs">
-        {THEMES.map((t) => {
-          const sw = THEME_SWATCHES[t.id];
-          return (
-            <button
-              key={t.id}
-              onClick={() => setDraft({ ...draft, theme: t.id })}
-              className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition ${draft.theme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              {sw && (
-                <span className="relative flex h-3.5 w-3.5 items-center justify-center rounded-full border border-border/60" style={{ backgroundColor: sw.bg }}>
-                  <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sw.accent }} />
-                </span>
-              )}
-              {t.label}
-            </button>
-          );
-        })}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-1 shadow-xs">
+          {THEMES.map((t) => {
+            const sw = THEME_SWATCHES[t.id];
+            return (
+              <button
+                key={t.id}
+                onClick={() => setDraft({ ...draft, theme: t.id })}
+                className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition ${draft.theme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                {sw && (
+                  <span className="relative flex h-3.5 w-3.5 items-center justify-center rounded-full border border-border/60" style={{ backgroundColor: sw.bg }}>
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sw.accent }} />
+                  </span>
+                )}
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1.5 shadow-xs" role="group" aria-label="Cor de destaque">
+          <span className="mr-1 text-xs font-medium text-muted-foreground">Cor:</span>
+          {ACCENT_COLORS.map((c) => {
+            const active = (p.accentColor ?? "laranja") === c.id;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                title={`Cor de destaque: ${c.label}`}
+                aria-label={`Cor de destaque: ${c.label}`}
+                onClick={() => upd({ accentColor: c.id })}
+                className={`h-5 w-5 rounded-full transition-transform ${
+                  active ? "scale-110 ring-2 ring-foreground ring-offset-2 ring-offset-card" : "opacity-75 hover:opacity-100"
+                }`}
+                style={{ backgroundColor: c.swatch }}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );

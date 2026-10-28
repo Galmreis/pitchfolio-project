@@ -81,9 +81,11 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     return () => window.removeEventListener("keydown", onKey);
   }, [next, prev, toggleFullscreen]);
 
+  const accentClass = p.accentColor ? `pf-accent-${p.accentColor}` : "";
+
   const slides = [
     <Frame n={0} key={0} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <p className="font-mono text-xs text-pf-muted sm:text-sm">{s1.role}</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted sm:text-sm">{s1.role}</p>
       <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
       {s1.headline && s1.headline !== s1.role && (
         <p className="mt-3 max-w-xl font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
@@ -122,7 +124,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       {s4.metrics.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
           {s4.metrics.map((m, k) => (
-            <span key={k} className="rounded-md bg-pf-accent px-3 py-1 font-mono text-xs font-bold text-pf-accent-fg">{m}</span>
+            <span key={k} className="rounded-md bg-pf-accent px-3 py-1 text-xs font-bold text-pf-accent-fg">{m}</span>
           ))}
         </div>
       )}
@@ -136,14 +138,14 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       </ol>
     </Frame>,
     <Frame n={4} key={4} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <p className="font-mono text-xs text-pf-muted">Próximo passo & Contato</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Próximo passo & Contato</p>
       <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-snug tracking-tight sm:text-3xl">{s5.goal}</h2>
       <ContactLinks p={{ ...p, ...s5 }} className="mt-8" />
     </Frame>,
   ];
 
   return (
-    <div className={`theme-${theme}`}>
+    <div className={`theme-${theme} ${accentClass}`}>
       <div
         ref={containerRef}
         className={`relative w-full overflow-hidden border border-pf-line bg-pf-bg text-pf-fg shadow-xl print:hidden ${

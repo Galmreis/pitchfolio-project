@@ -142,6 +142,27 @@
   --pf-line: oklch(0.16 0.015 45 / 11%);
 }
 
+.pf-accent-laranja {
+  --pf-accent: oklch(0.56 0.175 38);
+  --pf-accent-fg: oklch(0.99 0.005 75);
+}
+.pf-accent-azul {
+  --pf-accent: oklch(0.55 0.19 258);
+  --pf-accent-fg: oklch(0.99 0.005 255);
+}
+.pf-accent-esmeralda {
+  --pf-accent: oklch(0.56 0.15 162);
+  --pf-accent-fg: oklch(0.99 0.005 160);
+}
+.pf-accent-violeta {
+  --pf-accent: oklch(0.54 0.2 292);
+  --pf-accent-fg: oklch(0.99 0.005 290);
+}
+.pf-accent-rosa {
+  --pf-accent: oklch(0.55 0.19 15);
+  --pf-accent-fg: oklch(0.99 0.005 15);
+}
+
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);

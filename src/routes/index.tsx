@@ -40,7 +40,7 @@ function Index() {
 
       <section className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-20 pt-6 lg:grid-cols-[0.9fr_1.2fr] lg:gap-14 lg:pt-12">
         <div className="lg:pt-4">
-          <span className="inline-block rounded-md bg-primary/10 px-2.5 py-1 font-mono text-xs font-semibold text-primary">
+          <span className="inline-block rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
             Empregabilidade & 1ª Oportunidade
           </span>
           <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">
@@ -59,16 +59,16 @@ function Index() {
               </Link>
             </Button>
           </div>
-          <p className="mt-4 font-mono text-xs text-muted-foreground">
+          <p className="mt-4 text-xs font-medium text-muted-foreground">
             Sem cadastro prévio · Importação via GitHub API ou PDF
           </p>
         </div>
 
         {/* Live Interactive 5-Slide Deck right in the Hero */}
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
-          <div className="mb-3 flex items-center justify-between font-mono text-xs text-muted-foreground">
-            <span>Demonstração ao vivo · Navegue pelos 5 slides</span>
-            <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="font-semibold text-primary hover:underline">
+          <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
+            <span className="font-medium">Demonstração ao vivo · Navegue pelos 5 slides</span>
+            <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="font-mono font-semibold text-primary hover:underline">
               /p/ana-souza-demo →
             </Link>
           </div>
@@ -80,7 +80,7 @@ function Index() {
       <section className="border-t border-border bg-card">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[0.8fr_1.4fr] lg:gap-16">
           <div>
-            <p className="font-mono text-xs font-semibold text-primary">01 / Como funciona</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Como funciona</p>
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
               Três etapas para sair do currículo genérico.
             </h2>
@@ -115,7 +115,7 @@ function Index() {
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <h3 className="font-display text-lg font-bold">{t}</h3>
-                    <span className="rounded bg-secondary px-2 py-0.5 font-mono text-[11px] font-medium text-secondary-foreground">
+                    <span className="rounded bg-secondary px-2.5 py-0.5 text-[11px] font-semibold text-secondary-foreground">
                       {tag}
                     </span>
                   </div>
@@ -132,23 +132,23 @@ function Index() {
         <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="overflow-hidden rounded-xl border border-border bg-card lg:grid lg:grid-cols-[1.35fr_0.85fr]">
             <div className="p-7 sm:p-10">
-              <p className="font-mono text-xs font-semibold text-primary">02 / Modelo B2B2C Sustentável</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Modelo B2B2C Sustentável</p>
               <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 Para Universidades, Bootcamps e Feiras de Carreira
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
                 Instituições de ensino superior e escolas técnicas licenciam o PitchFolio para padronizar a vitrine de alunos formandos, conectar turmas inteiras a empresas parceiras e acompanhar taxas de empregabilidade por curso.
               </p>
-              <div className="mt-6 flex flex-wrap gap-2 font-mono text-xs">
-                <span className="rounded-md border border-border bg-background px-3 py-1.5 font-medium">Diretório de Talentos Verificados</span>
-                <span className="rounded-md border border-border bg-background px-3 py-1.5 font-medium">Catálogo QR para Feiras</span>
-                <span className="rounded-md border border-border bg-background px-3 py-1.5 font-medium">Métricas por Coorte</span>
+              <div className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
+                <span className="rounded-md border border-border bg-background px-3 py-1.5">Diretório de Talentos Verificados</span>
+                <span className="rounded-md border border-border bg-background px-3 py-1.5">Catálogo QR para Feiras</span>
+                <span className="rounded-md border border-border bg-background px-3 py-1.5">Métricas por Coorte</span>
               </div>
             </div>
 
             <div className="flex flex-col justify-between border-t border-border bg-secondary/45 p-7 sm:p-10 lg:border-l lg:border-t-0">
               <div>
-                <span className="inline-block rounded bg-primary px-2 py-0.5 font-mono text-[11px] font-bold text-primary-foreground">
+                <span className="inline-block rounded bg-primary px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
                   100% Gratuito no B2C
                 </span>
                 <h3 className="mt-3 font-display text-xl font-bold">Para Estudantes e Candidatos</h3>

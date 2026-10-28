@@ -1,9 +1,19 @@
 export type ThemeName = "moderno" | "quente" | "minimal";
+export type AccentColor = "laranja" | "azul" | "esmeralda" | "violeta" | "rosa";
+export type SectionOrder = "project_first" | "journey_first";
 
 export const THEMES: { id: ThemeName; label: string }[] = [
   { id: "moderno", label: "Moderno" },
   { id: "quente", label: "Quente" },
   { id: "minimal", label: "Minimal" },
+];
+
+export const ACCENT_COLORS: { id: AccentColor; label: string; swatch: string }[] = [
+  { id: "laranja", label: "Terracota", swatch: "#c84b16" },
+  { id: "azul", label: "Cobalto", swatch: "#2563eb" },
+  { id: "esmeralda", label: "Esmeralda", swatch: "#059669" },
+  { id: "violeta", label: "Violeta", swatch: "#7c3aed" },
+  { id: "rosa", label: "Carmim", swatch: "#e11d48" },
 ];
 
 export type RawAnswers = {
@@ -36,6 +46,8 @@ export type Portfolio = {
   linkedin: string;
   github: string;
   email: string;
+  accentColor?: AccentColor | undefined;
+  sectionOrder?: SectionOrder | undefined;
 };
 
 export const EMPTY_ANSWERS: RawAnswers = {
