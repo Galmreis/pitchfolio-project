@@ -13,6 +13,7 @@ const email = text(254).refine((s) => !s || z.string().email().safeParse(s).succ
 export const themeSchema = z.enum(["moderno", "quente", "minimal"]);
 export const accentColorSchema = z.enum(["laranja", "azul", "esmeralda", "violeta", "rosa"]);
 export const sectionOrderSchema = z.enum(["project_first", "journey_first"]);
+export const layoutStyleSchema = z.enum(["bento", "split", "indice"]);
 export const inputMethodSchema = z.enum(["pdf_upload", "linkedin_text", "guided_questions"]);
 export const portfolioSchema = z.object({
   name: text(120, 1), role: text(200), headline: text(300), bio: text(3000),
@@ -21,6 +22,7 @@ export const portfolioSchema = z.object({
   journey: z.array(text(500)).max(5), goal: text(1500), linkedin: link, github: link, email,
   accentColor: accentColorSchema.optional(),
   sectionOrder: sectionOrderSchema.optional(),
+  layoutStyle: layoutStyleSchema.optional(),
 }).strict();
 export const rawAnswersSchema = z.object({
   name: text(120, 1), area: text(200), bio: text(3000), challenge: text(3000),

@@ -1,12 +1,26 @@
 export type ThemeName = "moderno" | "quente" | "minimal";
 export type AccentColor = "laranja" | "azul" | "esmeralda" | "violeta" | "rosa";
 export type SectionOrder = "project_first" | "journey_first";
+export type LayoutStyle = "bento" | "split" | "indice";
 
-export const THEMES: { id: ThemeName; label: string }[] = [
-  { id: "moderno", label: "Moderno" },
-  { id: "quente", label: "Quente" },
-  { id: "minimal", label: "Minimal" },
+export const THEMES: { id: ThemeName; label: string; layoutLabel: string }[] = [
+  { id: "moderno", label: "Moderno", layoutLabel: "Bento" },
+  { id: "quente", label: "Quente", layoutLabel: "Split" },
+  { id: "minimal", label: "Minimal", layoutLabel: "Índice" },
 ];
+
+export const LAYOUT_STYLES: { id: LayoutStyle; label: string }[] = [
+  { id: "bento", label: "Bento Grid" },
+  { id: "split", label: "Coluna Lateral" },
+  { id: "indice", label: "Índice Linear" },
+];
+
+export function resolveLayoutStyle(theme: ThemeName, custom?: LayoutStyle): LayoutStyle {
+  if (custom) return custom;
+  if (theme === "quente") return "split";
+  if (theme === "minimal") return "indice";
+  return "bento";
+}
 
 export const ACCENT_COLORS: { id: AccentColor; label: string; swatch: string }[] = [
   { id: "laranja", label: "Terracota", swatch: "#c84b16" },
@@ -48,6 +62,7 @@ export type Portfolio = {
   email: string;
   accentColor?: AccentColor | undefined;
   sectionOrder?: SectionOrder | undefined;
+  layoutStyle?: LayoutStyle | undefined;
 };
 
 export const EMPTY_ANSWERS: RawAnswers = {

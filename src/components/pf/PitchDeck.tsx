@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from "lucide-react";
-import type { Portfolio, ThemeName } from "@/lib/portfolio";
+import { resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
 import { DECK_SLIDES_METADATA, type FiveSlideDeck } from "@/types/pitchfolio";
 import { ContactLinks } from "./PortfolioSite";
 
@@ -82,42 +82,121 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
   }, [next, prev, toggleFullscreen]);
 
   const accentClass = p.accentColor ? `pf-accent-${p.accentColor}` : "";
+  const layout = resolveLayoutStyle(theme, p.layoutStyle);
 
   const slides = [
     <Frame n={0} key={0} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted sm:text-sm">{s1.role}</p>
-      <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
-      {s1.headline && s1.headline !== s1.role && (
-        <p className="mt-3 max-w-xl font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
+      {layout === "split" ? (
+        <div className="grid items-center gap-6 sm:grid-cols-[0.85fr_1.15fr] sm:divide-x sm:divide-pf-line">
+          <div className="sm:pr-6">
+            <span className="inline-block rounded bg-pf-accent px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-pf-accent-fg">
+              {s1.role}
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-4xl">{s1.name}</h2>
+          </div>
+          <div className="space-y-3 sm:pl-6">
+            {s1.headline && s1.headline !== s1.role && (
+              <p className="font-display text-lg font-semibold text-pf-fg">{s1.headline}</p>
+            )}
+            <p className="text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
+          </div>
+        </div>
+      ) : layout === "indice" ? (
+        <div className="grid gap-4 border-l-2 border-pf-accent pl-5 sm:grid-cols-[180px_1fr]">
+          <div>
+            <span className="font-mono text-xs font-bold text-pf-accent">01 / PERFIL</span>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-pf-muted">{s1.role}</p>
+          </div>
+          <div>
+            <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{s1.name}</h2>
+            {s1.headline && s1.headline !== s1.role && (
+              <p className="mt-2 font-display text-base font-semibold text-pf-fg">{s1.headline}</p>
+            )}
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-pf-muted">{s1.bio}</p>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted sm:text-sm">{s1.role}</p>
+          <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
+          {s1.headline && s1.headline !== s1.role && (
+            <p className="mt-3 max-w-xl font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
+          )}
+          <p className="mt-5 max-w-xl text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
+        </div>
       )}
-      <p className="mt-5 max-w-xl text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
     </Frame>,
     <Frame n={1} key={1} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Projeto de maior impacto"}</h2>
-      <div className="mt-6 grid gap-3.5 sm:grid-cols-3">
-        {[
-          ["01", "Desafio", s2.challenge],
-          ["02", "Ação na prática", s2.action],
-          ["03", "Resultado", s2.result],
-        ].map(([num, title, value]) => (
-          <div key={num} className="rounded-lg border border-pf-line bg-pf-card p-4">
-            <span className="inline-block rounded bg-pf-accent/20 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">{num}</span>
-            <p className="mt-2 text-sm font-semibold">{title}</p>
-            <p className="mt-1.5 text-xs leading-relaxed text-pf-muted sm:text-sm">{value}</p>
+      {layout === "indice" ? (
+        <div className="mt-5 divide-y divide-pf-line border-t border-pf-line">
+          {[
+            ["01 · Desafio", s2.challenge],
+            ["02 · Ação na prática", s2.action],
+            ["03 · Resultado", s2.result],
+          ].map(([title, value]) => (
+            <div key={title} className="grid gap-2 py-3 sm:grid-cols-[160px_1fr]">
+              <span className="text-xs font-bold uppercase tracking-wider text-pf-accent">{title}</span>
+              <p className="text-xs leading-relaxed text-pf-fg sm:text-sm">{value}</p>
+            </div>
+          ))}
+        </div>
+      ) : layout === "split" ? (
+        <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_1.15fr]">
+          <div className="space-y-3">
+            <div className="rounded-lg border border-pf-line bg-pf-card p-3.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-pf-muted">01 · Desafio</span>
+              <p className="mt-1 text-xs leading-relaxed text-pf-fg">{s2.challenge}</p>
+            </div>
+            <div className="rounded-lg border border-pf-line bg-pf-card p-3.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-pf-muted">02 · Ação</span>
+              <p className="mt-1 text-xs leading-relaxed text-pf-fg">{s2.action}</p>
+            </div>
           </div>
-        ))}
-      </div>
+          <div className="flex flex-col justify-center rounded-lg border-l-4 border-pf-accent bg-pf-card p-5">
+            <span className="w-fit rounded bg-pf-accent px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-pf-accent-fg">
+              03 · Resultado & Impacto
+            </span>
+            <p className="mt-3 font-display text-base font-semibold leading-snug text-pf-fg sm:text-lg">{s2.result}</p>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-6 grid gap-3.5 sm:grid-cols-3">
+          {[
+            ["01", "Desafio", s2.challenge],
+            ["02", "Ação na prática", s2.action],
+            ["03", "Resultado", s2.result],
+          ].map(([num, title, value]) => (
+            <div key={num} className="rounded-lg border border-pf-line bg-pf-card p-4">
+              <span className="inline-block rounded bg-pf-accent/20 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">{num}</span>
+              <p className="mt-2 text-sm font-semibold">{title}</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-pf-muted sm:text-sm">{value}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </Frame>,
     <Frame n={2} key={2} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Competências que trago para o time</h2>
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {s3.skills.map((s, k) => (
-          <div key={k} className="rounded-lg border border-pf-line bg-pf-card px-4 py-3 text-sm font-semibold">
-            <span className="mb-1 block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
-            {s}
-          </div>
-        ))}
-      </div>
+      {layout === "indice" ? (
+        <div className="mt-6 grid grid-cols-2 gap-y-4 border-t border-pf-line pt-5 sm:grid-cols-3">
+          {s3.skills.map((s, k) => (
+            <div key={k} className="border-l-2 border-pf-accent pl-3">
+              <span className="block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
+              <span className="text-sm font-bold text-pf-fg">{s}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {s3.skills.map((s, k) => (
+            <div key={k} className="rounded-lg border border-pf-line bg-pf-card px-4 py-3 text-sm font-semibold">
+              <span className="mb-1 block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
+              {s}
+            </div>
+          ))}
+        </div>
+      )}
     </Frame>,
     <Frame n={3} key={3} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Destaques e trajetória"}</h2>

@@ -105,7 +105,7 @@ function Index() {
                       demoTheme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {t.label}
+                    {t.label} · {t.layoutLabel}
                   </button>
                 ))}
               </div>

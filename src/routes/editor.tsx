@@ -15,7 +15,7 @@ import { Logo } from "@/components/pf/Logo";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
-import { ACCENT_COLORS, DEMO_ANSWERS, DRAFT_KEY, THEMES, localStructure, type Draft, type Portfolio } from "@/lib/portfolio";
+import { ACCENT_COLORS, DEMO_ANSWERS, DRAFT_KEY, LAYOUT_STYLES, THEMES, localStructure, resolveLayoutStyle, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
   head: () => ({
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/editor")({
   component: Editor,
 });
 
-type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey" | "accentColor" | "sectionOrder">;
+type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey" | "accentColor" | "sectionOrder" | "layoutStyle">;
 
 const THEME_SWATCHES: Record<string, { bg: string; accent: string }> = {
   moderno: { bg: "#1c1715", accent: "#e05a2b" },
@@ -283,6 +283,8 @@ function Editor() {
     </div>
   );
 
+  const activeLayout = resolveLayoutStyle(draft.theme, p.layoutStyle);
+
   const toolbar = (
     <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
       <div className="inline-flex rounded-lg border border-border bg-card p-1 shadow-xs">
@@ -294,14 +296,17 @@ function Editor() {
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-1 shadow-xs">
+        <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-1 shadow-xs" role="group" aria-label="Tema base">
           {THEMES.map((t) => {
             const sw = THEME_SWATCHES[t.id];
             return (
               <button
                 key={t.id}
-                onClick={() => setDraft({ ...draft, theme: t.id })}
-                className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition ${draft.theme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
+                onClick={() => {
+                  const nextP = { ...p, layoutStyle: undefined };
+                  setDraft({ ...draft, theme: t.id, portfolio: nextP, deck: createDeck(nextP) });
+                }}
+                className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${draft.theme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
               >
                 {sw && (
                   <span className="relative flex h-3.5 w-3.5 items-center justify-center rounded-full border border-border/60" style={{ backgroundColor: sw.bg }}>
@@ -312,6 +317,20 @@ function Editor() {
               </button>
             );
           })}
+        </div>
+        <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-1 shadow-xs" role="group" aria-label="Variação de layout">
+          {LAYOUT_STYLES.map((l) => (
+            <button
+              key={l.id}
+              type="button"
+              onClick={() => upd({ layoutStyle: l.id })}
+              className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
+                activeLayout === l.id ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {l.label}
+            </button>
+          ))}
         </div>
         <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1.5 shadow-xs" role="group" aria-label="Cor de destaque">
           <span className="mr-1 text-xs font-medium text-muted-foreground">Cor:</span>
