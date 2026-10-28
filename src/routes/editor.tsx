@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listOwnedPortfolios, publishPortfolioDraft } from "@/controllers/portfolios.functions";
 import { createDeck, draftSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
-import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn, ArrowUp, ArrowDown, Upload, SlidersHorizontal, RotateCcw } from "lucide-react";
+import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn, ArrowUp, ArrowDown, Upload, SlidersHorizontal, RotateCcw, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { Logo } from "@/components/pf/Logo";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
-import { ACCENT_COLORS, AVATAR_PRESETS, DEMO_ANSWERS, DRAFT_KEY, LAYOUT_STYLES, PROJECT_IMAGE_PRESETS, THEMES, localStructure, resolveLayoutStyle, type Draft, type Portfolio } from "@/lib/portfolio";
+import { ACCENT_COLORS, AVATAR_PRESETS, DEMO_PERSONAS, DRAFT_KEY, LAYOUT_STYLES, PROJECT_IMAGE_PRESETS, THEMES, buildPersonaPortfolio, resolveLayoutStyle, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
   head: () => ({
@@ -459,19 +459,20 @@ function Editor() {
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
         <h1 className="text-3xl font-bold">Nenhum portfólio em andamento</h1>
         <p className="max-w-md text-muted-foreground">Crie um novo portfólio em 3 passos, carregue um exemplo de demonstração ou entre na sua conta.</p>
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="flex flex-wrap justify-center gap-2.5">
           <Button asChild><Link to="/criar">Criar meu portfólio</Link></Button>
-          <Button variant="secondary" onClick={() => {
-            const demoP: Portfolio = {
-              ...localStructure(DEMO_ANSWERS),
-              projectTitle: "UniRota · App de Caronas Universitárias",
-              avatarUrl: "/visuals/avatar-ana.svg",
-              projectImageUrl: "/visuals/project-caronas.svg",
-            };
-            setDraft({ portfolio: demoP, deck: createDeck(demoP), theme: "moderno" });
-          }}>
-            Carregar exemplo (Demo)
-          </Button>
+          {DEMO_PERSONAS.map((dp) => (
+            <Button
+              key={dp.id}
+              variant="secondary"
+              onClick={() => {
+                const demoP = buildPersonaPortfolio(dp);
+                setDraft({ portfolio: demoP, deck: createDeck(demoP), theme: dp.theme });
+              }}
+            >
+              Exemplo: {dp.shortLabel}
+            </Button>
+          ))}
           <Button variant="outline" onClick={() => setAuthOpen(true)}>
             <LogIn className="mr-1.5 h-4 w-4" /> Entrar na minha conta
           </Button>
@@ -710,6 +711,17 @@ function Editor() {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 sm:px-6">
           <Logo />
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const fallbackSlug = DEMO_PERSONAS.find((dp) => dp.answers.name === p.name)?.slug ?? "ana-souza-demo";
+                setShareUrl(`${window.location.origin}/p/${draft.slug ?? fallbackSlug}`);
+              }}
+              className="rounded-lg"
+            >
+              <QrCode className="mr-1.5 h-4 w-4" /> QR Code / Link
+            </Button>
             <Button variant="outline" size="sm" onClick={() => window.print()} className="rounded-lg">
               <Printer className="mr-1.5 h-4 w-4" /> Exportar PDF
             </Button>

@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { DEMO_ANSWERS, localStructure, type Portfolio, type ThemeName } from "./portfolio";
+import { DEMO_PERSONAS, buildPersonaPortfolio, type ThemeName } from "./portfolio";
 import { z } from "zod";
 import { createDeck, deckSchema, slugSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
 import type { FiveSlideDeck } from "@/types/pitchfolio";
@@ -9,15 +9,17 @@ import type { FiveSlideDeck } from "@/types/pitchfolio";
 export const getPublicPortfolio = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: slugSchema }).strict().parse(input))
   .handler(async ({ data }) => {
-    if (data.slug === "ana-souza-demo") {
-      const demoPortfolio: Portfolio = {
-        ...localStructure(DEMO_ANSWERS),
-        projectTitle: "UniRota · App de Caronas Universitárias",
-        avatarUrl: "/visuals/avatar-ana.svg",
-        projectImageUrl: "/visuals/project-caronas.svg",
-      };
+    const demoPersona = DEMO_PERSONAS.find((p) => p.slug === data.slug);
+    if (demoPersona) {
+      const demoPortfolio = buildPersonaPortfolio(demoPersona);
       const { applySectionsToDeck, EMPTY_SECTIONS } = await import("@/services/portfolioSections.service");
-      return { slug: "ana-souza-demo", theme: "moderno" as ThemeName, portfolio: demoPortfolio, deck: applySectionsToDeck(createDeck(demoPortfolio), EMPTY_SECTIONS), sections: EMPTY_SECTIONS };
+      return {
+        slug: demoPersona.slug,
+        theme: demoPersona.theme,
+        portfolio: demoPortfolio,
+        deck: applySectionsToDeck(createDeck(demoPortfolio), EMPTY_SECTIONS),
+        sections: EMPTY_SECTIONS,
+      };
     }
     const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
     const sb = createClient<Database>(process.env["SUPABASE_URL"]!, key, {

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/pf/Logo";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
-import { DEMO_ANSWERS, THEMES, localStructure, type ThemeName } from "@/lib/portfolio";
+import { DEMO_PERSONAS, THEMES, buildPersonaPortfolio, type DemoPersona, type ThemeName } from "@/lib/portfolio";
 import { createDeck } from "@/validators/portfolio";
 
 export const Route = createFileRoute("/")({
@@ -22,18 +22,18 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const DEMO_PORTFOLIO = {
-  ...localStructure(DEMO_ANSWERS),
-  projectTitle: "UniRota · App de Caronas Universitárias",
-  metrics: ["1.200 viagens", "4 meses", "-30% custo"],
-  avatarUrl: "/visuals/avatar-ana.svg",
-  projectImageUrl: "/visuals/project-caronas.svg",
-};
-const DEMO_DECK = createDeck(DEMO_PORTFOLIO);
-
 function Index() {
+  const [persona, setPersona] = useState<DemoPersona>(DEMO_PERSONAS[0]!);
   const [demoView, setDemoView] = useState<"deck" | "site">("deck");
   const [demoTheme, setDemoTheme] = useState<ThemeName>("moderno");
+
+  const activePortfolio = buildPersonaPortfolio(persona);
+  const activeDeck = createDeck(activePortfolio);
+
+  const selectPersona = (next: DemoPersona) => {
+    setPersona(next);
+    setDemoTheme(next.theme);
+  };
 
   return (
     <div className="min-h-screen">
@@ -62,7 +62,7 @@ function Index() {
               <Link to="/criar">Montar meu pitch agora <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="h-11 rounded-lg px-5 text-sm font-medium">
-              <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }}>
+              <Link to="/p/$slug" params={{ slug: persona.slug }}>
                 Ver dossiê publicado <ArrowUpRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
@@ -73,7 +73,34 @@ function Index() {
         </div>
 
         {/* Dedicated Dual Product Showcase Stage Directly Below Hero */}
-        <div className="mt-12 rounded-xl border border-border bg-card p-4 shadow-md sm:p-6">
+        <div id="vitrine-interativa" className="mt-12 rounded-xl border border-border bg-card p-4 shadow-md sm:p-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border/70 pb-3">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="mr-1 text-xs font-semibold text-muted-foreground">Exemplos por área:</span>
+              {DEMO_PERSONAS.map((dp) => {
+                const active = persona.id === dp.id;
+                return (
+                  <button
+                    key={dp.id}
+                    type="button"
+                    onClick={() => selectPersona(dp)}
+                    className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition ${
+                      active
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-background text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <img src={dp.avatarUrl} alt={dp.answers.name} className="h-4 w-4 rounded-full object-cover" />
+                    {dp.shortLabel} · {dp.answers.name.split(" ")[0]}
+                  </button>
+                );
+              })}
+            </div>
+            <Link to="/p/$slug" params={{ slug: persona.slug }} className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+              Abrir página pública <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3.5">
             <div className="inline-flex rounded-lg border border-border bg-background p-1">
               <button
@@ -96,32 +123,27 @@ function Index() {
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-background p-1">
-                {THEMES.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setDemoTheme(t.id)}
-                    className={`rounded-md px-2.5 py-1 text-xs font-semibold transition ${
-                      demoTheme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {t.label} · {t.layoutLabel}
-                  </button>
-                ))}
-              </div>
-              <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
-                Abrir página pública <ArrowUpRight className="h-3.5 w-3.5" />
-              </Link>
+            <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-background p-1">
+              {THEMES.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setDemoTheme(t.id)}
+                  className={`rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+                    demoTheme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t.label} · {t.layoutLabel}
+                </button>
+              ))}
             </div>
           </div>
 
           {demoView === "deck" ? (
-            <PitchDeck p={DEMO_PORTFOLIO} deck={DEMO_DECK} theme={demoTheme} />
+            <PitchDeck p={activePortfolio} deck={activeDeck} theme={demoTheme} />
           ) : (
             <div className="max-h-[540px] overflow-y-auto rounded-lg border border-border">
-              <PortfolioSite p={DEMO_PORTFOLIO} theme={demoTheme} />
+              <PortfolioSite p={activePortfolio} theme={demoTheme} />
             </div>
           )}
         </div>
@@ -220,24 +242,35 @@ function Index() {
                 <span className="rounded-md border border-border bg-background px-3 py-1.5">Indicadores por Turma</span>
               </div>
 
-              {/* Contextual Institutional Directory Preview */}
+              {/* Contextual Institutional Directory Preview (Clickable Personas) */}
               <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
-                {[
-                  { img: "/visuals/avatar-ana.svg", name: "Ana Souza", course: "Eng. Software · 6º per.", metric: "1.200 viagens" },
-                  { img: "/visuals/avatar-dev.svg", name: "Lucas Mendes", course: "Administração · 8º per.", metric: "-42% tempo" },
-                  { img: "/visuals/avatar-design.svg", name: "Marina Costa", course: "Design & Comunicação · 7º per.", metric: "94% aprovação" },
-                ].map((st) => (
-                  <div key={st.name} className="flex items-center gap-2.5 rounded-lg border border-border bg-background p-2.5">
-                    <img src={st.img} alt={st.name} className="h-9 w-9 shrink-0 rounded-lg border border-border object-cover" />
-                    <div className="min-w-0">
-                      <p className="truncate text-xs font-bold text-foreground">{st.name}</p>
-                      <p className="truncate text-[11px] text-muted-foreground">{st.course}</p>
-                      <span className="mt-0.5 inline-block rounded bg-primary/10 px-1.5 py-0.2 font-mono text-[10px] font-semibold text-primary">
-                        {st.metric}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                {DEMO_PERSONAS.map((dp) => {
+                  const active = persona.id === dp.id;
+                  return (
+                    <button
+                      key={dp.id}
+                      type="button"
+                      onClick={() => {
+                        selectPersona(dp);
+                        document.getElementById("vitrine-interativa")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className={`flex items-center gap-2.5 rounded-lg border p-2.5 text-left transition ${
+                        active
+                          ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                          : "border-border bg-background hover:border-primary/40"
+                      }`}
+                    >
+                      <img src={dp.avatarUrl} alt={dp.answers.name} className="h-9 w-9 shrink-0 rounded-lg border border-border object-cover" />
+                      <div className="min-w-0">
+                        <p className="truncate text-xs font-bold text-foreground">{dp.answers.name}</p>
+                        <p className="truncate text-[11px] text-muted-foreground">{dp.courseShort}</p>
+                        <span className="mt-0.5 inline-block rounded bg-primary/10 px-1.5 py-0.2 font-mono text-[10px] font-semibold text-primary">
+                          {dp.badgeMetric}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

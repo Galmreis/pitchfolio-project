@@ -107,6 +107,101 @@ export const DEMO_ANSWERS: RawAnswers = {
   goal: "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário.",
 };
 
+export type DemoPersona = {
+  id: "ana" | "lucas" | "marina";
+  slug: string;
+  shortLabel: string;
+  courseShort: string;
+  badgeMetric: string;
+  theme: ThemeName;
+  accentColor: AccentColor;
+  projectTitle: string;
+  metrics: string[];
+  avatarUrl: string;
+  projectImageUrl: string;
+  answers: RawAnswers;
+};
+
+export const DEMO_PERSONAS: DemoPersona[] = [
+  {
+    id: "ana",
+    slug: "ana-souza-demo",
+    shortLabel: "Tecnologia",
+    courseShort: "Eng. Software · 6º per.",
+    badgeMetric: "1.200 viagens",
+    theme: "moderno",
+    accentColor: "laranja",
+    projectTitle: "UniRota · App de Caronas Universitárias",
+    metrics: ["1.200 viagens", "4 meses", "-30% custo"],
+    avatarUrl: "/visuals/avatar-ana.svg",
+    projectImageUrl: "/visuals/project-caronas.svg",
+    answers: DEMO_ANSWERS,
+  },
+  {
+    id: "lucas",
+    slug: "lucas-mendes-demo",
+    shortLabel: "Gestão & Negócios",
+    courseShort: "Administração · 8º per.",
+    badgeMetric: "-42% tempo",
+    theme: "quente",
+    accentColor: "esmeralda",
+    projectTitle: "Fluxo Ágil de Diagnóstico para Pequenos Negócios",
+    metrics: ["-42% tempo", "18 empresas", "NPS 92"],
+    avatarUrl: "/visuals/avatar-dev.svg",
+    projectImageUrl: "/visuals/project-analytics.svg",
+    answers: {
+      name: "Lucas Mendes",
+      area: "Administração · UNIFAL-MG",
+      bio: "Formando em Administração com vivência prática em consultoria financeira e melhoria de processos na Empresa Júnior.",
+      challenge: "Pequenos comerciantes locais levavam até 3 semanas para receber um diagnóstico financeiro básico devido a planilhas manuais fragmentadas.",
+      action: "Padronizei o roteiro de coleta em 4 etapas, criei um painel único de indicadores de caixa e treinei 12 consultores da equipe.",
+      result: "Redução de 42% no tempo de entrega dos projetos, atendendo 18 microempresas da região com índice de satisfação de 92%.",
+      skills: "Gestão de Processos, Análise Financeira, Excel Avançado, Negociação, Liderança de Equipe",
+      linkedin: "linkedin.com/in/lucas-mendes-demo",
+      github: "lucasmendes.com.br",
+      email: "lucas.demo@exemplo.com",
+      goal: "Busco atuar como Trainee ou Analista Júnior de Operações e Negócios, aplicando gestão orientada a indicadores.",
+    },
+  },
+  {
+    id: "marina",
+    slug: "marina-costa-demo",
+    shortLabel: "Design & Comunicação",
+    courseShort: "Design & Comunicação · 7º per.",
+    badgeMetric: "94% aprovação",
+    theme: "minimal",
+    accentColor: "violeta",
+    projectTitle: "Guia Visual e Kit de Acolhimento para Calouros",
+    metrics: ["94% aprovação", "650 alunos", "-60% dúvidas"],
+    avatarUrl: "/visuals/avatar-design.svg",
+    projectImageUrl: "/visuals/project-system.svg",
+    answers: {
+      name: "Marina Costa",
+      area: "Design & Comunicação · UFMG",
+      bio: "Estudante do 7º período apaixonada por comunicação acessível, identidade visual e experiência do usuário em serviços públicos.",
+      challenge: "Ingressantes perdiam prazos de matrícula e bolsas por excesso de editais extensos e informações espalhadas em dezenas de páginas.",
+      action: "Conduzi entrevistas com 45 calouros, redesenhei a jornada de boas-vindas em um guia visual interativo e alinhei a comunicação com a coordenação.",
+      result: "Adoção por 650 novos estudantes no semestre, 94% de aprovação na pesquisa de clareza e queda de 60% nas dúvidas repetidas na secretaria.",
+      skills: "Pesquisa com Usuários, Comunicação Visual, Figma, Redação Clara, Gestão de Projetos",
+      linkedin: "linkedin.com/in/marina-costa-demo",
+      github: "behance.net/marinacosta-demo",
+      email: "marina.demo@exemplo.com",
+      goal: "Busco estágio ou posição júnior em Design de Produto ou Comunicação Institucional com foco em impacto social.",
+    },
+  },
+];
+
+export function buildPersonaPortfolio(persona: DemoPersona = DEMO_PERSONAS[0]!): Portfolio {
+  return {
+    ...localStructure(persona.answers),
+    projectTitle: persona.projectTitle,
+    metrics: persona.metrics,
+    accentColor: persona.accentColor,
+    avatarUrl: persona.avatarUrl,
+    projectImageUrl: persona.projectImageUrl,
+  };
+}
+
 const cap = (s: string) => {
   const t = s.trim().replace(/\s+/g, " ");
   if (!t) return t;

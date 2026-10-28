@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/pf/Logo";
 import { structurePortfolio } from "@/lib/ai.functions";
 import { extractResume } from "@/lib/resume.functions";
-import { ANSWERS_KEY, DEMO_ANSWERS, DRAFT_KEY, EMPTY_ANSWERS, splitSkills, type RawAnswers } from "@/lib/portfolio";
+import { ANSWERS_KEY, DEMO_PERSONAS, DRAFT_KEY, EMPTY_ANSWERS, splitSkills, type DemoPersona, type RawAnswers } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/criar")({
   head: () => ({
@@ -183,9 +183,9 @@ function Criar() {
     }
   }
 
-  function fillDemo() {
-    setA(DEMO_ANSWERS);
-    toast.success("Exemplo fictício carregado! Você já pode avançar pelos passos ou gerar.");
+  function fillDemo(persona: DemoPersona = DEMO_PERSONAS[0]!) {
+    setA(persona.answers);
+    toast.success(`Exemplo (${persona.shortLabel}) carregado! Avance pelos passos ou gere agora.`);
   }
 
   async function generate() {
@@ -197,17 +197,33 @@ function Criar() {
         .replace(/^(?:https?:\/\/)?(?:www\.)?github\.com\//i, "")
         .split(/[/?#]/)[0]
         ?.replace(/^@/, "");
-      const isDemo = a.name.trim() === DEMO_ANSWERS.name;
+      const matchedPersona = DEMO_PERSONAS.find((dp) => dp.answers.name === a.name.trim());
       const enrichedPortfolio = {
         ...portfolio,
-        avatarUrl: isDemo
-          ? "/visuals/avatar-ana.svg"
-          : ghHandle && /^[a-z0-9-]+$/i.test(ghHandle)
-            ? `https://github.com/${ghHandle}.png`
-            : "/visuals/avatar-dev.svg",
-        projectImageUrl: isDemo ? "/visuals/project-caronas.svg" : "/visuals/project-system.svg",
+        ...(matchedPersona
+          ? {
+              projectTitle: matchedPersona.projectTitle,
+              metrics: matchedPersona.metrics,
+              accentColor: matchedPersona.accentColor,
+              avatarUrl: matchedPersona.avatarUrl,
+              projectImageUrl: matchedPersona.projectImageUrl,
+            }
+          : {
+              avatarUrl:
+                ghHandle && /^[a-z0-9-]+$/i.test(ghHandle)
+                  ? `https://github.com/${ghHandle}.png`
+                  : "/visuals/avatar-dev.svg",
+              projectImageUrl: "/visuals/project-system.svg",
+            }),
       };
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ portfolio: enrichedPortfolio, deck, theme: "moderno" }));
+      localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({
+          portfolio: enrichedPortfolio,
+          deck,
+          theme: matchedPersona?.theme ?? "moderno",
+        })
+      );
       if (!ai) toast.message("Usamos a estruturação automática básica — você pode editar tudo.");
       navigate({ to: "/editor" });
     } catch {
@@ -268,13 +284,21 @@ function Criar() {
                   <ClipboardPaste className="h-3.5 w-3.5" /> Colar texto / LinkedIn
                 </button>
 
-                <button
-                  type="button"
-                  onClick={fillDemo}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
-                >
-                  <Wand2 className="h-3.5 w-3.5 text-primary" /> Usar exemplo
-                </button>
+                <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-background p-0.5">
+                  <span className="px-2 text-[11px] font-medium text-muted-foreground">
+                    <Wand2 className="mr-1 inline h-3 w-3 text-primary" />Exemplos:
+                  </span>
+                  {DEMO_PERSONAS.map((dp) => (
+                    <button
+                      key={dp.id}
+                      type="button"
+                      onClick={() => fillDemo(dp)}
+                      className="rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                    >
+                      {dp.shortLabel.split(" ")[0]}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
