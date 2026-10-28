@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
+  <rect width="36" height="36" rx="8" fill="#c84b16"/>
+  <!-- Back Folio Page (Document / Dossier) -->
+  <rect x="7" y="6.5" width="14" height="18" rx="2.5" fill="#fbf8f3" fill-opacity="0.32" stroke="#fbf8f3" stroke-width="1.5"/>
+  <!-- Front Pitch Slide Card (16:9 Presentation Frame) -->
+  <rect x="11" y="12.5" width="18" height="16" rx="3" fill="#fbf8f3" stroke="#1c1715" stroke-width="1.5"/>
+  <!-- Rising Career Trajectory Arrow inside the Pitch Card -->
+  <path d="M15.5 23.5L19.2 19.8L21.5 21.6L25 17.5" stroke="#c84b16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22.2 17.5H25V20.3" stroke="#c84b16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
