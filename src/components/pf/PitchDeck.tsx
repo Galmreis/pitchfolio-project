@@ -1,32 +1,67 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from "lucide-react";
 import type { Portfolio, ThemeName } from "@/lib/portfolio";
 import { DECK_SLIDES_METADATA, type FiveSlideDeck } from "@/types/pitchfolio";
 import { ContactLinks } from "./PortfolioSite";
 
-function Frame({ n, children }: { n: number; children: ReactNode }) {
+const SHORT_LABELS = ["Identidade", "Método STAR", "Habilidades", "Impacto", "Contato"];
+
+function Frame({ n, isFullscreen, onToggleFullscreen, children }: { n: number; isFullscreen?: boolean; onToggleFullscreen?: () => void; children: ReactNode }) {
   const info = DECK_SLIDES_METADATA[n] ?? { title: `Slide ${n + 1}`, subtitle: "" };
   return (
     <div className="flex h-full flex-col justify-between p-6 sm:p-10">
       <div className="flex items-center justify-between border-b border-pf-line pb-3 text-xs text-pf-muted">
         <div className="flex items-center gap-2.5">
-          <span className="font-mono font-semibold text-pf-fg">0{n + 1} / 05</span>
+          <span className="rounded-md bg-pf-accent px-2 py-0.5 font-mono text-[11px] font-bold text-pf-accent-fg">
+            0{n + 1} / 05
+          </span>
           <span className="font-semibold text-pf-fg">{info.title}</span>
         </div>
-        {info.subtitle ? (
-          <span className="hidden text-xs text-pf-muted sm:inline">{info.subtitle}</span>
-        ) : null}
+        <div className="flex items-center gap-3">
+          {info.subtitle ? (
+            <span className="hidden text-xs text-pf-muted md:inline">{info.subtitle}</span>
+          ) : null}
+          {onToggleFullscreen && (
+            <button
+              type="button"
+              onClick={onToggleFullscreen}
+              aria-label={isFullscreen ? "Sair da tela cheia" : "Apresentar em tela cheia"}
+              title={isFullscreen ? "Sair da tela cheia (Esc)" : "Tela cheia (F)"}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-pf-line bg-pf-card text-pf-muted transition hover:border-pf-accent hover:text-pf-fg print:hidden"
+            >
+              {isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            </button>
+          )}
+        </div>
       </div>
-      <div className="my-auto py-4">{children}</div>
+      <div key={n} className="my-auto py-4 animate-in fade-in slide-in-from-bottom-2 duration-200">{children}</div>
     </div>
   );
 }
 
 export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDeck | undefined; theme: ThemeName }) {
   const [i, setI] = useState(0);
+  const [isFs, setIsFs] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const touch = useRef<number | null>(null);
   const next = useCallback(() => setI((x) => Math.min(4, x + 1)), []);
   const prev = useCallback(() => setI((x) => Math.max(0, x - 1)), []);
+
+  const toggleFullscreen = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      el.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
+    const onFsChange = () => setIsFs(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
 
   const s1 = deck?.slide_1_who_i_am ?? { name: p.name, role: p.role, headline: p.headline, bio: p.bio };
   const s2 = deck?.slide_2_what_i_did ?? { challenge: p.challenge, action: p.action, result: p.result };
@@ -40,19 +75,20 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       if (t && ["INPUT", "TEXTAREA"].includes(t.tagName)) return;
       if (e.key === "ArrowRight") next();
       if (e.key === "ArrowLeft") prev();
+      if ((e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey) toggleFullscreen();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [next, prev]);
+  }, [next, prev, toggleFullscreen]);
 
   const slides = [
-    <Frame n={0} key={0}>
+    <Frame n={0} key={0} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <p className="text-sm font-semibold text-pf-muted sm:text-base">{s1.role}</p>
       <h2 className="mt-2 font-display text-3xl font-bold leading-[1.05] sm:text-5xl">{s1.name}</h2>
       <p className="mt-4 max-w-xl text-base text-pf-muted sm:text-xl">{s1.headline}</p>
       <p className="mt-6 max-w-xl text-sm leading-relaxed sm:text-base">{s1.bio}</p>
     </Frame>,
-    <Frame n={1} key={1}>
+    <Frame n={1} key={1} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <h2 className="font-display text-2xl font-bold sm:text-4xl">{s4.title || "Projeto de maior impacto"}</h2>
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         {[
@@ -68,7 +104,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         ))}
       </div>
     </Frame>,
-    <Frame n={2} key={2}>
+    <Frame n={2} key={2} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <h2 className="font-display text-2xl font-bold sm:text-4xl">O que eu trago para o time</h2>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {s3.skills.map((s, k) => (
@@ -78,7 +114,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         ))}
       </div>
     </Frame>,
-    <Frame n={3} key={3}>
+    <Frame n={3} key={3} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <h2 className="font-display text-2xl font-bold sm:text-4xl">{s4.title || "Destaques e trajetória"}</h2>
       {s4.metrics.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
@@ -96,8 +132,8 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         ))}
       </ol>
     </Frame>,
-    <Frame n={4} key={4}>
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pf-muted">Meu objetivo</p>
+    <Frame n={4} key={4} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
+      <p className="font-mono text-xs text-pf-muted">Próximo passo & Contato</p>
       <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-tight sm:text-4xl">{s5.goal}</h2>
       <ContactLinks p={{ ...p, ...s5 }} className="mt-8" />
     </Frame>,
@@ -106,7 +142,10 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
   return (
     <div className={`theme-${theme}`}>
       <div
-        className="relative aspect-video w-full overflow-hidden rounded-2xl border border-pf-line bg-pf-bg text-pf-fg shadow-2xl print:hidden"
+        ref={containerRef}
+        className={`relative w-full overflow-hidden border border-pf-line bg-pf-bg text-pf-fg shadow-2xl print:hidden ${
+          isFs ? "flex h-screen items-center justify-center rounded-none border-0" : "aspect-video rounded-2xl"
+        }`}
         onTouchStart={(e) => (touch.current = e.touches[0]?.clientX ?? null)}
         onTouchEnd={(e) => {
           if (touch.current == null) return;
@@ -117,7 +156,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         }}
       >
         <div className="absolute inset-0 overflow-auto">{slides[i]}</div>
-        <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all" style={{ width: `${((i + 1) / 5) * 100}%` }} />
+        <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all duration-300" style={{ width: `${((i + 1) / 5) * 100}%` }} />
       </div>
       <div className="hidden space-y-6 print:block">
         {slides.map((s, idx) => (
@@ -126,23 +165,32 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           </div>
         ))}
       </div>
-      <div className="mt-4 flex items-center justify-between print:hidden">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 print:hidden">
         <button onClick={prev} disabled={i === 0} aria-label="Slide anterior"
-          className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium disabled:opacity-40">
+          className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold transition hover:border-primary/50 disabled:opacity-40 sm:text-sm">
           <ChevronLeft className="h-4 w-4" /> Anterior
         </button>
-        <div className="flex gap-1.5">
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
           {DECK_SLIDES_METADATA.map((info, k) => (
-            <button key={info.title} onClick={() => setI(k)} aria-label={info.title}
-              className={`h-2 rounded-full transition-all ${k === i ? "w-6 bg-primary" : "w-2 bg-border"}`} />
+            <button
+              key={info.title}
+              onClick={() => setI(k)}
+              aria-label={info.title}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                k === i ? "bg-primary text-primary-foreground shadow-sm" : "border border-border bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span className="font-mono text-[10px]">0{k + 1}</span>
+              <span className="hidden sm:inline">{SHORT_LABELS[k]}</span>
+            </button>
           ))}
         </div>
         <button onClick={next} disabled={i === 4} aria-label="Próximo slide"
-          className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium disabled:opacity-40">
+          className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold transition hover:border-primary/50 disabled:opacity-40 sm:text-sm">
           Próximo <ChevronRight className="h-4 w-4" />
         </button>
       </div>
-      <p className="mt-2 text-center text-xs text-muted-foreground print:hidden">Use as setas ← → do teclado</p>
+      <p className="mt-2 text-center text-xs text-muted-foreground print:hidden">Use as setas ← → para navegar ou F para tela cheia</p>
     </div>
   );
 }

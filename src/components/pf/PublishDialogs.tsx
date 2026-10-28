@@ -77,14 +77,33 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
 
 export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; onOpenChange: (o: boolean) => void; url: string; name: string }) {
   const [copied, setCopied] = useState(false);
-  const text = `Confira meu portfólio profissional${name ? ` (${name})` : ""}: ${url}`;
+  const text = `Confira meu portfólio e pitch deck profissional${name ? ` (${name})` : ""}: ${url}`;
+  const qrSrc = url ? `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=${encodeURIComponent(url)}` : "";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Seu portfólio está no ar! 🎉</DialogTitle>
-          <DialogDescription>Compartilhe com recrutadores e sua rede.</DialogDescription>
+          <DialogTitle className="font-display text-2xl">Seu portfólio está no ar!</DialogTitle>
+          <DialogDescription>Compartilhe seu link ou mostre o QR Code em entrevistas e feiras de carreira.</DialogDescription>
         </DialogHeader>
+
+        {url && (
+          <div className="flex items-center gap-4 rounded-2xl border border-border bg-muted/40 p-4">
+            <img
+              src={qrSrc}
+              alt="QR Code do portfólio"
+              width={96}
+              height={96}
+              className="h-24 w-24 shrink-0 rounded-xl border border-border bg-white p-1"
+            />
+            <div className="min-w-0 space-y-1">
+              <p className="font-mono text-[11px] font-semibold text-primary">Cartão de Pitch Digital</p>
+              <p className="truncate font-display text-lg font-bold">{name || "Meu Portfólio"}</p>
+              <p className="text-xs text-muted-foreground">Aponte a câmera do celular para abrir o site ou navegar pelos 5 slides.</p>
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-2">
           <Input readOnly value={url} onFocus={(e) => e.target.select()} />
           <Button variant="outline" onClick={async () => { await navigator.clipboard.writeText(url); setCopied(true); toast.success("Link copiado!"); setTimeout(() => setCopied(false), 2000); }}>

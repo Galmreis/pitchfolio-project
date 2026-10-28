@@ -33,6 +33,12 @@ export const Route = createFileRoute("/editor")({
 
 type TextKey = Exclude<keyof Portfolio, "metrics" | "skills" | "journey">;
 
+const THEME_SWATCHES: Record<string, { bg: string; accent: string }> = {
+  moderno: { bg: "#181b28", accent: "#b8f23a" },
+  quente: { bg: "#f4ece1", accent: "#d95326" },
+  minimal: { bg: "#ffffff", accent: "#1f1f1f" },
+};
+
 function ListEditor({ label, items, onChange, max = 6 }: { label: string; items: string[]; onChange: (v: string[]) => void; max?: number }) {
   return (
     <div className="space-y-2">
@@ -188,29 +194,41 @@ function Editor() {
   }
 
   const form = (
-    <div className="space-y-8">
-      <section className="space-y-4">
-        <h3 className="font-display text-lg font-bold">Perfil</h3>
+    <div className="space-y-6">
+      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+        <div className="flex items-center gap-2 border-b border-border pb-2.5">
+          <span className="font-mono text-xs font-bold text-primary">01</span>
+          <h3 className="font-display text-base font-bold">Identidade & Posicionamento</h3>
+        </div>
         {txt("name", "Nome")}
         {txt("role", "Área / curso")}
         {txt("headline", "Headline")}
         {txt("bio", "Bio", 4)}
       </section>
-      <section className="space-y-4">
-        <h3 className="font-display text-lg font-bold">Projeto estrela</h3>
+      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+        <div className="flex items-center gap-2 border-b border-border pb-2.5">
+          <span className="font-mono text-xs font-bold text-primary">02</span>
+          <h3 className="font-display text-base font-bold">Projeto Estrela (Método STAR)</h3>
+        </div>
         {txt("projectTitle", "Título do projeto")}
         {txt("challenge", "Desafio", 3)}
         {txt("action", "O que fiz", 3)}
         {txt("result", "Resultado", 3)}
         <ListEditor label="Métricas em destaque" items={p.metrics} onChange={(metrics) => upd({ metrics })} max={4} />
       </section>
-      <section className="space-y-4">
-        <h3 className="font-display text-lg font-bold">Habilidades e trajetória</h3>
+      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+        <div className="flex items-center gap-2 border-b border-border pb-2.5">
+          <span className="font-mono text-xs font-bold text-primary">03</span>
+          <h3 className="font-display text-base font-bold">Habilidades & Trajetória</h3>
+        </div>
         <ListEditor label="Habilidades" items={p.skills} onChange={(skills) => upd({ skills })} />
         <ListEditor label="Trajetória" items={p.journey} onChange={(journey) => upd({ journey })} max={5} />
       </section>
-      <section className="space-y-4">
-        <h3 className="font-display text-lg font-bold">Objetivo e contato</h3>
+      <section className="space-y-4 rounded-2xl border border-border bg-background/60 p-4">
+        <div className="flex items-center gap-2 border-b border-border pb-2.5">
+          <span className="font-mono text-xs font-bold text-primary">04</span>
+          <h3 className="font-display text-base font-bold">Objetivo & Contato</h3>
+        </div>
         {txt("goal", "Objetivo profissional", 3)}
         {txt("linkedin", "LinkedIn")}
         {txt("github", "GitHub")}
@@ -221,21 +239,32 @@ function Editor() {
 
   const toolbar = (
     <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
-      <div className="inline-flex rounded-full border border-border bg-card p-1">
-        <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "site" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
+      <div className="inline-flex rounded-full border border-border bg-card p-1 shadow-xs">
+        <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition ${view === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
           <Globe className="h-4 w-4" /> Site do Portfólio
         </button>
-        <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "deck" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
+        <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition ${view === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
           <Presentation className="h-4 w-4" /> Pitch Deck (5 Slides)
         </button>
       </div>
-      <div className="inline-flex rounded-full border border-border bg-card p-1">
-        {THEMES.map((t) => (
-          <button key={t.id} onClick={() => setDraft({ ...draft, theme: t.id })}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium ${draft.theme === t.id ? "bg-foreground text-background" : "text-muted-foreground"}`}>
-            {t.label}
-          </button>
-        ))}
+      <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card p-1 shadow-xs">
+        {THEMES.map((t) => {
+          const sw = THEME_SWATCHES[t.id];
+          return (
+            <button
+              key={t.id}
+              onClick={() => setDraft({ ...draft, theme: t.id })}
+              className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition ${draft.theme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              {sw && (
+                <span className="relative flex h-3.5 w-3.5 items-center justify-center rounded-full border border-border/60" style={{ backgroundColor: sw.bg }}>
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sw.accent }} />
+                </span>
+              )}
+              {t.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
