@@ -10,7 +10,6 @@ export async function publishDraft(client: SupabaseClient<Database>, input: unkn
     p_input_method: draft.inputMethod,
     ...(draft.photoUrl ? { p_photo_url: draft.photoUrl } : {}),
   });
-  if (error) console.error("[publish] rpc error", error.code, error.message, error.details, error.hint);
   const saved = data?.[0];
   if (error || !saved) throw new Error("Não foi possível publicar o portfólio.");
   const path = `/p/${saved.slug}`;
