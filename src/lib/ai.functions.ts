@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { localStructure, type Portfolio, type RawAnswers } from "./portfolio";
+import { rawAnswersSchema } from "@/validators/portfolio";
+import { groundedPortfolio } from "@/services/aiProcessor.service";
 
 const strArr = { type: "array", items: { type: "string" } };
 const SCHEMA = {
@@ -37,9 +39,13 @@ Regras: use verbos de impacto (liderei, desenvolvi, otimizei, entreguei); frases
 - goal: objetivo profissional em 1-2 frases.`;
 
 export const structurePortfolio = createServerFn({ method: "POST" })
-  .inputValidator((input: RawAnswers) => input)
+  .inputValidator((input: RawAnswers) => rawAnswersSchema.parse(input))
   .handler(async ({ data }): Promise<{ portfolio: Portfolio; ai: boolean }> => {
     const fallback = localStructure(data);
+    const { createRequestCloudClient } = await import("@/config/cloud.server");
+    const client = createRequestCloudClient();
+    const { data: allowed, error: budgetError } = await client.rpc("consume_pitchfolio_budget", { p_kind: "ai" });
+    if (budgetError || !allowed) return { portfolio: fallback, ai: false };
     const key = process.env['LOVABLE_API_KEY'];
     if (!key) return { portfolio: fallback, ai: false };
     try {
@@ -61,7 +67,7 @@ export const structurePortfolio = createServerFn({ method: "POST" })
         }),
       });
       if (!res.ok || !res.body) {
-        console.error("AI gateway error", res.status, await res.text().catch(() => ""));
+        console.error("AI gateway error", res.status);
         return { portfolio: fallback, ai: false };
       }
       const reader = res.body.getReader();
@@ -79,16 +85,17 @@ export const structurePortfolio = createServerFn({ method: "POST" })
           const payload = line.slice(5).trim();
           if (!payload || payload === "[DONE]") continue;
           try {
-            const ev = JSON.parse(payload);
-            if (ev.type === "response.output_text.delta") text += ev.delta;
+            const ev: unknown = JSON.parse(payload);
+            if (ev && typeof ev === "object" && "type" in ev && ev.type === "response.output_text.delta" && "delta" in ev && typeof ev.delta === "string") text += ev.delta;
           } catch {
             /* ignore */
           }
         }
       }
-      const parsed = JSON.parse(text);
+      const parsed: unknown = JSON.parse(text);
+      const portfolio = groundedPortfolio(parsed, data);
       return {
-        portfolio: { ...fallback, ...parsed, linkedin: fallback.linkedin, github: fallback.github, email: fallback.email },
+        portfolio,
         ai: true,
       };
     } catch (e) {

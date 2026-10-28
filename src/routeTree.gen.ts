@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CriarRouteImport } from './routes/criar'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
+import { Route as ApiPortfoliosPublishDraftRouteImport } from './routes/api/portfolios/publish-draft'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,26 @@ const PSlugRoute = PSlugRouteImport.update({
   path: '/p/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPortfoliosPublishDraftRoute =
+  ApiPortfoliosPublishDraftRouteImport.update({
+    id: '/api/portfolios/publish-draft',
+    path: '/api/portfolios/publish-draft',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
   '/p/$slug': typeof PSlugRoute
+  '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
   '/p/$slug': typeof PSlugRoute
+  '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +62,21 @@ export interface FileRoutesById {
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
   '/p/$slug': typeof PSlugRoute
+  '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/criar' | '/editor' | '/p/$slug'
+  fullPaths:
+    '/' | '/criar' | '/editor' | '/p/$slug' | '/api/portfolios/publish-draft'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/criar' | '/editor' | '/p/$slug'
-  id: '__root__' | '/' | '/criar' | '/editor' | '/p/$slug'
+  to: '/' | '/criar' | '/editor' | '/p/$slug' | '/api/portfolios/publish-draft'
+  id:
+    | '__root__'
+    | '/'
+    | '/criar'
+    | '/editor'
+    | '/p/$slug'
+    | '/api/portfolios/publish-draft'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +84,7 @@ export interface RootRouteChildren {
   CriarRoute: typeof CriarRoute
   EditorRoute: typeof EditorRoute
   PSlugRoute: typeof PSlugRoute
+  ApiPortfoliosPublishDraftRoute: typeof ApiPortfoliosPublishDraftRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +117,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/portfolios/publish-draft': {
+      id: '/api/portfolios/publish-draft'
+      path: '/api/portfolios/publish-draft'
+      fullPath: '/api/portfolios/publish-draft'
+      preLoaderRoute: typeof ApiPortfoliosPublishDraftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +132,7 @@ const rootRouteChildren: RootRouteChildren = {
   CriarRoute: CriarRoute,
   EditorRoute: EditorRoute,
   PSlugRoute: PSlugRoute,
+  ApiPortfoliosPublishDraftRoute: ApiPortfoliosPublishDraftRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

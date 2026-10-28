@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authSchema } from "@/validators/portfolio";
 
 export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; onOpenChange: (o: boolean) => void; onAuthed: () => void }) {
   const [mode, setMode] = useState<"signup" | "signin">("signup");
@@ -19,14 +20,15 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
     e.preventDefault();
     setLoading(true);
     try {
+      const credentials = authSchema.parse({ email, password });
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
-          email, password, options: { emailRedirectTo: `${window.location.origin}/editor` },
+          ...credentials, options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
         if (!data.session) { setPending(true); return; }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword(credentials);
         if (error) throw error;
       }
       onAuthed();

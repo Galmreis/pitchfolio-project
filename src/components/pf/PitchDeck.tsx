@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Portfolio, ThemeName } from "@/lib/portfolio";
 import { ContactLinks } from "./PortfolioSite";
 
-const TITLES = ["Quem sou eu", "Habilidades", "Projeto Estrela", "Trajetória", "Objetivo & Contato"];
+const TITLES = ["Quem sou eu", "O que fiz", "Habilidades", "Um destaque", "Contato"];
 
 function Frame({ n, children }: { n: number; children: ReactNode }) {
   return (
@@ -42,6 +42,14 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
       <p className="mt-6 max-w-xl text-sm leading-relaxed sm:text-base">{p.bio}</p>
     </Frame>,
     <Frame n={1} key={1}>
+      <h2 className="font-display text-2xl font-bold sm:text-4xl">{p.projectTitle}</h2>
+      <div className="mt-5 space-y-4 text-sm sm:text-base">
+        {[["Desafio", p.challenge], ["Ação", p.action], ["Resultado", p.result]].map(([title, value]) => (
+          <div key={title}><p className="font-semibold">{title}</p><p className="mt-1 text-pf-muted">{value}</p></div>
+        ))}
+      </div>
+    </Frame>,
+    <Frame n={2} key={2}>
       <h2 className="font-display text-2xl font-bold sm:text-4xl">O que eu trago para o time</h2>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {p.skills.map((s, k) => (
@@ -51,7 +59,7 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
         ))}
       </div>
     </Frame>,
-    <Frame n={2} key={2}>
+    <Frame n={3} key={3}>
       <h2 className="font-display text-2xl font-bold sm:text-4xl">{p.projectTitle}</h2>
       <div className="mt-3 flex flex-wrap gap-2">
         {p.metrics.map((m, k) => (
@@ -66,17 +74,6 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
           </div>
         ))}
       </div>
-    </Frame>,
-    <Frame n={3} key={3}>
-      <h2 className="font-display text-2xl font-bold sm:text-4xl">Minha trajetória</h2>
-      <ol className="mt-6 space-y-4 border-l-2 border-pf-line pl-5">
-        {p.journey.map((j, k) => (
-          <li key={k} className="relative text-sm sm:text-lg">
-            <span className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full bg-pf-accent" />
-            {j}
-          </li>
-        ))}
-      </ol>
     </Frame>,
     <Frame n={4} key={4}>
       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pf-muted">Meu objetivo</p>

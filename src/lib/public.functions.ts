@@ -2,9 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import type { Portfolio, ThemeName } from "./portfolio";
+import { z } from "zod";
+import { slugSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
 
 export const getPublicPortfolio = createServerFn({ method: "GET" })
-  .inputValidator((input: { slug: string }) => input)
+  .inputValidator((input: unknown) => z.object({ slug: slugSchema }).strict().parse(input))
   .handler(async ({ data }) => {
     const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
     const sb = createClient<Database>(process.env["SUPABASE_URL"]!, key, {
@@ -20,9 +22,13 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
     });
     const { data: row } = await sb
       .from("portfolios")
-      .select("slug, theme, data")
+      .select("slug, selected_theme, data")
       .eq("slug", data.slug)
+      .eq("is_published", true)
       .maybeSingle();
     if (!row) return null;
-    return { slug: row.slug, theme: row.theme as ThemeName, portfolio: row.data as unknown as Portfolio };
+    const portfolio = portfolioSchema.safeParse(row.data);
+    const theme = themeSchema.safeParse(row.selected_theme);
+    if (!portfolio.success || !theme.success) return null;
+    return { slug: row.slug, theme: theme.data, portfolio: portfolio.data };
   });
