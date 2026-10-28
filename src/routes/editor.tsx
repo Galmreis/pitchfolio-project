@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { publishPortfolioDraft } from "@/controllers/portfolios.functions";
+import { draftSchema } from "@/validators/portfolio";
 import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +15,7 @@ import { Logo } from "@/components/pf/Logo";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
-import { DRAFT_KEY, THEMES, slugify, type Draft, type Portfolio } from "@/lib/portfolio";
+import { DRAFT_KEY, THEMES, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
   head: () => ({
@@ -54,10 +57,11 @@ function Editor() {
   const [authOpen, setAuthOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
+  const publishDraft = useServerFn(publishPortfolioDraft);
 
   useEffect(() => {
     const s = localStorage.getItem(DRAFT_KEY);
-    if (s) try { setDraft(JSON.parse(s)); } catch { /* ignore */ }
+    if (s) try { const valid = draftSchema.safeParse(JSON.parse(s)); if (valid.success) setDraft(valid.data); } catch { /* invalid browser draft */ }
     setLoaded(true);
   }, []);
   useEffect(() => { if (draft) localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); }, [draft]);
@@ -83,22 +87,15 @@ function Editor() {
   );
 
   async function publish() {
+    if (!draft || publishing) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setAuthOpen(true); return; }
     setPublishing(true);
     try {
-      const d = draft!;
-      let slug = d.slug;
-      if (slug) {
-        const { error } = await supabase.from("portfolios").update({ data: d.portfolio as never, theme: d.theme, updated_at: new Date().toISOString() }).eq("slug", slug);
-        if (error) throw error;
-      } else {
-        slug = `${slugify(d.portfolio.name)}-${Math.random().toString(36).slice(2, 6)}`;
-        const { error } = await supabase.from("portfolios").insert({ user_id: user.id, slug, theme: d.theme, data: d.portfolio as never });
-        if (error) throw error;
-        setDraft({ ...d, slug });
-      }
-      setShareUrl(`${window.location.origin}/p/${slug}`);
+      const valid = draftSchema.parse(draft);
+      const saved = await publishDraft({ data: valid });
+      setDraft({ ...draft, slug: saved.slug });
+      setShareUrl(`${window.location.origin}${saved.path}`);
     } catch (e) {
       console.error(e);
       toast.error("Não foi possível publicar. Tente novamente.");
