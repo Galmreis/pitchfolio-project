@@ -37,7 +37,7 @@ export const Route = createFileRoute("/p/$slug")({
 });
 
 function PublicPage() {
-  const { portfolio, theme } = Route.useLoaderData();
+  const { portfolio, theme, deck } = Route.useLoaderData();
   const [view, setView] = useState<"site" | "deck">("site");
   return (
     <div className={`theme-${theme} min-h-screen bg-pf-bg`}>
@@ -51,7 +51,7 @@ function PublicPage() {
       {view === "site" ? (
         <PortfolioSite p={portfolio} theme={theme} />
       ) : (
-        <div className="mx-auto max-w-5xl px-4 py-8"><PitchDeck p={portfolio} theme={theme} /></div>
+        <div className="mx-auto max-w-5xl px-4 py-8"><PitchDeck p={portfolio} deck={deck} theme={theme} /></div>
       )}
       <p className="py-6 text-center text-xs text-pf-muted">
         Feito com <Link to="/" className="underline">PitchFolio</Link>

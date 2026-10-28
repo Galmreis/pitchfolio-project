@@ -119,7 +119,9 @@ export function slugify(s: string): string {
 export const DRAFT_KEY = "pitchfolio-draft";
 export const ANSWERS_KEY = "pitchfolio-answers";
 
-export type Draft = { portfolio: Portfolio; theme: ThemeName; slug?: string };
+import type { FiveSlideDeck } from "@/types/pitchfolio";
+
+export type Draft = { portfolio: Portfolio; deck?: FiveSlideDeck; theme: ThemeName; slug?: string };
 
 export function normalizeUrl(u: string) {
   if (!u) return "";

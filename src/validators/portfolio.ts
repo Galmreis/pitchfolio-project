@@ -23,9 +23,28 @@ export const rawAnswersSchema = z.object({
   action: text(3000), result: text(3000), skills: text(1000), linkedin: link, github: link, email, goal: text(1500),
 }).strict();
 export const slugSchema = z.string().min(1).max(80).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+
+export const deckSlide1Schema = z.object({ name: text(120, 1), role: text(200), headline: text(300), bio: text(3000) }).strict();
+export const deckSlide2Schema = z.object({ challenge: text(3000), action: text(3000), result: text(3000) }).strict();
+export const deckSlide3Schema = z.object({ skills: z.array(text(120)).max(6) }).strict();
+export const deckSlide4Schema = z.object({ title: text(200), metrics: z.array(text(200)).max(4), journey: z.array(text(500)).max(5) }).strict();
+export const deckSlide5Schema = z.object({ goal: text(1500), email, linkedin: link, github: link }).strict();
+
+export const deckSchema = z.object({
+  slide_1_who_i_am: deckSlide1Schema,
+  slide_2_what_i_did: deckSlide2Schema,
+  slide_3_skills: deckSlide3Schema,
+  slide_4_highlight: deckSlide4Schema,
+  slide_5_contact: deckSlide5Schema,
+}).strict();
+
 export const draftSchema = z.object({
-  portfolio: portfolioSchema, theme: themeSchema, slug: slugSchema.optional(),
-  inputMethod: inputMethodSchema.default("guided_questions"), photoUrl: z.string().url().max(1000).optional(),
+  portfolio: portfolioSchema,
+  deck: deckSchema.optional(),
+  theme: themeSchema,
+  slug: slugSchema.optional(),
+  inputMethod: inputMethodSchema.default("guided_questions"),
+  photoUrl: z.string().url().max(1000).optional(),
 }).strict();
 export const ingestionSchema = z.discriminatedUnion("method", [
   z.object({ method: z.literal("guided_questions"), answers: rawAnswersSchema }).strict(),

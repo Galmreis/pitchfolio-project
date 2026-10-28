@@ -118,8 +118,8 @@ function Criar() {
   async function generate() {
     setLoading(true);
     try {
-      const { portfolio, ai } = await structure({ data: a });
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ portfolio, theme: "moderno" }));
+      const { portfolio, deck, ai } = await structure({ data: a });
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ portfolio, deck, theme: "moderno" }));
       if (!ai) toast.message("Usamos a estruturação automática básica — você pode editar tudo.");
       navigate({ to: "/editor" });
     } catch {

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listOwnedPortfolios, publishPortfolioDraft } from "@/controllers/portfolios.functions";
-import { draftSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
+import { createDeck, draftSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
 import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -72,6 +72,7 @@ function Editor() {
       if (pParsed.success) {
         setDraft({
           portfolio: pParsed.data,
+          deck: createDeck(pParsed.data),
           theme: tParsed.success ? tParsed.data : "moderno",
           ...(first.slug ? { slug: first.slug } : {}),
         });
@@ -88,7 +89,12 @@ function Editor() {
         try {
           const valid = draftSchema.safeParse(JSON.parse(s));
           if (valid.success) {
-            setDraft({ portfolio: valid.data.portfolio, theme: valid.data.theme, ...(valid.data.slug ? { slug: valid.data.slug } : {}) });
+            setDraft({
+              portfolio: valid.data.portfolio,
+              deck: valid.data.deck ?? createDeck(valid.data.portfolio),
+              theme: valid.data.theme,
+              ...(valid.data.slug ? { slug: valid.data.slug } : {}),
+            });
             setLoaded(true);
             return;
           }
@@ -108,7 +114,10 @@ function Editor() {
         <p className="max-w-md text-muted-foreground">Crie um novo portfólio em 3 passos, carregue um exemplo de demonstração ou entre na sua conta.</p>
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild><Link to="/criar">Criar meu portfólio</Link></Button>
-          <Button variant="secondary" onClick={() => setDraft({ portfolio: localStructure(DEMO_ANSWERS), theme: "moderno" })}>
+          <Button variant="secondary" onClick={() => {
+            const demoP = localStructure(DEMO_ANSWERS);
+            setDraft({ portfolio: demoP, deck: createDeck(demoP), theme: "moderno" });
+          }}>
             Carregar exemplo (Demo)
           </Button>
           <Button variant="outline" onClick={() => setAuthOpen(true)}>
@@ -125,7 +134,10 @@ function Editor() {
   }
 
   const p = draft.portfolio;
-  const upd = (patch: Partial<Portfolio>) => setDraft({ ...draft, portfolio: { ...p, ...patch } });
+  const upd = (patch: Partial<Portfolio>) => {
+    const nextP = { ...p, ...patch };
+    setDraft({ ...draft, portfolio: nextP, deck: createDeck(nextP) });
+  };
   const txt = (k: TextKey, label: string, rows = 0) => (
     <div className="space-y-2">
       <Label>{label}</Label>
@@ -225,7 +237,7 @@ function Editor() {
       {view === "site" ? (
         <div className="overflow-hidden rounded-2xl border border-border shadow-xl"><PortfolioSite p={p} theme={draft.theme} /></div>
       ) : (
-        <PitchDeck p={p} theme={draft.theme} />
+        <PitchDeck p={p} deck={draft.deck} theme={draft.theme} />
       )}
     </div>
   );

@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { localStructure, type Portfolio, type RawAnswers } from "./portfolio";
-import { rawAnswersSchema } from "@/validators/portfolio";
+import { createDeck, rawAnswersSchema } from "@/validators/portfolio";
 import { groundedPortfolio } from "@/services/aiProcessor.service";
+import type { FiveSlideDeck } from "@/types/pitchfolio";
 
 const strArr = { type: "array", items: { type: "string" } };
 const SCHEMA = {
@@ -28,26 +29,28 @@ const SCHEMA = {
 };
 
 const INSTRUCTIONS = `Você é um especialista em carreira e recrutamento no Brasil. Reescreva as respostas de um(a) candidato(a) em português do Brasil como copy profissional para portfólio e pitch deck.
+O pitch deck deve destacar com clareza: onde o candidato sabe trabalhar (área e perfil), seu potencial na prática (método STAR), suas habilidades essenciais e seus objetivos de carreira.
 Regras: use verbos de impacto (liderei, desenvolvi, otimizei, entreguei); frases curtas e concretas; NÃO invente números, empresas ou fatos que não estejam nas respostas.
-- headline: 1 frase de até 12 palavras.
-- bio: 2-3 frases na primeira pessoa.
+- headline: 1 frase de até 12 palavras posicionando onde sabe trabalhar.
+- bio: 2-3 frases na primeira pessoa destacando perfil e áreas de atuação.
 - projectTitle: título curto do projeto.
-- challenge, action, result: 1-3 frases cada (método STAR).
+- challenge, action, result: 1-3 frases cada (método STAR) demonstrando o potencial na prática e resolução de problemas.
 - metrics: 2-3 destaques curtos (até 5 palavras) extraídos do resultado; use números apenas se fornecidos.
-- skills: 3 a 6 habilidades, nomes curtos.
+- skills: 3 a 6 habilidades, nomes curtos, técnicas e interpessoais.
 - journey: 3-4 marcos curtos da trajetória baseados nas respostas.
-- goal: objetivo profissional em 1-2 frases.`;
+- goal: objetivo profissional em 1-2 frases demonstrando onde quer atuar e quais são seus objetivos.`;
 
 export const structurePortfolio = createServerFn({ method: "POST" })
   .inputValidator((input: RawAnswers) => rawAnswersSchema.parse(input))
-  .handler(async ({ data }): Promise<{ portfolio: Portfolio; ai: boolean }> => {
+  .handler(async ({ data }): Promise<{ portfolio: Portfolio; deck: FiveSlideDeck; ai: boolean }> => {
     const fallback = localStructure(data);
+    const fallbackDeck = createDeck(fallback);
     const { createRequestCloudClient } = await import("@/config/cloud.server");
     const client = createRequestCloudClient();
     const { data: allowed, error: budgetError } = await client.rpc("consume_pitchfolio_budget", { p_kind: "ai" });
-    if (budgetError || !allowed) return { portfolio: fallback, ai: false };
+    if (budgetError || !allowed) return { portfolio: fallback, deck: fallbackDeck, ai: false };
     const key = process.env['LOVABLE_API_KEY'];
-    if (!key) return { portfolio: fallback, ai: false };
+    if (!key) return { portfolio: fallback, deck: fallbackDeck, ai: false };
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
         method: "POST",
@@ -68,7 +71,7 @@ export const structurePortfolio = createServerFn({ method: "POST" })
       });
       if (!res.ok || !res.body) {
         console.error("AI gateway error", res.status);
-        return { portfolio: fallback, ai: false };
+        return { portfolio: fallback, deck: fallbackDeck, ai: false };
       }
       const reader = res.body.getReader();
       const dec = new TextDecoder();
@@ -94,12 +97,14 @@ export const structurePortfolio = createServerFn({ method: "POST" })
       }
       const parsed: unknown = JSON.parse(text);
       const portfolio = groundedPortfolio(parsed, data);
+      const deck = createDeck(portfolio);
       return {
         portfolio,
+        deck,
         ai: true,
       };
     } catch (e) {
       console.error("AI structuring failed", e);
-      return { portfolio: fallback, ai: false };
+      return { portfolio: fallback, deck: fallbackDeck, ai: false };
     }
   });

@@ -1,5 +1,5 @@
 import { EMPTY_ANSWERS, localStructure, type Portfolio, type RawAnswers } from "@/lib/portfolio";
-import { ingestionSchema, portfolioSchema, type IngestionInput } from "@/validators/portfolio";
+import { createDeck, ingestionSchema, portfolioSchema, type IngestionInput } from "@/validators/portfolio";
 
 export function ingestionAnswers(input: IngestionInput): RawAnswers {
   const valid = ingestionSchema.parse(input);
@@ -10,7 +10,15 @@ export function ingestionAnswers(input: IngestionInput): RawAnswers {
 
 export function processInput(input: IngestionInput) {
   const answers = ingestionAnswers(input);
-  return { answers, portfolio: localStructure(answers) };
+  const portfolio = localStructure(answers);
+  const deck = createDeck(portfolio);
+  return { answers, portfolio, deck };
+}
+
+export function generatePortfolioAndDeck(answers: RawAnswers) {
+  const portfolio = localStructure(answers);
+  const deck = createDeck(portfolio);
+  return { portfolio, deck };
 }
 
 const editorial = new Set("eu sou de da do das dos e em com para por um uma o a os as que no na nos nas ao à minha meu foco focado focada profissional projeto impacto resultado habilidade objetivo desenvolvi desenvolvimento trabalhei trabalho executei implementei organizei experiência trajetória entreguei contribuí contribui atuação atuacao liderei otimizei aprendi aprendi foi foram tenho busco aprender aplicar criar construir melhorar promover este esta esse essa se mais como através durante".split(" "));

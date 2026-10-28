@@ -3,7 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import type { Portfolio, ThemeName } from "./portfolio";
 import { z } from "zod";
-import { slugSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
+import { createDeck, slugSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
+import type { FiveSlideDeck } from "@/types/pitchfolio";
 
 export const getPublicPortfolio = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: slugSchema }).strict().parse(input))
@@ -22,7 +23,7 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
     });
     const { data: row } = await sb
       .from("portfolios")
-      .select("slug, selected_theme, data")
+      .select("id, slug, selected_theme, data")
       .eq("slug", data.slug)
       .eq("is_published", true)
       .maybeSingle();
@@ -30,5 +31,14 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
     const portfolio = portfolioSchema.safeParse(row.data);
     const theme = themeSchema.safeParse(row.selected_theme);
     if (!portfolio.success || !theme.success) return null;
-    return { slug: row.slug, theme: theme.data, portfolio: portfolio.data };
+
+    const { data: deckRow } = await sb
+      .from("pitch_decks")
+      .select("slide_1_who_i_am, slide_2_what_i_did, slide_3_skills, slide_4_highlight, slide_5_contact")
+      .eq("portfolio_id", row.id)
+      .maybeSingle();
+
+    const deck: FiveSlideDeck = (deckRow as unknown as FiveSlideDeck | null) ?? createDeck(portfolio.data);
+
+    return { slug: row.slug, theme: theme.data, portfolio: portfolio.data, deck };
   });

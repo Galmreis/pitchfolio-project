@@ -1,15 +1,30 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Portfolio, ThemeName } from "@/lib/portfolio";
+import type { FiveSlideDeck } from "@/types/pitchfolio";
 import { ContactLinks } from "./PortfolioSite";
 
-const TITLES = ["Quem sou eu", "O que fiz", "Habilidades", "Um destaque", "Contato"];
+const SLIDE_INFO = [
+  { title: "Quem sou eu", badge: "Onde sei trabalhar & Identidade" },
+  { title: "O que fiz na prática", badge: "Meu potencial (Método STAR)" },
+  { title: "Habilidades", badge: "O que trago para o time" },
+  { title: "Destaques & Trajetória", badge: "Resultados comprovados" },
+  { title: "Objetivo & Contato", badge: "Meus objetivos de carreira" },
+];
 
 function Frame({ n, children }: { n: number; children: ReactNode }) {
+  const info = SLIDE_INFO[n] ?? { title: `Slide ${n + 1}`, badge: "" };
   return (
     <div className="flex h-full flex-col p-6 sm:p-10">
       <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-pf-muted">
-        <span>{TITLES[n]}</span>
+        <span className="flex items-center gap-2">
+          <span>{info.title}</span>
+          {info.badge ? (
+            <span className="hidden rounded-full border border-pf-line bg-pf-card px-2 py-0.5 text-[10px] font-normal text-pf-muted sm:inline-block">
+              {info.badge}
+            </span>
+          ) : null}
+        </span>
         <span>{n + 1} / 5</span>
       </div>
       <div className="flex flex-1 flex-col justify-center">{children}</div>
@@ -17,11 +32,17 @@ function Frame({ n, children }: { n: number; children: ReactNode }) {
   );
 }
 
-export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
+export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDeck | undefined; theme: ThemeName }) {
   const [i, setI] = useState(0);
   const touch = useRef<number | null>(null);
   const next = useCallback(() => setI((x) => Math.min(4, x + 1)), []);
   const prev = useCallback(() => setI((x) => Math.max(0, x - 1)), []);
+
+  const s1 = deck?.slide_1_who_i_am ?? { name: p.name, role: p.role, headline: p.headline, bio: p.bio };
+  const s2 = deck?.slide_2_what_i_did ?? { challenge: p.challenge, action: p.action, result: p.result };
+  const s3 = deck?.slide_3_skills ?? { skills: p.skills };
+  const s4 = deck?.slide_4_highlight ?? { title: p.projectTitle, metrics: p.metrics, journey: p.journey };
+  const s5 = deck?.slide_5_contact ?? { goal: p.goal, email: p.email, linkedin: p.linkedin, github: p.github };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -36,15 +57,15 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
 
   const slides = [
     <Frame n={0} key={0}>
-      <p className="text-sm font-semibold text-pf-muted sm:text-base">{p.role}</p>
-      <h2 className="mt-2 font-display text-3xl font-bold leading-[1.05] sm:text-5xl">{p.name}</h2>
-      <p className="mt-4 max-w-xl text-base text-pf-muted sm:text-xl">{p.headline}</p>
-      <p className="mt-6 max-w-xl text-sm leading-relaxed sm:text-base">{p.bio}</p>
+      <p className="text-sm font-semibold text-pf-muted sm:text-base">{s1.role}</p>
+      <h2 className="mt-2 font-display text-3xl font-bold leading-[1.05] sm:text-5xl">{s1.name}</h2>
+      <p className="mt-4 max-w-xl text-base text-pf-muted sm:text-xl">{s1.headline}</p>
+      <p className="mt-6 max-w-xl text-sm leading-relaxed sm:text-base">{s1.bio}</p>
     </Frame>,
     <Frame n={1} key={1}>
-      <h2 className="font-display text-2xl font-bold sm:text-4xl">{p.projectTitle}</h2>
+      <h2 className="font-display text-2xl font-bold sm:text-4xl">{s4.title || "Projeto de maior impacto"}</h2>
       <div className="mt-5 space-y-4 text-sm sm:text-base">
-        {[["Desafio", p.challenge], ["Ação", p.action], ["Resultado", p.result]].map(([title, value]) => (
+        {[["Desafio", s2.challenge], ["Ação", s2.action], ["Resultado", s2.result]].map(([title, value]) => (
           <div key={title}><p className="font-semibold">{title}</p><p className="mt-1 text-pf-muted">{value}</p></div>
         ))}
       </div>
@@ -52,7 +73,7 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
     <Frame n={2} key={2}>
       <h2 className="font-display text-2xl font-bold sm:text-4xl">O que eu trago para o time</h2>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {p.skills.map((s, k) => (
+        {s3.skills.map((s, k) => (
           <div key={k} className="rounded-xl border border-pf-line bg-pf-card p-3 text-sm font-semibold sm:p-4 sm:text-base">
             <span className="mb-1 block font-display text-pf-muted">0{k + 1}</span>{s}
           </div>
@@ -60,16 +81,16 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
       </div>
     </Frame>,
     <Frame n={3} key={3}>
-      <h2 className="font-display text-2xl font-bold sm:text-4xl">{p.projectTitle || "Destaques e trajetória"}</h2>
-      {p.metrics.length > 0 && (
+      <h2 className="font-display text-2xl font-bold sm:text-4xl">{s4.title || "Destaques e trajetória"}</h2>
+      {s4.metrics.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
-          {p.metrics.map((m, k) => (
+          {s4.metrics.map((m, k) => (
             <span key={k} className="rounded-full bg-pf-accent px-3 py-1 text-xs font-semibold text-pf-accent-fg sm:text-sm">{m}</span>
           ))}
         </div>
       )}
       <ol className="mt-6 space-y-3 border-l-2 border-pf-line pl-5">
-        {p.journey.map((j, k) => (
+        {s4.journey.map((j, k) => (
           <li key={k} className="relative text-sm sm:text-base">
             <span className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full bg-pf-accent" />
             {j}
@@ -79,8 +100,8 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
     </Frame>,
     <Frame n={4} key={4}>
       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pf-muted">Meu objetivo</p>
-      <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-tight sm:text-4xl">{p.goal}</h2>
-      <ContactLinks p={p} className="mt-8" />
+      <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-tight sm:text-4xl">{s5.goal}</h2>
+      <ContactLinks p={{ ...p, ...s5 }} className="mt-8" />
     </Frame>,
   ];
 
@@ -113,8 +134,8 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
           <ChevronLeft className="h-4 w-4" /> Anterior
         </button>
         <div className="flex gap-1.5">
-          {TITLES.map((t, k) => (
-            <button key={t} onClick={() => setI(k)} aria-label={t}
+          {SLIDE_INFO.map((info, k) => (
+            <button key={info.title} onClick={() => setI(k)} aria-label={info.title}
               className={`h-2 rounded-full transition-all ${k === i ? "w-6 bg-primary" : "w-2 bg-border"}`} />
           ))}
         </div>
