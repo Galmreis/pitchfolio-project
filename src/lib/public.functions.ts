@@ -13,12 +13,30 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
     if (demoPersona) {
       const demoPortfolio = buildPersonaPortfolio(demoPersona);
       const { applySectionsToDeck, EMPTY_SECTIONS } = await import("@/services/portfolioSections.service");
+      const demoSections = {
+        ...EMPTY_SECTIONS,
+        certifications:
+          demoPersona.id === "ana"
+            ? [
+                { id: "cert-1", title: "Desenvolvimento Web Full-Stack", issuer: " Monitoria Acadêmica UFPE", issue_date: "2025-11-01", credential: null },
+                { id: "cert-2", title: "Acessibilidade Digital (WCAG)", issuer: "Escola Virtual Gov", issue_date: "2026-02-01", credential: null },
+              ]
+            : demoPersona.id === "lucas"
+              ? [
+                  { id: "cert-3", title: "Gestão Ágil de Projetos e Indicadores", issuer: "FEJEMG · Movimento Empresa Júnior", issue_date: "2025-10-01", credential: null },
+                  { id: "cert-4", title: "Modelagem Financeira em Excel", issuer: "SEBRAE Minas", issue_date: "2026-01-01", credential: null },
+                ]
+              : [
+                  { id: "cert-5", title: "Design de Serviços Públicos e Linguagem Simples", issuer: "ENAP", issue_date: "2025-09-01", credential: null },
+                  { id: "cert-6", title: "Pesquisa com Usuários e Prototipagem", issuer: "Laboratório de Design UFMG", issue_date: "2026-02-01", credential: null },
+                ],
+      };
       return {
         slug: demoPersona.slug,
         theme: demoPersona.theme,
         portfolio: demoPortfolio,
-        deck: applySectionsToDeck(createDeck(demoPortfolio), EMPTY_SECTIONS),
-        sections: EMPTY_SECTIONS,
+        deck: applySectionsToDeck(createDeck(demoPortfolio), demoSections),
+        sections: demoSections,
       };
     }
     const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;

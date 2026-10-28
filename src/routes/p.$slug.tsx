@@ -38,7 +38,7 @@ export const Route = createFileRoute("/p/$slug")({
 });
 
 function PublicPage() {
-  const { portfolio, theme, deck } = Route.useLoaderData();
+  const { portfolio, theme, deck, sections } = Route.useLoaderData();
   const [view, setView] = useState<"site" | "deck">(() =>
     typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "deck" ? "deck" : "site"
   );
@@ -68,7 +68,7 @@ function PublicPage() {
         </div>
       </div>
       {view === "site" ? (
-        <PortfolioSite p={portfolio} theme={theme} />
+        <PortfolioSite p={portfolio} theme={theme} sections={sections} />
       ) : (
         <div className="mx-auto max-w-5xl px-4 py-8"><PitchDeck p={portfolio} deck={deck} theme={theme} /></div>
       )}

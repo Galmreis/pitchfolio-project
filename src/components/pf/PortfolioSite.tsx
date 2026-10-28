@@ -1,5 +1,6 @@
-import { Github, Globe, Linkedin, Mail } from "lucide-react";
+import { Award, Github, Globe, Linkedin, Mail } from "lucide-react";
 import { normalizeUrl, resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
+import type { PortfolioSections } from "@/services/portfolioSections.service";
 
 export function AvatarBadge({ p, size = "md" }: { p: Portfolio; size?: "sm" | "md" | "lg" }) {
   const initials = p.name.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -33,10 +34,28 @@ function ProjectVisual({ p }: { p: Portfolio }) {
   );
 }
 
-export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) {
+export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: ThemeName; sections?: PortfolioSections | undefined }) {
   const accentClass = p.accentColor ? `pf-accent-${p.accentColor}` : "";
   const journeyFirst = p.sectionOrder === "journey_first";
   const layout = resolveLayoutStyle(theme, p.layoutStyle);
+
+  const certificationsBlock =
+    sections && sections.certifications.length > 0 ? (
+      <div className="mt-8 border-t border-pf-line pt-6">
+        <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Certificações & Formação Complementar</span>
+        <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+          {sections.certifications.map((c) => (
+            <div key={c.id} className="flex items-start gap-2.5 rounded-lg border border-pf-line bg-pf-card p-3">
+              <Award className="mt-0.5 h-4 w-4 shrink-0 text-pf-accent" />
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-pf-fg">{c.title}</p>
+                <p className="text-[11px] text-pf-muted">{c.issuer.trim()}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : null;
 
   /* =========================================================================
    * LAYOUT 1: "split" (Default for "Quente" — Left Sticky Dossier Sidebar)
@@ -93,6 +112,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
             </li>
           ))}
         </ol>
+        {certificationsBlock}
       </section>
     ) : null;
 
@@ -211,6 +231,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
               ))}
             </div>
           )}
+          {certificationsBlock}
         </div>
       </section>
     );
@@ -330,6 +351,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
                 </li>
               ))}
             </ol>
+            {certificationsBlock}
           </div>
         )}
       </div>

@@ -40,6 +40,7 @@ function Index() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Logo />
         <div className="flex items-center gap-2">
+          <Button asChild variant="ghost"><Link to="/instituicoes">Para Instituições</Link></Button>
           <Button asChild variant="ghost"><Link to="/editor">Meu portfólio</Link></Button>
           <Button asChild><Link to="/criar">Começar</Link></Button>
         </div>
@@ -271,6 +272,14 @@ function Index() {
                     </button>
                   );
                 })}
+              </div>
+
+              <div className="mt-6 pt-2">
+                <Button asChild variant="outline" className="rounded-lg">
+                  <Link to="/instituicoes">
+                    Abrir Vitrine Institucional & Catálogo QR <ArrowRight className="ml-1.5 h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
             </div>
 

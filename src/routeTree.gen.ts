@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CriarRouteImport } from './routes/criar'
 import { Route as EditorRouteImport } from './routes/editor'
+import { Route as InstituicoesRouteImport } from './routes/instituicoes'
 import { Route as ApiHealthzRouteImport } from './routes/api/healthz'
 import { Route as ApiReadyzRouteImport } from './routes/api/readyz'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
@@ -31,6 +32,11 @@ const CriarRoute = CriarRouteImport.update({
 const EditorRoute = EditorRouteImport.update({
   id: '/editor',
   path: '/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstituicoesRoute = InstituicoesRouteImport.update({
+  id: '/instituicoes',
+  path: '/instituicoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHealthzRoute = ApiHealthzRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
+  '/instituicoes': typeof InstituicoesRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
+  '/instituicoes': typeof InstituicoesRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
+  '/instituicoes': typeof InstituicoesRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/'
     | '/criar'
     | '/editor'
+    | '/instituicoes'
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/'
     | '/criar'
     | '/editor'
+    | '/instituicoes'
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/criar'
     | '/editor'
+    | '/instituicoes'
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CriarRoute: typeof CriarRoute
   EditorRoute: typeof EditorRoute
+  InstituicoesRoute: typeof InstituicoesRoute
   ApiHealthzRoute: typeof ApiHealthzRoute
   ApiReadyzRoute: typeof ApiReadyzRoute
   PSlugRoute: typeof PSlugRoute
@@ -157,6 +170,13 @@ declare module '@tanstack/react-router' {
       path: '/editor'
       fullPath: '/editor'
       preLoaderRoute: typeof EditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/instituicoes': {
+      id: '/instituicoes'
+      path: '/instituicoes'
+      fullPath: '/instituicoes'
+      preLoaderRoute: typeof InstituicoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/healthz': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CriarRoute: CriarRoute,
   EditorRoute: EditorRoute,
+  InstituicoesRoute: InstituicoesRoute,
   ApiHealthzRoute: ApiHealthzRoute,
   ApiReadyzRoute: ApiReadyzRoute,
   PSlugRoute: PSlugRoute,

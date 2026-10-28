@@ -67,6 +67,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
   const s2 = deck?.slide_2_what_i_did ?? { challenge: p.challenge, action: p.action, result: p.result };
   const s3 = deck?.slide_3_skills ?? { skills: p.skills };
   const s4 = deck?.slide_4_highlight ?? { title: p.projectTitle, metrics: p.metrics, journey: p.journey };
+  const s4Certs = (s4 as { certifications?: { id: string; title: string; issuer: string }[] }).certifications ?? [];
   const s5 = deck?.slide_5_contact ?? { goal: p.goal, email: p.email, linkedin: p.linkedin, github: p.github };
 
   useEffect(() => {
@@ -222,6 +223,15 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
               </li>
             ))}
           </ol>
+          {s4Certs.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {s4Certs.slice(0, 2).map((c) => (
+                <span key={c.id} className="rounded border border-pf-line bg-pf-card px-2.5 py-1 text-[11px] font-medium text-pf-muted">
+                  ✓ {c.title}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         {p.projectImageUrl && (
           <div className="overflow-hidden rounded-lg border border-pf-line bg-pf-card shadow-md">
