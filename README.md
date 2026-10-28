@@ -91,3 +91,11 @@ npx tsc --noEmit
 npm test
 npm run build
 ```
+
+
+## Equipe:
+"Los Penguinos", integrantes:
+  - Fabine Regina Moura Dutra
+  - Gabriel do Vale Mendes
+  - Guilherme de Almeida Reis
+  - Ana Carolina Ramalho de Matos 
