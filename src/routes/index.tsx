@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, ArrowUpRight, Globe, Presentation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/pf/Logo";
 import { PitchDeck } from "@/components/pf/PitchDeck";
-import { DEMO_ANSWERS, localStructure } from "@/lib/portfolio";
+import { PortfolioSite } from "@/components/pf/PortfolioSite";
+import { DEMO_ANSWERS, THEMES, localStructure, type ThemeName } from "@/lib/portfolio";
 import { createDeck } from "@/validators/portfolio";
 
 export const Route = createFileRoute("/")({
@@ -28,6 +30,9 @@ const DEMO_PORTFOLIO = {
 const DEMO_DECK = createDeck(DEMO_PORTFOLIO);
 
 function Index() {
+  const [demoView, setDemoView] = useState<"deck" | "site">("deck");
+  const [demoTheme, setDemoTheme] = useState<ThemeName>("moderno");
+
   return (
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
@@ -38,15 +43,16 @@ function Index() {
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-20 pt-6 lg:grid-cols-[0.9fr_1.2fr] lg:gap-14 lg:pt-12">
-        <div className="lg:pt-4">
+      {/* Focused Editorial Hero (No competing H2s or controls) */}
+      <section className="mx-auto max-w-6xl px-6 pb-12 pt-8 lg:pt-14">
+        <div className="max-w-3xl">
           <span className="inline-block rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
             Empregabilidade & 1ª Oportunidade
           </span>
-          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">
+          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl">
             Transforme projetos acadêmicos e código em um <span className="text-primary">pitch de 5 slides</span>.
           </h1>
-          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             Quem busca o primeiro emprego trava na página em branco. O PitchFolio lê seu GitHub, seu PDF do LinkedIn ou suas respostas guiadas e estrutura um dossiê pelo Método STAR pronto para entrevistas.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -58,21 +64,64 @@ function Index() {
                 Ver dossiê publicado <ArrowUpRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
+            <span className="ml-1 text-xs font-medium text-muted-foreground">
+              Sem cadastro prévio · GitHub API & PDF
+            </span>
           </div>
-          <p className="mt-4 text-xs font-medium text-muted-foreground">
-            Sem cadastro prévio · Importação via GitHub API ou PDF
-          </p>
         </div>
 
-        {/* Live Interactive 5-Slide Deck right in the Hero */}
-        <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
-          <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span className="font-medium">Demonstração ao vivo · Navegue pelos 5 slides</span>
-            <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="font-mono font-semibold text-primary hover:underline">
-              /p/ana-souza-demo →
-            </Link>
+        {/* Dedicated Dual Product Showcase Stage Directly Below Hero */}
+        <div className="mt-12 rounded-xl border border-border bg-card p-4 shadow-md sm:p-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3.5">
+            <div className="inline-flex rounded-lg border border-border bg-background p-1">
+              <button
+                type="button"
+                onClick={() => setDemoView("deck")}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${
+                  demoView === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Presentation className="h-3.5 w-3.5" /> Pitch Deck (5 Slides)
+              </button>
+              <button
+                type="button"
+                onClick={() => setDemoView("site")}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${
+                  demoView === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Globe className="h-3.5 w-3.5" /> Dossiê Web Completo
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-background p-1">
+                {THEMES.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setDemoTheme(t.id)}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+                      demoTheme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="font-mono text-xs font-semibold text-primary hover:underline">
+                /p/ana-souza-demo →
+              </Link>
+            </div>
           </div>
-          <PitchDeck p={DEMO_PORTFOLIO} deck={DEMO_DECK} theme="moderno" />
+
+          {demoView === "deck" ? (
+            <PitchDeck p={DEMO_PORTFOLIO} deck={DEMO_DECK} theme={demoTheme} />
+          ) : (
+            <div className="max-h-[540px] overflow-y-auto rounded-lg border border-border">
+              <PortfolioSite p={DEMO_PORTFOLIO} theme={demoTheme} />
+            </div>
+          )}
         </div>
       </section>
 
