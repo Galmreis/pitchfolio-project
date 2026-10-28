@@ -61,7 +61,7 @@ function Editor() {
 
   useEffect(() => {
     const s = localStorage.getItem(DRAFT_KEY);
-    if (s) try { const valid = draftSchema.safeParse(JSON.parse(s)); if (valid.success) setDraft(valid.data); } catch { /* invalid browser draft */ }
+    if (s) try { const valid = draftSchema.safeParse(JSON.parse(s)); if (valid.success) setDraft({ portfolio: valid.data.portfolio, theme: valid.data.theme, ...(valid.data.slug ? { slug: valid.data.slug } : {}) }); } catch { /* invalid browser draft */ }
     setLoaded(true);
   }, []);
   useEffect(() => { if (draft) localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); }, [draft]);
