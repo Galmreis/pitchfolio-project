@@ -130,6 +130,59 @@ export type Database = {
           },
         ]
       }
+      professional_timeline: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          end_date: string | null
+          id: string
+          is_current: boolean
+          is_visible: boolean
+          organization: string
+          portfolio_id: string
+          role: string
+          start_date: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          end_date?: string | null
+          id?: string
+          is_current?: boolean
+          is_visible?: boolean
+          organization?: string
+          portfolio_id: string
+          role: string
+          start_date?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          end_date?: string | null
+          id?: string
+          is_current?: boolean
+          is_visible?: boolean
+          organization?: string
+          portfolio_id?: string
+          role?: string
+          start_date?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_timeline_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -175,11 +228,165 @@ export type Database = {
         }
         Relationships: []
       }
+      user_certifications: {
+        Row: {
+          created_at: string
+          credential: string | null
+          display_order: number
+          id: string
+          is_visible: boolean
+          issue_date: string | null
+          issuer: string
+          portfolio_id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credential?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          issue_date?: string | null
+          issuer?: string
+          portfolio_id: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credential?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          issue_date?: string | null
+          issuer?: string
+          portfolio_id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_certifications_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_projects: {
+        Row: {
+          created_at: string
+          deploy_url: string | null
+          description: string
+          display_order: number
+          id: string
+          is_highlight: boolean
+          is_visible: boolean
+          name: string
+          portfolio_id: string
+          repository_url: string | null
+          stars: number
+          technologies: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deploy_url?: string | null
+          description?: string
+          display_order?: number
+          id?: string
+          is_highlight?: boolean
+          is_visible?: boolean
+          name: string
+          portfolio_id: string
+          repository_url?: string | null
+          stars?: number
+          technologies?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          deploy_url?: string | null
+          description?: string
+          display_order?: number
+          id?: string
+          is_highlight?: boolean
+          is_visible?: boolean
+          name?: string
+          portfolio_id?: string
+          repository_url?: string | null
+          stars?: number
+          technologies?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_projects_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_skills: {
+        Row: {
+          category: Database["public"]["Enums"]["skill_category"]
+          created_at: string
+          display_order: number
+          id: string
+          is_visible: boolean
+          name: string
+          portfolio_id: string
+          source: Database["public"]["Enums"]["skill_source"]
+          user_id: string
+        }
+        Insert: {
+          category?: Database["public"]["Enums"]["skill_category"]
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          name: string
+          portfolio_id: string
+          source?: Database["public"]["Enums"]["skill_source"]
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["skill_category"]
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          name?: string
+          portfolio_id?: string
+          source?: Database["public"]["Enums"]["skill_source"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_skills_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      apply_portfolio_curation: {
+        Args: { p_items: Json; p_portfolio_id: string }
+        Returns: number
+      }
       consume_pitchfolio_budget: { Args: { p_kind: string }; Returns: boolean }
       publish_pitchfolio_draft: {
         Args: {
@@ -201,6 +408,8 @@ export type Database = {
         | "linkedin_text"
         | "guided_questions"
       portfolio_theme: "moderno" | "quente" | "minimal"
+      skill_category: "hard_skill" | "soft_skill" | "tool" | "language"
+      skill_source: "github" | "linkedin" | "manual"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -334,6 +543,8 @@ export const Constants = {
         "guided_questions",
       ],
       portfolio_theme: ["moderno", "quente", "minimal"],
+      skill_category: ["hard_skill", "soft_skill", "tool", "language"],
+      skill_source: ["github", "linkedin", "manual"],
     },
   },
 } as const
