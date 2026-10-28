@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listOwnedPortfolios, publishPortfolioDraft } from "@/controllers/portfolios.functions";
 import { createDeck, draftSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
-import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn, ArrowUp, ArrowDown } from "lucide-react";
+import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn, ArrowUp, ArrowDown, Upload, SlidersHorizontal, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,321 @@ const THEME_SWATCHES: Record<string, { bg: string; accent: string }> = {
   quente: { bg: "#f6efe2", accent: "#c84b16" },
   minimal: { bg: "#ffffff", accent: "#9e3610" },
 };
+
+function renderAdjustedToDataUrl(
+  img: HTMLImageElement,
+  targetW: number,
+  targetH: number,
+  zoom: number,
+  offsetX: number,
+  offsetY: number
+): string {
+  const canvas = document.createElement("canvas");
+  canvas.width = targetW;
+  canvas.height = targetH;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+  const nw = img.naturalWidth || targetW;
+  const nh = img.naturalHeight || targetH;
+  const baseScale = Math.max(targetW / nw, targetH / nh);
+  const scale = baseScale * zoom;
+  const drawW = nw * scale;
+  const drawH = nh * scale;
+  const panRangeX = Math.max(Math.abs(drawW - targetW) / 2, targetW * 0.4);
+  const panRangeY = Math.max(Math.abs(drawH - targetH) / 2, targetH * 0.4);
+  const dx = (targetW - drawW) / 2 + (offsetX / 100) * panRangeX;
+  const dy = (targetH - drawH) / 2 + (offsetY / 100) * panRangeY;
+  ctx.clearRect(0, 0, targetW, targetH);
+  ctx.drawImage(img, dx, dy, drawW, drawH);
+  for (const q of [0.8, 0.68, 0.55, 0.42]) {
+    const webp = canvas.toDataURL("image/webp", q);
+    if (webp.length <= 14000 && webp.startsWith("data:image/webp")) return webp;
+    const jpeg = canvas.toDataURL("image/jpeg", q);
+    if (jpeg.length <= 14000) return jpeg;
+  }
+  return canvas.toDataURL("image/jpeg", 0.35);
+}
+
+function ImagePickerField({
+  label,
+  value,
+  onChange,
+  presets,
+  emptyLabel,
+  placeholder,
+  shape,
+}: {
+  label: string;
+  value: string | undefined;
+  onChange: (next: string | undefined) => void;
+  presets: readonly { url: string; label: string }[];
+  emptyLabel: string;
+  placeholder: string;
+  shape: "avatar" | "cover";
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const sourceImgRef = useRef<HTMLImageElement | null>(null);
+  const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const [sourceUrl, setSourceUrl] = useState<string | null>(null);
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [offsetX, setOffsetX] = useState(0);
+  const [offsetY, setOffsetY] = useState(0);
+
+  const targetW = shape === "avatar" ? 160 : 480;
+  const targetH = shape === "avatar" ? 160 : 270;
+  const isDataUrl = !!value?.startsWith("data:image/");
+
+  const applyTransform = (nextZoom: number, nextX: number, nextY: number, imgEl = sourceImgRef.current) => {
+    if (!imgEl) return;
+    const out = renderAdjustedToDataUrl(imgEl, targetW, targetH, nextZoom, nextX, nextY);
+    if (out) onChange(out);
+  };
+
+  const loadSourceAndAdjust = (src: string, autoApply: boolean) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      sourceImgRef.current = img;
+      setSourceUrl(src);
+      setZoom(1);
+      setOffsetX(0);
+      setOffsetY(0);
+      setAdjustOpen(true);
+      if (autoApply) {
+        const out = renderAdjustedToDataUrl(img, targetW, targetH, 1, 0, 0);
+        if (out) onChange(out);
+      }
+    };
+    img.onerror = () => {
+      toast.error("Não foi possível carregar esta imagem para ajuste.");
+    };
+    img.src = src;
+  };
+
+  const handleFile = (file?: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Selecione um arquivo de imagem (PNG, JPG, WebP ou SVG).");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        loadSourceAndAdjust(reader.result, true);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="space-y-2.5 pt-1">
+      <div className="flex items-center justify-between gap-2">
+        <Label>{label}</Label>
+        <div className="flex items-center gap-1.5">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              handleFile(e.target.files?.[0]);
+              e.target.value = "";
+            }}
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="h-7 rounded-md px-2.5 text-xs"
+            onClick={() => fileRef.current?.click()}
+          >
+            <Upload className="mr-1.5 h-3 w-3" /> Enviar arquivo
+          </Button>
+          {value && (
+            <Button
+              type="button"
+              size="sm"
+              variant={adjustOpen ? "secondary" : "ghost"}
+              className="h-7 rounded-md px-2 text-xs"
+              onClick={() => {
+                if (!adjustOpen && (!sourceImgRef.current || sourceUrl !== value)) {
+                  loadSourceAndAdjust(sourceUrl ?? value, false);
+                } else {
+                  setAdjustOpen(!adjustOpen);
+                }
+              }}
+            >
+              <SlidersHorizontal className="mr-1 h-3 w-3" /> Ajustar
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-1.5">
+        {presets.map((pr) => {
+          const active = value === pr.url;
+          return (
+            <button
+              key={pr.url}
+              type="button"
+              onClick={() => {
+                setSourceUrl(pr.url);
+                sourceImgRef.current = null;
+                setAdjustOpen(false);
+                onChange(pr.url);
+              }}
+              className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                active ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {shape === "avatar" && <img src={pr.url} alt={pr.label} className="h-4 w-4 rounded-full object-cover" />}
+              {pr.label}
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => {
+            setAdjustOpen(false);
+            setSourceUrl(null);
+            sourceImgRef.current = null;
+            onChange(undefined);
+          }}
+          className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+            !value ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          {emptyLabel}
+        </button>
+      </div>
+
+      {adjustOpen && value && (
+        <div className="space-y-3 rounded-lg border border-border bg-card p-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-foreground">Ajustar enquadramento (arraste ou use os controles)</span>
+            <button
+              type="button"
+              onClick={() => {
+                setZoom(1);
+                setOffsetX(0);
+                setOffsetY(0);
+                applyTransform(1, 0, 0);
+              }}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="h-3 w-3" /> Resetar
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div
+              onPointerDown={(e) => {
+                e.currentTarget.setPointerCapture(e.pointerId);
+                dragRef.current = { startX: e.clientX, startY: e.clientY, origX: offsetX, origY: offsetY };
+              }}
+              onPointerMove={(e) => {
+                if (!dragRef.current) return;
+                const nextX = Math.max(-100, Math.min(100, Math.round(dragRef.current.origX + (e.clientX - dragRef.current.startX) * 1.4)));
+                const nextY = Math.max(-100, Math.min(100, Math.round(dragRef.current.origY + (e.clientY - dragRef.current.startY) * 1.4)));
+                setOffsetX(nextX);
+                setOffsetY(nextY);
+                applyTransform(zoom, nextX, nextY);
+              }}
+              onPointerUp={() => {
+                dragRef.current = null;
+              }}
+              title="Arraste para reposicionar"
+              className={`relative shrink-0 cursor-grab overflow-hidden border border-primary/40 bg-muted/40 select-none active:cursor-grabbing ${
+                shape === "avatar" ? "h-16 w-16 rounded-lg" : "aspect-video w-28 rounded-lg"
+              }`}
+            >
+              <img src={value} alt="Prévia do recorte" draggable={false} className="h-full w-full object-cover" />
+            </div>
+
+            <div className="flex-1 space-y-2">
+              <div className="space-y-0.5">
+                <div className="flex justify-between text-[11px] text-muted-foreground">
+                  <span>Zoom</span>
+                  <span className="font-mono">{Math.round(zoom * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min={50}
+                  max={250}
+                  step={5}
+                  value={Math.round(zoom * 100)}
+                  aria-label="Zoom da imagem"
+                  onChange={(e) => {
+                    const nextZoom = Number(e.target.value) / 100;
+                    setZoom(nextZoom);
+                    applyTransform(nextZoom, offsetX, offsetY);
+                  }}
+                  className="h-1.5 w-full cursor-pointer accent-primary"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-0.5">
+                  <div className="flex justify-between text-[11px] text-muted-foreground">
+                    <span>Horizontal (X)</span>
+                    <span className="font-mono">{offsetX}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={-100}
+                    max={100}
+                    step={2}
+                    value={offsetX}
+                    aria-label="Posição horizontal"
+                    onChange={(e) => {
+                      const nextX = Number(e.target.value);
+                      setOffsetX(nextX);
+                      applyTransform(zoom, nextX, offsetY);
+                    }}
+                    className="h-1.5 w-full cursor-pointer accent-primary"
+                  />
+                </div>
+                <div className="space-y-0.5">
+                  <div className="flex justify-between text-[11px] text-muted-foreground">
+                    <span>Vertical (Y)</span>
+                    <span className="font-mono">{offsetY}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={-100}
+                    max={100}
+                    step={2}
+                    value={offsetY}
+                    aria-label="Posição vertical"
+                    onChange={(e) => {
+                      const nextY = Number(e.target.value);
+                      setOffsetY(nextY);
+                      applyTransform(zoom, offsetX, nextY);
+                    }}
+                    className="h-1.5 w-full cursor-pointer accent-primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Input
+        value={isDataUrl ? "" : (value ?? "")}
+        onChange={(e) => {
+          const v = e.target.value || undefined;
+          setSourceUrl(v ?? null);
+          sourceImgRef.current = null;
+          onChange(v);
+        }}
+        placeholder={isDataUrl ? "Imagem personalizada aplicada (cole um link para substituir)" : placeholder}
+        className="text-xs"
+      />
+    </div>
+  );
+}
 
 function ListEditor({ label, items, onChange, max = 6 }: { label: string; items: string[]; onChange: (v: string[]) => void; max?: number }) {
   const move = (from: number, to: number) => {
@@ -226,42 +541,15 @@ function Editor() {
         {txt("role", "Área / curso")}
         {txt("headline", "Headline")}
         {txt("bio", "Bio", 4)}
-        <div className="space-y-2 pt-1">
-          <Label>Foto / Ilustração de Perfil</Label>
-          <div className="flex flex-wrap items-center gap-2">
-            {AVATAR_PRESETS.map((av) => {
-              const active = p.avatarUrl === av.url;
-              return (
-                <button
-                  key={av.url}
-                  type="button"
-                  onClick={() => upd({ avatarUrl: av.url })}
-                  className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
-                    active ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <img src={av.url} alt={av.label} className="h-5 w-5 rounded-full object-cover" />
-                  {av.label}
-                </button>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => upd({ avatarUrl: undefined })}
-              className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
-                !p.avatarUrl ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Apenas iniciais
-            </button>
-          </div>
-          <Input
-            value={p.avatarUrl ?? ""}
-            onChange={(e) => upd({ avatarUrl: e.target.value || undefined })}
-            placeholder="Ou cole link de foto (ex: https://github.com/usuario.png)"
-            className="text-xs"
-          />
-        </div>
+        <ImagePickerField
+          label="Foto / Ícone de Perfil"
+          value={p.avatarUrl}
+          onChange={(avatarUrl) => upd({ avatarUrl })}
+          presets={AVATAR_PRESETS}
+          emptyLabel="Apenas iniciais"
+          placeholder="Ou cole link de foto (ex: https://github.com/usuario.png)"
+          shape="avatar"
+        />
       </section>
       <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">
@@ -269,41 +557,15 @@ function Editor() {
           <h3 className="font-display text-base font-bold">Projeto Estrela (Método STAR)</h3>
         </div>
         {txt("projectTitle", "Título do projeto")}
-        <div className="space-y-2">
-          <Label>Capa / Mockup Visual do Projeto</Label>
-          <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-            {PROJECT_IMAGE_PRESETS.map((pr) => {
-              const active = p.projectImageUrl === pr.url;
-              return (
-                <button
-                  key={pr.url}
-                  type="button"
-                  onClick={() => upd({ projectImageUrl: pr.url })}
-                  className={`rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition ${
-                    active ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {pr.label}
-                </button>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => upd({ projectImageUrl: undefined })}
-              className={`rounded-lg border px-2 py-1.5 text-[11px] font-semibold transition ${
-                !p.projectImageUrl ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Sem capa
-            </button>
-          </div>
-          <Input
-            value={p.projectImageUrl ?? ""}
-            onChange={(e) => upd({ projectImageUrl: e.target.value || undefined })}
-            placeholder="Ou cole URL de imagem do projeto (https://…)"
-            className="text-xs"
-          />
-        </div>
+        <ImagePickerField
+          label="Capa / Mockup Visual do Projeto"
+          value={p.projectImageUrl}
+          onChange={(projectImageUrl) => upd({ projectImageUrl })}
+          presets={PROJECT_IMAGE_PRESETS}
+          emptyLabel="Sem capa"
+          placeholder="Ou cole URL de imagem do projeto (https://…)"
+          shape="cover"
+        />
         {txt("challenge", "Desafio", 3)}
         {txt("action", "O que fiz", 3)}
         {txt("result", "Resultado", 3)}

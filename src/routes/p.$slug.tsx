@@ -41,13 +41,14 @@ function PublicPage() {
   const [view, setView] = useState<"site" | "deck">(() =>
     typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "deck" ? "deck" : "site"
   );
+  const accentClass = portfolio.accentColor ? `pf-accent-${portfolio.accentColor}` : "";
   return (
-    <div className={`theme-${theme} min-h-screen bg-pf-bg`}>
+    <div className={`theme-${theme} ${accentClass} min-h-screen bg-pf-bg`}>
       <div className="sticky top-0 z-10 flex justify-center py-3 print:hidden">
-        <div className="inline-flex rounded-full border border-pf-line bg-pf-card p-1 text-pf-fg shadow">
-          <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "site" ? "bg-pf-accent text-pf-accent-fg" : ""}`}><Globe className="h-4 w-4" /> Portfólio</button>
-          <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "deck" ? "bg-pf-accent text-pf-accent-fg" : ""}`}><Presentation className="h-4 w-4" /> Pitch</button>
-          <button onClick={() => window.print()} aria-label="Imprimir ou exportar PDF" className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium text-pf-muted hover:text-pf-fg"><Printer className="h-4 w-4" /> PDF</button>
+        <div className="inline-flex rounded-lg border border-pf-line bg-pf-card p-1 text-pf-fg shadow-sm">
+          <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition ${view === "site" ? "bg-pf-accent text-pf-accent-fg shadow-xs" : "text-pf-muted hover:text-pf-fg"}`}><Globe className="h-4 w-4" /> Portfólio</button>
+          <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition ${view === "deck" ? "bg-pf-accent text-pf-accent-fg shadow-xs" : "text-pf-muted hover:text-pf-fg"}`}><Presentation className="h-4 w-4" /> Pitch</button>
+          <button onClick={() => window.print()} aria-label="Imprimir ou exportar PDF" className="inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium text-pf-muted transition hover:text-pf-fg"><Printer className="h-4 w-4" /> PDF</button>
         </div>
       </div>
       {view === "site" ? (

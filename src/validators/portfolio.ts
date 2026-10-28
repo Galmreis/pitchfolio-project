@@ -11,9 +11,10 @@ const link = text(500).refine((s) => {
   } catch { return false; }
 }, "Informe um link HTTP ou HTTPS válido.");
 const email = text(254).refine((s) => !s || z.string().email().safeParse(s).success, "E-mail inválido.");
-const imageRef = text(500).refine((s) => {
+const imageRef = text(15000).refine((s) => {
   if (!s) return true;
   if (/^\/visuals\/[a-z0-9-]+\.svg$/.test(s)) return true;
+  if (/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(s)) return true;
   try {
     const u = new URL(s);
     return ["https:", "http:"].includes(u.protocol) && !u.username && !u.password && u.hostname.includes(".") && !/[\s<>]/.test(s);
