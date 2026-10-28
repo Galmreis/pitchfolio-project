@@ -63,19 +63,39 @@ export async function extractLinkedinProfile(input: unknown): Promise<LinkedinEx
   const { text } = linkedinInputSchema.parse(input);
   const key = process.env["LOVABLE_API_KEY"];
   if (!key) throw new Error("IA indisponível no momento.");
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    headers: { "Content-Type": "application/json", "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "fetch" },
     body: JSON.stringify({
-      model: "google/gemini-3-flash-preview",
-      messages: [{ role: "system", content: LINKEDIN_SYSTEM_PROMPT }, { role: "user", content: text }],
-      response_format: { type: "json_schema", json_schema: { name: "linkedin_profile", strict: true, schema: JSON_SCHEMA } },
+      model: "openai/gpt-6-astra",
+      instructions: LINKEDIN_SYSTEM_PROMPT,
+      input: [{ role: "user", content: [{ type: "input_text", text }] }],
+      reasoning: { effort: "low" },
+      store: false,
+      stream: true,
+      text: { format: { type: "json_schema", name: "linkedin_profile", strict: true, schema: JSON_SCHEMA } },
     }),
   });
   if (res.status === 429) throw new Error("Muitas solicitações. Aguarde um pouco.");
   if (res.status === 402) throw new Error("Créditos de IA esgotados.");
-  if (!res.ok) { console.error("LinkedIn AI error", res.status, await res.text().catch(() => "")); throw new Error("Não foi possível ler o perfil agora."); }
-  const body = z.object({ choices: z.array(z.object({ message: z.object({ content: z.string() }) })).min(1) }).parse(await res.json());
-  const content = body.choices[0]?.message.content ?? "{}";
+  if (!res.ok || !res.body) { console.error("LinkedIn AI error", res.status, await res.text().catch(() => "")); throw new Error("Não foi possível ler o perfil agora."); }
+  // Collect streamed output text deltas (SSE).
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "", content = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const lines = buf.split("\n");
+    buf = lines.pop() ?? "";
+    for (const line of lines) {
+      if (!line.startsWith("data:")) continue;
+      try {
+        const ev = JSON.parse(line.slice(5).trim()) as { type?: string; delta?: unknown };
+        if (ev.type === "response.output_text.delta" && typeof ev.delta === "string") content += ev.delta;
+      } catch { /* keep-alive or partial line */ }
+    }
+  }
   return groundExtraction(JSON.parse(content) as unknown, text);
 }

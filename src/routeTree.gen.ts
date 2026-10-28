@@ -14,6 +14,7 @@ import { Route as CriarRouteImport } from './routes/criar'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as ApiPortfoliosPublishDraftRouteImport } from './routes/api/portfolios/publish-draft'
+import { Route as ApiPortfoliosPortfolioIdCurationRouteImport } from './routes/api/portfolios/$portfolioId.curation'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,6 +42,12 @@ const ApiPortfoliosPublishDraftRoute =
     path: '/api/portfolios/publish-draft',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPortfoliosPortfolioIdCurationRoute =
+  ApiPortfoliosPortfolioIdCurationRouteImport.update({
+    id: '/api/portfolios/$portfolioId/curation',
+    path: '/api/portfolios/$portfolioId/curation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -48,6 +55,7 @@ export interface FileRoutesByFullPath {
   '/editor': typeof EditorRoute
   '/p/$slug': typeof PSlugRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
+  '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -55,6 +63,7 @@ export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
   '/p/$slug': typeof PSlugRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
+  '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -63,13 +72,25 @@ export interface FileRoutesById {
   '/editor': typeof EditorRoute
   '/p/$slug': typeof PSlugRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
+  '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/criar' | '/editor' | '/p/$slug' | '/api/portfolios/publish-draft'
+    | '/'
+    | '/criar'
+    | '/editor'
+    | '/p/$slug'
+    | '/api/portfolios/publish-draft'
+    | '/api/portfolios/$portfolioId/curation'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/criar' | '/editor' | '/p/$slug' | '/api/portfolios/publish-draft'
+  to:
+    | '/'
+    | '/criar'
+    | '/editor'
+    | '/p/$slug'
+    | '/api/portfolios/publish-draft'
+    | '/api/portfolios/$portfolioId/curation'
   id:
     | '__root__'
     | '/'
@@ -77,6 +98,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/p/$slug'
     | '/api/portfolios/publish-draft'
+    | '/api/portfolios/$portfolioId/curation'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -85,6 +107,7 @@ export interface RootRouteChildren {
   EditorRoute: typeof EditorRoute
   PSlugRoute: typeof PSlugRoute
   ApiPortfoliosPublishDraftRoute: typeof ApiPortfoliosPublishDraftRoute
+  ApiPortfoliosPortfolioIdCurationRoute: typeof ApiPortfoliosPortfolioIdCurationRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -124,6 +147,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPortfoliosPublishDraftRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/portfolios/$portfolioId/curation': {
+      id: '/api/portfolios/$portfolioId/curation'
+      path: '/api/portfolios/$portfolioId/curation'
+      fullPath: '/api/portfolios/$portfolioId/curation'
+      preLoaderRoute: typeof ApiPortfoliosPortfolioIdCurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -133,6 +163,7 @@ const rootRouteChildren: RootRouteChildren = {
   EditorRoute: EditorRoute,
   PSlugRoute: PSlugRoute,
   ApiPortfoliosPublishDraftRoute: ApiPortfoliosPublishDraftRoute,
+  ApiPortfoliosPortfolioIdCurationRoute: ApiPortfoliosPortfolioIdCurationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
