@@ -9,6 +9,7 @@ const inputSchema = z.object({
   filename: z.string().trim().min(1).max(200).optional(),
   base64: z.string().min(10).max(Math.ceil((MAX_BYTES * 4) / 3) + 8).optional(),
   rawText: z.string().trim().min(20).max(30000).optional(),
+  githubUser: z.string().trim().min(1).max(120).optional(),
 }).strict();
 
 const SCHEMA = {
@@ -32,7 +33,47 @@ export type ResumeResult = { answers: Partial<RawAnswers> | null; error?: string
 export const extractResume = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ data }): Promise<ResumeResult> => {
-    if (!data.base64 && !data.rawText) return { answers: null, error: "Envie um PDF ou cole o texto do seu currículo." };
+    if (!data.base64 && !data.rawText && !data.githubUser) {
+      return { answers: null, error: "Envie um PDF, informe seu GitHub ou cole o texto do seu currículo." };
+    }
+
+    let ghSummary = "";
+    let ghFallback: Partial<RawAnswers> | null = null;
+    if (data.githubUser) {
+      const username = data.githubUser
+        .replace(/^https?:\/\/(www\.)?github\.com\//i, "")
+        .split(/[/?#]/)[0]
+        ?.trim();
+      if (!username || !/^[a-zA-Z0-9-]{1,39}$/.test(username)) {
+        return { answers: null, error: "Informe um usuário ou link válido do GitHub." };
+      }
+      const headers = { Accept: "application/vnd.github+json", "User-Agent": "PitchFolio-Hackathon" };
+      const [uRes, rRes] = await Promise.all([
+        fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, { headers }),
+        fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?sort=updated&per_page=8`, { headers }),
+      ]);
+      if (!uRes.ok) return { answers: null, error: "Perfil do GitHub não encontrado." };
+      const profile = (await uRes.json()) as { name?: string | null; bio?: string | null; blog?: string | null; email?: string | null; company?: string | null; location?: string | null; public_repos?: number };
+      const repos = rRes.ok
+        ? ((await rRes.json()) as { name?: string; description?: string | null; language?: string | null; stargazers_count?: number; fork?: boolean }[])
+        : [];
+      const ownRepos = repos.filter((r) => !r.fork);
+      const langs = Array.from(new Set(ownRepos.map((r) => r.language).filter((l): l is string => Boolean(l)))).slice(0, 6);
+      const topRepo = [...ownRepos].sort((a, b) => (b.stargazers_count ?? 0) - (a.stargazers_count ?? 0))[0] ?? ownRepos[0];
+      ghFallback = {
+        name: profile.name || username,
+        area: [langs[0] ? `Desenvolvimento ${langs[0]}` : "Engenharia de Software", profile.company, profile.location].filter(Boolean).join(" · "),
+        bio: profile.bio || `Desenvolvedor(a) com ${profile.public_repos ?? ownRepos.length} repositórios públicos no GitHub.`,
+        challenge: topRepo?.description ? `Resolver o problema abordado no projeto ${topRepo.name}: ${topRepo.description}` : "",
+        action: topRepo ? `Desenvolvi o repositório ${topRepo.name}${topRepo.language ? ` utilizando ${topRepo.language}` : ""}.` : "",
+        result: `${ownRepos.length} projetos públicos publicados no GitHub${topRepo?.stargazers_count ? ` e ${topRepo.stargazers_count} estrelas em ${topRepo.name}` : ""}.`,
+        skills: langs.length >= 3 ? langs.join(", ") : [...langs, "Git", "GitHub", "Código Aberto"].slice(0, 5).join(", "),
+        github: `github.com/${username}`,
+        ...(profile.email ? { email: profile.email } : {}),
+      };
+      ghSummary = JSON.stringify({ profile, repos: ownRepos.slice(0, 5) });
+    }
+
     if (data.base64) {
       const bytes = Uint8Array.from(atob(data.base64.slice(0, 16)), (c) => c.charCodeAt(0));
       if (String.fromCharCode(...bytes.slice(0, 5)) !== "%PDF-") return { answers: null, error: "O arquivo não parece ser um PDF válido." };
@@ -41,16 +82,21 @@ export const extractResume = createServerFn({ method: "POST" })
 
     const { createRequestCloudClient } = await import("@/config/cloud.server");
     const { data: allowed, error: budgetError } = await createRequestCloudClient().rpc("consume_pitchfolio_budget", { p_kind: "ai" });
-    if (budgetError || !allowed) return { answers: null, error: "Limite de uso da IA atingido. Tente novamente mais tarde." };
+    if (budgetError || !allowed) {
+      return ghFallback ? { answers: ghFallback } : { answers: null, error: "Limite de uso da IA atingido. Tente novamente mais tarde." };
+    }
     const key = process.env["LOVABLE_API_KEY"];
-    if (!key) return { answers: null, error: "IA indisponível no momento." };
+    if (!key) {
+      return ghFallback ? { answers: ghFallback } : { answers: null, error: "IA indisponível no momento." };
+    }
 
+    const combinedText = [data.rawText, ghSummary ? `Dados públicos do GitHub:\n${ghSummary}` : ""].filter(Boolean).join("\n\n");
     const content = data.base64
       ? [
           { type: "input_file", filename: (data.filename ?? "curriculo.pdf").replace(/[^\w.\- ]/g, "_"), file_data: `data:application/pdf;base64,${data.base64}` },
           { type: "input_text", text: "Extraia os dados deste currículo." },
         ]
-      : [{ type: "input_text", text: `Extraia os dados deste currículo/perfil:\n\n${data.rawText}` }];
+      : [{ type: "input_text", text: `Extraia os dados deste currículo/perfil:\n\n${combinedText}` }];
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
@@ -67,6 +113,7 @@ export const extractResume = createServerFn({ method: "POST" })
         }),
       });
       if (!res.ok || !res.body) {
+        if (ghFallback) return { answers: ghFallback };
         console.error("Resume AI error", res.status, await res.text().catch(() => ""));
         if (res.status === 429) return { answers: null, error: "Muitas solicitações. Aguarde um pouco." };
         if (res.status === 402) return { answers: null, error: "Créditos de IA esgotados." };
@@ -93,10 +140,15 @@ export const extractResume = createServerFn({ method: "POST" })
       const answers: Partial<RawAnswers> = {};
       for (const f of FIELDS) {
         const v = parsed[f];
-        if (typeof v === "string") answers[f] = v.replace(/[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, f === "name" ? 120 : 3000);
+        if (typeof v === "string" && v.trim()) {
+          answers[f] = v.replace(/[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, f === "name" ? 120 : 3000);
+        } else if (ghFallback?.[f]) {
+          answers[f] = ghFallback[f];
+        }
       }
       return { answers };
     } catch (e) {
+      if (ghFallback) return { answers: ghFallback };
       console.error("Resume extraction failed", e);
       return { answers: null, error: "Não foi possível ler o currículo agora." };
     }

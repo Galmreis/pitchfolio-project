@@ -7,19 +7,17 @@ import { ContactLinks } from "./PortfolioSite";
 function Frame({ n, children }: { n: number; children: ReactNode }) {
   const info = DECK_SLIDES_METADATA[n] ?? { title: `Slide ${n + 1}`, subtitle: "" };
   return (
-    <div className="flex h-full flex-col p-6 sm:p-10">
-      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-pf-muted">
-        <span className="flex items-center gap-2">
-          <span>{info.title}</span>
-          {info.subtitle ? (
-            <span className="hidden rounded-full border border-pf-line bg-pf-card px-2 py-0.5 text-[10px] font-normal normal-case tracking-normal text-pf-muted sm:inline-block">
-              {info.subtitle}
-            </span>
-          ) : null}
-        </span>
-        <span>{n + 1} / 5</span>
+    <div className="flex h-full flex-col justify-between p-6 sm:p-10">
+      <div className="flex items-center justify-between border-b border-pf-line pb-3 text-xs text-pf-muted">
+        <div className="flex items-center gap-2.5">
+          <span className="font-mono font-semibold text-pf-fg">0{n + 1} / 05</span>
+          <span className="font-semibold text-pf-fg">{info.title}</span>
+        </div>
+        {info.subtitle ? (
+          <span className="hidden text-xs text-pf-muted sm:inline">{info.subtitle}</span>
+        ) : null}
       </div>
-      <div className="flex flex-1 flex-col justify-center">{children}</div>
+      <div className="my-auto py-4">{children}</div>
     </div>
   );
 }
@@ -56,9 +54,17 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     </Frame>,
     <Frame n={1} key={1}>
       <h2 className="font-display text-2xl font-bold sm:text-4xl">{s4.title || "Projeto de maior impacto"}</h2>
-      <div className="mt-5 space-y-4 text-sm sm:text-base">
-        {[["Desafio", s2.challenge], ["Ação", s2.action], ["Resultado", s2.result]].map(([title, value]) => (
-          <div key={title}><p className="font-semibold">{title}</p><p className="mt-1 text-pf-muted">{value}</p></div>
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        {[
+          ["01", "Desafio", s2.challenge],
+          ["02", "Ação na prática", s2.action],
+          ["03", "Resultado", s2.result],
+        ].map(([num, title, value]) => (
+          <div key={num} className="rounded-xl border border-pf-line bg-pf-card p-4">
+            <span className="font-mono text-xs text-pf-muted">{num}</span>
+            <p className="mt-1 text-sm font-semibold">{title}</p>
+            <p className="mt-1.5 text-xs leading-relaxed text-pf-muted sm:text-sm">{value}</p>
+          </div>
         ))}
       </div>
     </Frame>,

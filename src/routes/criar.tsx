@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, ArrowRight, Loader2, Sparkles, Check, FileUp, ClipboardPaste, Wand2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Sparkles, Check, FileUp, ClipboardPaste, Wand2, Github } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +45,7 @@ function Criar() {
   const [importing, setImporting] = useState(false);
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
+  const [githubInput, setGithubInput] = useState("");
   const navigate = useNavigate();
   const structure = useServerFn(structurePortfolio);
   const extract = useServerFn(extractResume);
@@ -96,20 +97,28 @@ function Criar() {
 
   async function importPastedText() {
     const rawText = pasteText.trim();
-    if (rawText.length < 20) return void toast.error("Cole ao menos um resumo do seu currículo ou LinkedIn.");
+    const githubUser = githubInput.trim();
+    if (!githubUser && rawText.length < 20) {
+      return void toast.error("Informe um usuário do GitHub ou cole o texto do seu LinkedIn / currículo.");
+    }
     setImporting(true);
     try {
-      const { answers, error } = await extract({ data: { rawText } });
-      if (!answers) return void toast.error(error ?? "Não foi possível extrair os dados do texto.");
+      const { answers, error } = await extract({
+        data: {
+          ...(githubUser ? { githubUser } : {}),
+          ...(rawText.length >= 20 ? { rawText } : {}),
+        },
+      });
+      if (!answers) return void toast.error(error ?? "Não foi possível extrair os dados.");
       setA((s) => {
         const next = { ...s };
         for (const [k, v] of Object.entries(answers)) if (v) next[k as keyof RawAnswers] = v;
         return next;
       });
       setPasteOpen(false);
-      toast.success("Dados extraídos! Revise os passos antes de gerar.");
+      toast.success("Dados sincronizados com sucesso! Revise os passos antes de gerar.");
     } catch {
-      toast.error("Não foi possível processar o texto agora.");
+      toast.error("Não foi possível importar os dados agora.");
     } finally {
       setImporting(false);
     }
@@ -186,11 +195,11 @@ function Criar() {
                 className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left transition hover:border-primary/50"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
-                  <ClipboardPaste className="h-5 w-5" />
+                  <Github className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold">Colar LinkedIn / CV</p>
-                  <p className="truncate text-xs text-muted-foreground">Extrair de texto</p>
+                  <p className="text-sm font-semibold">GitHub & LinkedIn</p>
+                  <p className="truncate text-xs text-muted-foreground">Sincronizar perfil e repos</p>
                 </div>
               </button>
 
@@ -210,19 +219,35 @@ function Criar() {
             </div>
 
             {pasteOpen && (
-              <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
-                <Label className="text-sm font-semibold">Cole o texto do seu perfil do LinkedIn ou currículo</Label>
-                <Textarea
-                  rows={4}
-                  value={pasteText}
-                  onChange={(e) => setPasteText(e.target.value)}
-                  placeholder="Cole aqui sua seção Sobre, experiências, projetos e habilidades…"
-                />
+              <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
+                <div className="space-y-1.5">
+                  <Label className="flex items-center gap-1.5 text-sm font-semibold">
+                    <Github className="h-4 w-4" /> Usuário ou link do GitHub (opcional)
+                  </Label>
+                  <p className="text-xs text-muted-foreground">Buscamos sua bio, linguagens mais usadas e seu repositório de maior destaque via GitHub API.</p>
+                  <Input
+                    value={githubInput}
+                    onChange={(e) => setGithubInput(e.target.value)}
+                    placeholder="ex: torvalds ou github.com/seu-usuario"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="flex items-center gap-1.5 text-sm font-semibold">
+                    <ClipboardPaste className="h-4 w-4" /> Texto do LinkedIn ou currículo (opcional)
+                  </Label>
+                  <p className="text-xs text-muted-foreground">No LinkedIn, clique em "Mais → Salvar como PDF" (use o botão acima) ou cole sua seção Sobre e Experiências aqui.</p>
+                  <Textarea
+                    rows={4}
+                    value={pasteText}
+                    onChange={(e) => setPasteText(e.target.value)}
+                    placeholder="Cole aqui sua seção Sobre, experiências, projetos e habilidades…"
+                  />
+                </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="ghost" size="sm" onClick={() => setPasteOpen(false)}>Cancelar</Button>
-                  <Button size="sm" disabled={importing || pasteText.trim().length < 20} onClick={importPastedText}>
+                  <Button size="sm" disabled={importing || (!githubInput.trim() && pasteText.trim().length < 20)} onClick={importPastedText}>
                     {importing ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Sparkles className="mr-1.5 h-4 w-4" />}
-                    Preencher com IA
+                    Importar e resumir com IA
                   </Button>
                 </div>
               </div>
