@@ -22,7 +22,10 @@ function Index() {
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Logo />
-        <Button asChild variant="ghost"><Link to="/criar">Começar</Link></Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="ghost"><Link to="/editor">Meu portfólio</Link></Button>
+          <Button asChild><Link to="/criar">Começar</Link></Button>
+        </div>
       </header>
 
       <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 pb-20 pt-10 lg:grid-cols-[1.1fr_1fr] lg:pt-16">

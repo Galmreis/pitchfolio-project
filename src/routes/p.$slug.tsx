@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { Globe, Presentation } from "lucide-react";
+import { Globe, Presentation, Printer } from "lucide-react";
 import { getPublicPortfolio } from "@/lib/public.functions";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
@@ -41,10 +41,11 @@ function PublicPage() {
   const [view, setView] = useState<"site" | "deck">("site");
   return (
     <div className={`theme-${theme} min-h-screen bg-pf-bg`}>
-      <div className="sticky top-0 z-10 flex justify-center py-3">
+      <div className="sticky top-0 z-10 flex justify-center py-3 print:hidden">
         <div className="inline-flex rounded-full border border-pf-line bg-pf-card p-1 text-pf-fg shadow">
           <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "site" ? "bg-pf-accent text-pf-accent-fg" : ""}`}><Globe className="h-4 w-4" /> Portfólio</button>
           <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "deck" ? "bg-pf-accent text-pf-accent-fg" : ""}`}><Presentation className="h-4 w-4" /> Pitch</button>
+          <button onClick={() => window.print()} aria-label="Imprimir ou exportar PDF" className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium text-pf-muted hover:text-pf-fg"><Printer className="h-4 w-4" /> PDF</button>
         </div>
       </div>
       {view === "site" ? (

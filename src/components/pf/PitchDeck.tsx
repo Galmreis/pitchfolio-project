@@ -60,20 +60,22 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
       </div>
     </Frame>,
     <Frame n={3} key={3}>
-      <h2 className="font-display text-2xl font-bold sm:text-4xl">{p.projectTitle}</h2>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {p.metrics.map((m, k) => (
-          <span key={k} className="rounded-full bg-pf-accent px-3 py-1 text-xs font-semibold text-pf-accent-fg sm:text-sm">{m}</span>
+      <h2 className="font-display text-2xl font-bold sm:text-4xl">{p.projectTitle || "Destaques e trajetória"}</h2>
+      {p.metrics.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {p.metrics.map((m, k) => (
+            <span key={k} className="rounded-full bg-pf-accent px-3 py-1 text-xs font-semibold text-pf-accent-fg sm:text-sm">{m}</span>
+          ))}
+        </div>
+      )}
+      <ol className="mt-6 space-y-3 border-l-2 border-pf-line pl-5">
+        {p.journey.map((j, k) => (
+          <li key={k} className="relative text-sm sm:text-base">
+            <span className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full bg-pf-accent" />
+            {j}
+          </li>
         ))}
-      </div>
-      <div className="mt-5 grid gap-3 text-xs sm:grid-cols-3 sm:text-sm">
-        {[["Desafio", p.challenge], ["Ação", p.action], ["Resultado", p.result]].map(([t, d]) => (
-          <div key={t} className="rounded-xl border border-pf-line bg-pf-card p-3">
-            <p className="font-semibold">{t}</p>
-            <p className="mt-1 text-pf-muted">{d}</p>
-          </div>
-        ))}
-      </div>
+      </ol>
     </Frame>,
     <Frame n={4} key={4}>
       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-pf-muted">Meu objetivo</p>
@@ -85,7 +87,7 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
   return (
     <div className={`theme-${theme}`}>
       <div
-        className="relative aspect-video w-full overflow-hidden rounded-2xl border border-pf-line bg-pf-bg text-pf-fg shadow-2xl"
+        className="relative aspect-video w-full overflow-hidden rounded-2xl border border-pf-line bg-pf-bg text-pf-fg shadow-2xl print:hidden"
         onTouchStart={(e) => (touch.current = e.touches[0]?.clientX ?? null)}
         onTouchEnd={(e) => {
           if (touch.current == null) return;
@@ -98,7 +100,14 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
         <div className="absolute inset-0 overflow-auto">{slides[i]}</div>
         <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all" style={{ width: `${((i + 1) / 5) * 100}%` }} />
       </div>
-      <div className="mt-4 flex items-center justify-between">
+      <div className="hidden space-y-6 print:block">
+        {slides.map((s, idx) => (
+          <div key={idx} className="aspect-video w-full break-inside-avoid overflow-hidden rounded-2xl border border-pf-line bg-pf-bg text-pf-fg">
+            {s}
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex items-center justify-between print:hidden">
         <button onClick={prev} disabled={i === 0} aria-label="Slide anterior"
           className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium disabled:opacity-40">
           <ChevronLeft className="h-4 w-4" /> Anterior
@@ -114,7 +123,7 @@ export function PitchDeck({ p, theme }: { p: Portfolio; theme: ThemeName }) {
           Próximo <ChevronRight className="h-4 w-4" />
         </button>
       </div>
-      <p className="mt-2 text-center text-xs text-muted-foreground">Use as setas ← → do teclado</p>
+      <p className="mt-2 text-center text-xs text-muted-foreground print:hidden">Use as setas ← → do teclado</p>
     </div>
   );
 }

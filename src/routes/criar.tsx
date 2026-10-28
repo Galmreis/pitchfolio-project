@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, ArrowRight, Loader2, Sparkles, Check, FileUp } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Sparkles, Check, FileUp, ClipboardPaste, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/pf/Logo";
 import { structurePortfolio } from "@/lib/ai.functions";
 import { extractResume } from "@/lib/resume.functions";
-import { ANSWERS_KEY, DRAFT_KEY, EMPTY_ANSWERS, splitSkills, type RawAnswers } from "@/lib/portfolio";
+import { ANSWERS_KEY, DEMO_ANSWERS, DRAFT_KEY, EMPTY_ANSWERS, splitSkills, type RawAnswers } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/criar")({
   head: () => ({
@@ -43,6 +43,8 @@ function Criar() {
   const [a, setA] = useState<RawAnswers>(EMPTY_ANSWERS);
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [pasteOpen, setPasteOpen] = useState(false);
+  const [pasteText, setPasteText] = useState("");
   const navigate = useNavigate();
   const structure = useServerFn(structurePortfolio);
   const extract = useServerFn(extractResume);
@@ -85,6 +87,32 @@ function Criar() {
     } finally {
       setImporting(false);
     }
+  }
+
+  async function importPastedText() {
+    const rawText = pasteText.trim();
+    if (rawText.length < 20) return void toast.error("Cole ao menos um resumo do seu currículo ou LinkedIn.");
+    setImporting(true);
+    try {
+      const { answers, error } = await extract({ data: { rawText } });
+      if (!answers) return void toast.error(error ?? "Não foi possível extrair os dados do texto.");
+      setA((s) => {
+        const next = { ...s };
+        for (const [k, v] of Object.entries(answers)) if (v) next[k as keyof RawAnswers] = v;
+        return next;
+      });
+      setPasteOpen(false);
+      toast.success("Dados extraídos! Revise os passos antes de gerar.");
+    } catch {
+      toast.error("Não foi possível processar o texto agora.");
+    } finally {
+      setImporting(false);
+    }
+  }
+
+  function fillDemo() {
+    setA(DEMO_ANSWERS);
+    toast.success("Exemplo fictício carregado! Você já pode avançar pelos passos ou gerar.");
   }
 
   async function generate() {
@@ -133,16 +161,68 @@ function Criar() {
         </div>
 
         {step === 0 && (
-          <label className="mb-6 flex cursor-pointer items-center gap-4 rounded-3xl border border-dashed border-primary/50 bg-primary/5 p-5 transition hover:bg-primary/10">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-              {importing ? <Loader2 className="h-6 w-6 animate-spin" /> : <FileUp className="h-6 w-6" />}
+          <div className="mb-6 space-y-3">
+            <div className="grid gap-3 sm:grid-cols-3">
+              <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-primary/50 bg-primary/5 p-4 transition hover:bg-primary/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                  {importing ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileUp className="h-5 w-5" />}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">{importing ? "Lendo…" : "Importar PDF"}</p>
+                  <p className="truncate text-xs text-muted-foreground">Currículo até 5 MB</p>
+                </div>
+                <input type="file" accept="application/pdf,.pdf" className="sr-only" disabled={importing} onChange={importPdf} aria-label="Importar currículo em PDF" />
+              </label>
+
+              <button
+                type="button"
+                disabled={importing}
+                onClick={() => setPasteOpen((v) => !v)}
+                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left transition hover:border-primary/50"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+                  <ClipboardPaste className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">Colar LinkedIn / CV</p>
+                  <p className="truncate text-xs text-muted-foreground">Extrair de texto</p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={fillDemo}
+                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left transition hover:border-primary/50"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                  <Wand2 className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">Usar exemplo</p>
+                  <p className="truncate text-xs text-muted-foreground">Dados fictícios (Demo)</p>
+                </div>
+              </button>
             </div>
-            <div>
-              <p className="font-semibold">{importing ? "Lendo seu currículo…" : "Importar currículo (PDF)"}</p>
-              <p className="text-sm text-muted-foreground">A IA preenche os 3 passos com os dados do seu currículo. Até 5 MB.</p>
-            </div>
-            <input type="file" accept="application/pdf,.pdf" className="sr-only" disabled={importing} onChange={importPdf} aria-label="Importar currículo em PDF" />
-          </label>
+
+            {pasteOpen && (
+              <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
+                <Label className="text-sm font-semibold">Cole o texto do seu perfil do LinkedIn ou currículo</Label>
+                <Textarea
+                  rows={4}
+                  value={pasteText}
+                  onChange={(e) => setPasteText(e.target.value)}
+                  placeholder="Cole aqui sua seção Sobre, experiências, projetos e habilidades…"
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="ghost" size="sm" onClick={() => setPasteOpen(false)}>Cancelar</Button>
+                  <Button size="sm" disabled={importing || pasteText.trim().length < 20} onClick={importPastedText}>
+                    {importing ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Sparkles className="mr-1.5 h-4 w-4" />}
+                    Preencher com IA
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
         <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-10">
           <h1 className="text-3xl font-bold sm:text-4xl">{STEPS[step]}</h1>

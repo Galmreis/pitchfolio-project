@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { publishPortfolioDraft } from "@/controllers/portfolios.functions";
-import { draftSchema } from "@/validators/portfolio";
-import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye } from "lucide-react";
+import { listOwnedPortfolios, publishPortfolioDraft } from "@/controllers/portfolios.functions";
+import { draftSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
+import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { Logo } from "@/components/pf/Logo";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
-import { DRAFT_KEY, THEMES, type Draft, type Portfolio } from "@/lib/portfolio";
+import { DEMO_ANSWERS, DRAFT_KEY, THEMES, localStructure, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
   head: () => ({
@@ -58,11 +58,45 @@ function Editor() {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const publishDraft = useServerFn(publishPortfolioDraft);
+  const fetchOwned = useServerFn(listOwnedPortfolios);
+
+  async function loadRemotePortfolio() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return false;
+      const rows = await fetchOwned();
+      const first = rows?.[0];
+      if (!first) return false;
+      const pParsed = portfolioSchema.safeParse(first.data);
+      const tParsed = themeSchema.safeParse(first.selected_theme);
+      if (pParsed.success) {
+        setDraft({
+          portfolio: pParsed.data,
+          theme: tParsed.success ? tParsed.data : "moderno",
+          ...(first.slug ? { slug: first.slug } : {}),
+        });
+        return true;
+      }
+    } catch { /* ignore */ }
+    return false;
+  }
 
   useEffect(() => {
-    const s = localStorage.getItem(DRAFT_KEY);
-    if (s) try { const valid = draftSchema.safeParse(JSON.parse(s)); if (valid.success) setDraft({ portfolio: valid.data.portfolio, theme: valid.data.theme, ...(valid.data.slug ? { slug: valid.data.slug } : {}) }); } catch { /* invalid browser draft */ }
-    setLoaded(true);
+    (async () => {
+      const s = localStorage.getItem(DRAFT_KEY);
+      if (s) {
+        try {
+          const valid = draftSchema.safeParse(JSON.parse(s));
+          if (valid.success) {
+            setDraft({ portfolio: valid.data.portfolio, theme: valid.data.theme, ...(valid.data.slug ? { slug: valid.data.slug } : {}) });
+            setLoaded(true);
+            return;
+          }
+        } catch { /* invalid browser draft */ }
+      }
+      await loadRemotePortfolio();
+      setLoaded(true);
+    })();
   }, []);
   useEffect(() => { if (draft) localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); }, [draft]);
 
@@ -71,7 +105,21 @@ function Editor() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
         <h1 className="text-3xl font-bold">Nenhum portfólio em andamento</h1>
-        <Button asChild><Link to="/criar">Criar meu portfólio</Link></Button>
+        <p className="max-w-md text-muted-foreground">Crie um novo portfólio em 3 passos, carregue um exemplo de demonstração ou entre na sua conta.</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button asChild><Link to="/criar">Criar meu portfólio</Link></Button>
+          <Button variant="secondary" onClick={() => setDraft({ portfolio: localStructure(DEMO_ANSWERS), theme: "moderno" })}>
+            Carregar exemplo (Demo)
+          </Button>
+          <Button variant="outline" onClick={() => setAuthOpen(true)}>
+            <LogIn className="mr-1.5 h-4 w-4" /> Entrar na minha conta
+          </Button>
+        </div>
+        <AuthDialog open={authOpen} onOpenChange={setAuthOpen} onAuthed={async () => {
+          setAuthOpen(false);
+          const ok = await loadRemotePortfolio();
+          if (!ok) toast.message("Conta conectada! Crie ou carregue um portfólio para publicar.");
+        }} />
       </div>
     );
   }
@@ -88,17 +136,31 @@ function Editor() {
 
   async function publish() {
     if (!draft || publishing) return;
+    const cleaned: Draft = {
+      ...draft,
+      portfolio: {
+        ...draft.portfolio,
+        metrics: draft.portfolio.metrics.map((x) => x.trim()).filter(Boolean),
+        skills: draft.portfolio.skills.map((x) => x.trim()).filter(Boolean),
+        journey: draft.portfolio.journey.map((x) => x.trim()).filter(Boolean),
+      },
+    };
+    const check = draftSchema.safeParse(cleaned);
+    if (!check.success) {
+      const issue = check.error.issues[0];
+      toast.error(issue?.message ?? "Verifique os campos preenchidos antes de publicar.");
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setAuthOpen(true); return; }
     setPublishing(true);
     try {
-      const valid = draftSchema.parse(draft);
-      const saved = await publishDraft({ data: valid });
-      setDraft({ ...draft, slug: saved.slug });
+      const saved = await publishDraft({ data: check.data });
+      setDraft({ ...cleaned, slug: saved.slug });
       setShareUrl(`${window.location.origin}${saved.path}`);
     } catch (e) {
       console.error(e);
-      toast.error("Não foi possível publicar. Tente novamente.");
+      toast.error(e instanceof Error && e.message ? e.message : "Não foi possível publicar. Tente novamente.");
     } finally {
       setPublishing(false);
     }
@@ -137,7 +199,7 @@ function Editor() {
   );
 
   const toolbar = (
-    <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
       <div className="inline-flex rounded-full border border-border bg-card p-1">
         <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium ${view === "site" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
           <Globe className="h-4 w-4" /> Site do Portfólio
@@ -170,24 +232,29 @@ function Editor() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 sm:px-6">
           <Logo />
-          <Button onClick={publish} disabled={publishing} className="rounded-full">
-            {publishing ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Rocket className="mr-1 h-4 w-4" />}
-            {draft.slug ? "Atualizar publicação" : "Publicar portfólio"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => window.print()} className="rounded-full">
+              <Printer className="mr-1.5 h-4 w-4" /> Exportar PDF
+            </Button>
+            <Button onClick={publish} disabled={publishing} className="rounded-full">
+              {publishing ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Rocket className="mr-1 h-4 w-4" />}
+              {draft.slug ? "Atualizar publicação" : "Publicar portfólio"}
+            </Button>
+          </div>
         </div>
       </header>
 
       {/* Desktop split */}
-      <div className="mx-auto hidden max-w-[1400px] gap-6 px-6 py-6 lg:grid lg:grid-cols-[380px_1fr]">
-        <aside className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-card p-6">{form}</aside>
+      <div className="mx-auto hidden max-w-[1400px] gap-6 px-6 py-6 lg:grid lg:grid-cols-[380px_1fr] print:block print:max-w-none print:p-0">
+        <aside className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-card p-6 print:hidden">{form}</aside>
         <main>{preview}</main>
       </div>
 
       {/* Mobile tabs */}
-      <div className="px-4 py-4 lg:hidden">
+      <div className="px-4 py-4 lg:hidden print:hidden">
         <Tabs defaultValue="preview">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="preview"><Eye className="mr-1 h-4 w-4" /> Prévia</TabsTrigger>

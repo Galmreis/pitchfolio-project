@@ -52,6 +52,20 @@ export const EMPTY_ANSWERS: RawAnswers = {
   goal: "",
 };
 
+export const DEMO_ANSWERS: RawAnswers = {
+  name: "Ana Souza",
+  area: "Engenharia de Software · UFPE",
+  bio: "Estudante do 6º período focada em desenvolvimento full-stack e produtos digitais acessíveis.",
+  challenge: "Mais de 400 alunos do campus dependiam de grupos desencontrados para dividir transporte diário.",
+  action: "Desenvolvi uma aplicação web em React e TypeScript com rotas compartilhadas e validação por e-mail institucional.",
+  result: "1.200 viagens combinadas em 4 meses e redução de 30% no gasto médio semanal dos estudantes.",
+  skills: "React, TypeScript, Node.js, PostgreSQL, Pesquisa com Usuários",
+  linkedin: "linkedin.com/in/ana-souza-demo",
+  github: "github.com/anasouza-demo",
+  email: "ana.demo@exemplo.com",
+  goal: "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário.",
+};
+
 const cap = (s: string) => {
   const t = s.trim().replace(/\s+/g, " ");
   if (!t) return t;

@@ -6,8 +6,9 @@ const MAX_BYTES = 5 * 1024 * 1024;
 const FIELDS = ["name", "area", "bio", "challenge", "action", "result", "skills", "linkedin", "github", "email", "goal"] as const;
 
 const inputSchema = z.object({
-  filename: z.string().trim().min(1).max(200),
-  base64: z.string().min(10).max(Math.ceil((MAX_BYTES * 4) / 3) + 8),
+  filename: z.string().trim().min(1).max(200).optional(),
+  base64: z.string().min(10).max(Math.ceil((MAX_BYTES * 4) / 3) + 8).optional(),
+  rawText: z.string().trim().min(20).max(30000).optional(),
 }).strict();
 
 const SCHEMA = {
@@ -31,15 +32,25 @@ export type ResumeResult = { answers: Partial<RawAnswers> | null; error?: string
 export const extractResume = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ data }): Promise<ResumeResult> => {
-    const bytes = Uint8Array.from(atob(data.base64.slice(0, 16)), (c) => c.charCodeAt(0));
-    if (String.fromCharCode(...bytes.slice(0, 5)) !== "%PDF-") return { answers: null, error: "O arquivo não parece ser um PDF válido." };
-    if ((data.base64.length * 3) / 4 > MAX_BYTES) return { answers: null, error: "O PDF deve ter no máximo 5 MB." };
+    if (!data.base64 && !data.rawText) return { answers: null, error: "Envie um PDF ou cole o texto do seu currículo." };
+    if (data.base64) {
+      const bytes = Uint8Array.from(atob(data.base64.slice(0, 16)), (c) => c.charCodeAt(0));
+      if (String.fromCharCode(...bytes.slice(0, 5)) !== "%PDF-") return { answers: null, error: "O arquivo não parece ser um PDF válido." };
+      if ((data.base64.length * 3) / 4 > MAX_BYTES) return { answers: null, error: "O PDF deve ter no máximo 5 MB." };
+    }
 
     const { createRequestCloudClient } = await import("@/config/cloud.server");
     const { data: allowed, error: budgetError } = await createRequestCloudClient().rpc("consume_pitchfolio_budget", { p_kind: "ai" });
     if (budgetError || !allowed) return { answers: null, error: "Limite de uso da IA atingido. Tente novamente mais tarde." };
     const key = process.env["LOVABLE_API_KEY"];
     if (!key) return { answers: null, error: "IA indisponível no momento." };
+
+    const content = data.base64
+      ? [
+          { type: "input_file", filename: (data.filename ?? "curriculo.pdf").replace(/[^\w.\- ]/g, "_"), file_data: `data:application/pdf;base64,${data.base64}` },
+          { type: "input_text", text: "Extraia os dados deste currículo." },
+        ]
+      : [{ type: "input_text", text: `Extraia os dados deste currículo/perfil:\n\n${data.rawText}` }];
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
@@ -48,13 +59,7 @@ export const extractResume = createServerFn({ method: "POST" })
         body: JSON.stringify({
           model: "openai/gpt-6-astra",
           instructions: INSTRUCTIONS,
-          input: [{
-            role: "user",
-            content: [
-              { type: "input_file", filename: data.filename.replace(/[^\w.\- ]/g, "_"), file_data: `data:application/pdf;base64,${data.base64}` },
-              { type: "input_text", text: "Extraia os dados deste currículo." },
-            ],
-          }],
+          input: [{ role: "user", content }],
           reasoning: { effort: "low" },
           store: false,
           stream: true,
