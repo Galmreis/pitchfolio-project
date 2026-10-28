@@ -141,6 +141,7 @@ export const extractResume = createServerFn({ method: "POST" })
       for (const f of FIELDS) {
         const v = parsed[f];
         if (typeof v === "string" && v.trim()) {
+          // eslint-disable-next-line no-control-regex
           answers[f] = v.replace(/[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, f === "name" ? 120 : 3000);
         } else if (ghFallback?.[f]) {
           answers[f] = ghFallback[f];

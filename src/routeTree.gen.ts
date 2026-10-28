@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CriarRouteImport } from './routes/criar'
 import { Route as EditorRouteImport } from './routes/editor'
+import { Route as ApiHealthzRouteImport } from './routes/api/healthz'
+import { Route as ApiReadyzRouteImport } from './routes/api/readyz'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as ApiPortfoliosPublishDraftRouteImport } from './routes/api/portfolios/publish-draft'
 import { Route as ApiPortfoliosPortfolioIdCurationRouteImport } from './routes/api/portfolios/$portfolioId.curation'
@@ -29,6 +31,16 @@ const CriarRoute = CriarRouteImport.update({
 const EditorRoute = EditorRouteImport.update({
   id: '/editor',
   path: '/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthzRoute = ApiHealthzRouteImport.update({
+  id: '/api/healthz',
+  path: '/api/healthz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiReadyzRoute = ApiReadyzRouteImport.update({
+  id: '/api/readyz',
+  path: '/api/readyz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PSlugRoute = PSlugRouteImport.update({
@@ -53,6 +65,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
+  '/api/healthz': typeof ApiHealthzRoute
+  '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
   '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
@@ -61,6 +75,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
+  '/api/healthz': typeof ApiHealthzRoute
+  '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
   '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
@@ -70,6 +86,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/criar': typeof CriarRoute
   '/editor': typeof EditorRoute
+  '/api/healthz': typeof ApiHealthzRoute
+  '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
   '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
@@ -80,6 +98,8 @@ export interface FileRouteTypes {
     | '/'
     | '/criar'
     | '/editor'
+    | '/api/healthz'
+    | '/api/readyz'
     | '/p/$slug'
     | '/api/portfolios/publish-draft'
     | '/api/portfolios/$portfolioId/curation'
@@ -88,6 +108,8 @@ export interface FileRouteTypes {
     | '/'
     | '/criar'
     | '/editor'
+    | '/api/healthz'
+    | '/api/readyz'
     | '/p/$slug'
     | '/api/portfolios/publish-draft'
     | '/api/portfolios/$portfolioId/curation'
@@ -96,6 +118,8 @@ export interface FileRouteTypes {
     | '/'
     | '/criar'
     | '/editor'
+    | '/api/healthz'
+    | '/api/readyz'
     | '/p/$slug'
     | '/api/portfolios/publish-draft'
     | '/api/portfolios/$portfolioId/curation'
@@ -105,6 +129,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CriarRoute: typeof CriarRoute
   EditorRoute: typeof EditorRoute
+  ApiHealthzRoute: typeof ApiHealthzRoute
+  ApiReadyzRoute: typeof ApiReadyzRoute
   PSlugRoute: typeof PSlugRoute
   ApiPortfoliosPublishDraftRoute: typeof ApiPortfoliosPublishDraftRoute
   ApiPortfoliosPortfolioIdCurationRoute: typeof ApiPortfoliosPortfolioIdCurationRoute
@@ -131,6 +157,20 @@ declare module '@tanstack/react-router' {
       path: '/editor'
       fullPath: '/editor'
       preLoaderRoute: typeof EditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/healthz': {
+      id: '/api/healthz'
+      path: '/api/healthz'
+      fullPath: '/api/healthz'
+      preLoaderRoute: typeof ApiHealthzRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/readyz': {
+      id: '/api/readyz'
+      path: '/api/readyz'
+      fullPath: '/api/readyz'
+      preLoaderRoute: typeof ApiReadyzRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/p/$slug': {
@@ -161,6 +201,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CriarRoute: CriarRoute,
   EditorRoute: EditorRoute,
+  ApiHealthzRoute: ApiHealthzRoute,
+  ApiReadyzRoute: ApiReadyzRoute,
   PSlugRoute: PSlugRoute,
   ApiPortfoliosPublishDraftRoute: ApiPortfoliosPublishDraftRoute,
   ApiPortfoliosPortfolioIdCurationRoute: ApiPortfoliosPortfolioIdCurationRoute,
