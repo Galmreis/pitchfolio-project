@@ -31,7 +31,7 @@ const STEPS = ["Quem é você?", "Seu projeto de maior impacto", "Habilidades e 
 const BIO_STARTERS = [
   { label: "+ 1º Estágio / Júnior", text: "Estudante em busca do primeiro estágio, com base prática em projetos acadêmicos e facilidade para aprender rápido em equipe." },
   { label: "+ Transição de carreira", text: "Profissional em transição de carreira, trazendo experiência prévia em resolução de problemas e foco prático na nova área." },
-  { label: "+ Foco em projetos práticos", text: "Desenvolvedor(a) em formação que aprende construindo soluções reais para problemas do dia a dia no campus e na comunidade." },
+  { label: "+ Foco em projetos práticos", text: "Profissional em formação que aprende aplicando conhecimentos na prática em projetos reais no campus e na comunidade." },
 ];
 
 const CHALLENGE_STARTERS = [
@@ -41,25 +41,25 @@ const CHALLENGE_STARTERS = [
 ];
 
 const ACTION_STARTERS = [
-  { label: "+ Criei protótipo / sistema", text: "Desenvolvi uma aplicação web do zero, estruturei o banco de dados e testei o fluxo com usuários reais." },
-  { label: "+ Liderei a organização", text: "Organizei a divisão de tarefas da equipe, documentei o processo e construí os principais fluxos da solução." },
-  { label: "+ Automatizei tarefas", text: "Implementei um fluxo automatizado para centralizar os dados e eliminar o retrabalho manual da equipe." },
+  { label: "+ Estruturei solução prática", text: "Estruturei uma solução prática do zero, organizei as etapas de execução e testei o fluxo com as pessoas envolvidas." },
+  { label: "+ Liderei a organização", text: "Organizei a divisão de tarefas da equipe, documentei o processo e conduzi as principais entregas do projeto." },
+  { label: "+ Otimizei rotina / processo", text: "Implementei um novo fluxo de organização para centralizar as informações e eliminar o retrabalho da equipe." },
 ];
 
 const RESULT_STARTERS = [
   { label: "+ Redução de tempo", text: "Reduzi o tempo gasto na tarefa em cerca de 40% e facilitei a rotina de mais de 30 pessoas." },
   { label: "+ Nota máxima / Destaque", text: "O projeto recebeu nota máxima da banca avaliadora e passou a ser utilizado como referência pelos alunos." },
-  { label: "+ Primeiros usuários", text: "Alcancei os primeiros 50 usuários ativos nas primeiras semanas e validei a solução na prática." },
+  { label: "+ Impacto comprovado", text: "Atendi mais de 50 pessoas nas primeiras semanas e validei a solução na prática com feedback positivo." },
 ];
 
 const SKILL_SUGGESTIONS = [
-  "Comunicação", "Resolução de Problemas", "Trabalho em Equipe", "Proatividade",
-  "JavaScript", "TypeScript", "React", "Python", "SQL", "Git", "Figma", "Excel", "Inglês",
+  "Comunicação", "Resolução de Problemas", "Trabalho em Equipe", "Gestão de Projetos",
+  "Liderança", "Atendimento", "Análise de Dados", "Excel", "Inglês", "Design / Figma", "Python", "React",
 ];
 
 const GOAL_STARTERS = [
-  { label: "+ Estágio / 1º Emprego", text: "Busco minha primeira oportunidade de estágio ou posição júnior para aplicar minha base técnica e evoluir junto ao time." },
-  { label: "+ Trainee / Júnior", text: "Procuro atuar como pessoa desenvolvedora júnior ou trainee em projetos onde eu possa gerar impacto rápido e aprender com mentores." },
+  { label: "+ Estágio / 1º Emprego", text: "Busco minha primeira oportunidade de estágio ou posição inicial para aplicar minha base prática e evoluir junto ao time." },
+  { label: "+ Trainee / Júnior", text: "Procuro atuar como trainee ou profissional júnior em projetos onde eu possa gerar impacto rápido e aprender com mentores." },
 ];
 
 function StarterChips({ items, onSelect }: { items: { label: string; text: string }[]; onSelect: (text: string) => void }) {
@@ -265,7 +265,7 @@ function Criar() {
                   onClick={() => setPasteOpen((v) => !v)}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40"
                 >
-                  <Github className="h-3.5 w-3.5" /> GitHub / LinkedIn
+                  <ClipboardPaste className="h-3.5 w-3.5" /> Colar texto / LinkedIn
                 </button>
 
                 <button
@@ -283,25 +283,25 @@ function Criar() {
             <div className="mt-5 space-y-4 rounded-lg border border-border bg-secondary/30 p-4">
               <div className="space-y-1.5">
                 <Label className="flex items-center gap-1.5 text-sm font-semibold">
-                  <Github className="h-4 w-4" /> Usuário ou link do GitHub (opcional)
+                  <ClipboardPaste className="h-4 w-4" /> Texto do LinkedIn ou currículo
                 </Label>
-                <p className="text-xs text-muted-foreground">Buscamos sua bio, linguagens mais usadas e seu repositório de maior destaque via GitHub API.</p>
-                <Input
-                  value={githubInput}
-                  onChange={(e) => setGithubInput(e.target.value)}
-                  placeholder="ex: torvalds ou github.com/seu-usuario"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5 text-sm font-semibold">
-                  <ClipboardPaste className="h-4 w-4" /> Texto do LinkedIn ou currículo (opcional)
-                </Label>
-                <p className="text-xs text-muted-foreground">No LinkedIn, clique em "Mais → Salvar como PDF" (use o botão acima) ou cole sua seção Sobre e Experiências aqui.</p>
+                <p className="text-xs text-muted-foreground">No LinkedIn, clique em "Mais → Salvar como PDF" (use o botão Importar PDF acima) ou cole sua seção Sobre e Experiências aqui.</p>
                 <Textarea
                   rows={4}
                   value={pasteText}
                   onChange={(e) => setPasteText(e.target.value)}
-                  placeholder="Cole aqui sua seção Sobre, experiências, projetos e habilidades…"
+                  placeholder="Cole aqui sua seção Sobre, experiências, trabalhos acadêmicos e habilidades…"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5 text-sm font-semibold">
+                  <Github className="h-4 w-4" /> Usuário do GitHub (opcional — para área de tecnologia)
+                </Label>
+                <p className="text-xs text-muted-foreground">Se você programa e tem projetos públicos no GitHub, informe seu usuário para importar automaticamente.</p>
+                <Input
+                  value={githubInput}
+                  onChange={(e) => setGithubInput(e.target.value)}
+                  placeholder="ex: seu-usuario ou github.com/seu-usuario"
                 />
               </div>
               <div className="flex justify-end gap-2">
@@ -370,11 +370,11 @@ function Criar() {
                 </Field>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <Field label="LinkedIn"><Input value={a.linkedin} onChange={set("linkedin")} placeholder="linkedin.com/in/…" /></Field>
-                  <Field label="GitHub"><Input value={a.github} onChange={set("github")} placeholder="github.com/…" /></Field>
+                  <Field label="Site ou GitHub (opcional)"><Input value={a.github} onChange={set("github")} placeholder="seu-site.com ou github.com/…" /></Field>
                   <Field label="E-mail"><Input type="email" value={a.email} onChange={set("email")} placeholder="voce@email.com" /></Field>
                 </div>
-                <Field label="Objetivo profissional" hint="O que você busca agora? (Estágio, 1º emprego, trainee, freelancer)">
-                  <Textarea rows={3} value={a.goal} onChange={set("goal")} placeholder="Busco estágio em desenvolvimento front-end em uma startup de impacto…" />
+                <Field label="Objetivo profissional" hint="O que você busca agora? (Estágio, 1º emprego, trainee, atuação júnior)">
+                  <Textarea rows={3} value={a.goal} onChange={set("goal")} placeholder="Busco minha primeira oportunidade de estágio ou atuação júnior para aplicar meus conhecimentos na prática…" />
                   <StarterChips items={GOAL_STARTERS} onSelect={(text) => setA((s) => ({ ...s, goal: text }))} />
                 </Field>
               </>

@@ -539,15 +539,15 @@ function Editor() {
         </div>
         {txt("name", "Nome")}
         {txt("role", "Área / curso")}
-        {txt("headline", "Headline")}
-        {txt("bio", "Bio", 4)}
+        {txt("headline", "Frase de destaque")}
+        {txt("bio", "Sobre você (Resumo)", 4)}
         <ImagePickerField
           label="Foto / Ícone de Perfil"
           value={p.avatarUrl}
           onChange={(avatarUrl) => upd({ avatarUrl })}
           presets={AVATAR_PRESETS}
           emptyLabel="Apenas iniciais"
-          placeholder="Ou cole link de foto (ex: https://github.com/usuario.png)"
+          placeholder="Ou cole o link de uma foto sua (https://…)"
           shape="avatar"
         />
       </section>
@@ -558,12 +558,12 @@ function Editor() {
         </div>
         {txt("projectTitle", "Título do projeto")}
         <ImagePickerField
-          label="Capa / Mockup Visual do Projeto"
+          label="Imagem ou Capa do Projeto"
           value={p.projectImageUrl}
           onChange={(projectImageUrl) => upd({ projectImageUrl })}
           presets={PROJECT_IMAGE_PRESETS}
           emptyLabel="Sem capa"
-          placeholder="Ou cole URL de imagem do projeto (https://…)"
+          placeholder="Ou cole o link de uma imagem do projeto (https://…)"
           shape="cover"
         />
         {txt("challenge", "Desafio", 3)}
@@ -615,7 +615,7 @@ function Editor() {
         </div>
         {txt("goal", "Objetivo profissional", 3)}
         {txt("linkedin", "LinkedIn")}
-        {txt("github", "GitHub")}
+        {txt("github", "Site / Portfólio / GitHub")}
         {txt("email", "E-mail")}
       </section>
     </div>

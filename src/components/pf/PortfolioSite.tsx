@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Github, Globe, Linkedin, Mail } from "lucide-react";
 import { normalizeUrl, resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
 
 export function AvatarBadge({ p, size = "md" }: { p: Portfolio; size?: "sm" | "md" | "lg" }) {
@@ -188,7 +188,7 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
       <section key="journey" className="grid gap-6 border-t border-pf-line py-10 md:grid-cols-[200px_1fr]">
         <div>
           <span className="font-mono text-xs font-bold text-pf-accent">02</span>
-          <h2 className="mt-1 text-xs font-bold uppercase tracking-wider text-pf-muted">Trajetória & Skills</h2>
+          <h2 className="mt-1 text-xs font-bold uppercase tracking-wider text-pf-muted">Trajetória & Habilidades</h2>
         </div>
         <div className="space-y-8">
           <div>
@@ -374,9 +374,10 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
 }
 
 export function ContactLinks({ p, className = "" }: { p: Portfolio; className?: string }) {
+  const isGithub = /github\.com/i.test(p.github);
   const items = [
     p.linkedin && { icon: Linkedin, label: "LinkedIn", href: normalizeUrl(p.linkedin) },
-    p.github && { icon: Github, label: "GitHub", href: normalizeUrl(p.github) },
+    p.github && { icon: isGithub ? Github : Globe, label: isGithub ? "GitHub" : "Portfólio / Site", href: normalizeUrl(p.github) },
     p.email && { icon: Mail, label: p.email, href: `mailto:${p.email}` },
   ].filter(Boolean) as { icon: typeof Mail; label: string; href: string }[];
   if (!items.length) return null;

@@ -52,10 +52,10 @@ function Index() {
             Empregabilidade & 1ª Oportunidade
           </span>
           <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl">
-            Transforme projetos acadêmicos e código em um <span className="text-primary">pitch de 5 slides</span>.
+            Transforme trabalhos, projetos e experiências em um <span className="text-primary">pitch de 5 slides</span>.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Quem busca o primeiro emprego trava na página em branco. O PitchFolio lê seu GitHub, seu PDF do LinkedIn ou suas respostas guiadas e estrutura um dossiê pelo Método STAR pronto para entrevistas.
+            Quem busca o primeiro emprego trava na página em branco. O PitchFolio lê seu currículo em PDF, seu perfil do LinkedIn ou suas respostas guiadas e estrutura sua apresentação pelo Método STAR pronta para entrevistas.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button asChild size="lg" className="h-11 rounded-lg px-6 text-sm font-semibold">
@@ -67,7 +67,7 @@ function Index() {
               </Link>
             </Button>
             <span className="ml-1 text-xs font-medium text-muted-foreground">
-              Sem cadastro prévio · GitHub API & PDF
+              Sem cadastro prévio · Importação de Currículo em PDF
             </span>
           </div>
         </div>
@@ -111,8 +111,8 @@ function Index() {
                   </button>
                 ))}
               </div>
-              <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="font-mono text-xs font-semibold text-primary hover:underline">
-                /p/ana-souza-demo →
+              <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+                Abrir página pública <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </div>
@@ -137,20 +137,20 @@ function Index() {
                 Três etapas para sair do currículo genérico.
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Em vez de exigir que você saiba redigir um currículo corporativo do zero, traduzimos trabalhos práticos, TCC, iniciação científica ou repositórios em evidências claras.
+                Em vez de exigir que você saiba redigir um currículo corporativo do zero, traduzimos trabalhos práticos, TCC, extensão, iniciação científica ou projetos em evidências claras.
               </p>
             </div>
 
             {/* Contextual Before -> After Visual Card */}
             <div className="rounded-xl border border-border bg-background p-4 shadow-xs space-y-3">
               <div className="rounded-lg border border-dashed border-border bg-muted/50 p-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Antes · Anotação solta / Repositório</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Antes · Anotação solta ou trabalho da faculdade</span>
                 <p className="mt-1 text-xs italic text-muted-foreground">
-                  "Fiz um app de caronas na disciplina de Engenharia de Software com React e bastante gente do campus usou…"
+                  "Organizei um projeto de caronas na faculdade e bastante gente do campus começou a usar no dia a dia…"
                 </p>
               </div>
               <div className="flex items-center justify-center text-xs font-bold text-primary">
-                ↓ Estruturação STAR Fact-Safe
+                ↓ Estruturação pelo Método STAR
               </div>
               <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
                 <div className="flex items-center justify-between">
@@ -168,19 +168,19 @@ function Index() {
             {[
               {
                 num: "01",
-                tag: "GitHub API · PDF · Guiado",
+                tag: "Currículo PDF · Texto · Passo a Passo",
                 t: "Coleta sem síndrome da página em branco",
-                d: "Sincronize seus repositórios públicos do GitHub, envie o PDF exportado do LinkedIn ou use modelos de frases prontas para contar sua história em 3 passos.",
+                d: "Envie seu currículo em PDF, cole o texto do seu perfil ou use modelos de frases prontas para contar sua história em 3 passos simples.",
               },
               {
                 num: "02",
-                tag: "Método STAR · Fact-Safe",
+                tag: "Método STAR · Fiel à sua história",
                 t: "Estruturação executiva sem inventar dados",
-                d: "A IA organiza seu projeto principal em Contexto, Ação na prática e Resultados mensuráveis — mantendo 100% de fidelidade aos fatos que você informou.",
+                d: "A IA organiza sua experiência principal em Contexto, Ação na prática e Resultados mensuráveis — mantendo total fidelidade aos fatos que você informou.",
               },
               {
                 num: "03",
-                tag: "Link /p/slug · QR Code · PDF",
+                tag: "Link Público · QR Code · PDF",
                 t: "Dois formatos prontos para o recrutador",
                 d: "Com um clique, publique uma página web de leitura rápida e um Pitch Deck interativo de 5 slides (com modo tela cheia e impressão nativa em PDF).",
               },
@@ -207,25 +207,25 @@ function Index() {
         <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="overflow-hidden rounded-xl border border-border bg-card lg:grid lg:grid-cols-[1.35fr_0.85fr]">
             <div className="p-7 sm:p-10">
-              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Modelo B2B2C Sustentável</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Parcerias Institucionais</p>
               <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                Para Universidades, Bootcamps e Feiras de Carreira
+                Para Universidades, Escolas Técnicas e Feiras de Carreira
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                Instituições de ensino superior e escolas técnicas licenciam o PitchFolio para padronizar a vitrine de alunos formandos, conectar turmas inteiras a empresas parceiras e acompanhar taxas de empregabilidade por curso.
+                Instituições de ensino superior e escolas técnicas utilizam o PitchFolio para padronizar a vitrine de alunos formandos, conectar turmas inteiras a empresas parceiras e acompanhar taxas de empregabilidade por curso.
               </p>
               <div className="mt-6 flex flex-wrap gap-2 text-xs font-medium">
                 <span className="rounded-md border border-border bg-background px-3 py-1.5">Diretório de Talentos Verificados</span>
                 <span className="rounded-md border border-border bg-background px-3 py-1.5">Catálogo QR para Feiras</span>
-                <span className="rounded-md border border-border bg-background px-3 py-1.5">Métricas por Coorte</span>
+                <span className="rounded-md border border-border bg-background px-3 py-1.5">Indicadores por Turma</span>
               </div>
 
               {/* Contextual Institutional Directory Preview */}
               <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
                 {[
                   { img: "/visuals/avatar-ana.svg", name: "Ana Souza", course: "Eng. Software · 6º per.", metric: "1.200 viagens" },
-                  { img: "/visuals/avatar-dev.svg", name: "Lucas Mendes", course: "Ciência de Dados · 8º per.", metric: "-42% latência" },
-                  { img: "/visuals/avatar-design.svg", name: "Marina Costa", course: "Design Digital · 7º per.", metric: "94% precisão" },
+                  { img: "/visuals/avatar-dev.svg", name: "Lucas Mendes", course: "Administração · 8º per.", metric: "-42% tempo" },
+                  { img: "/visuals/avatar-design.svg", name: "Marina Costa", course: "Design & Comunicação · 7º per.", metric: "94% aprovação" },
                 ].map((st) => (
                   <div key={st.name} className="flex items-center gap-2.5 rounded-lg border border-border bg-background p-2.5">
                     <img src={st.img} alt={st.name} className="h-9 w-9 shrink-0 rounded-lg border border-border object-cover" />
@@ -244,7 +244,7 @@ function Index() {
             <div className="flex flex-col justify-between border-t border-border bg-secondary/45 p-7 sm:p-10 lg:border-l lg:border-t-0">
               <div>
                 <span className="inline-block rounded bg-primary px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
-                  100% Gratuito no B2C
+                  100% Gratuito para Candidatos
                 </span>
                 <h3 className="mt-3 font-display text-xl font-bold">Para Estudantes e Candidatos</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

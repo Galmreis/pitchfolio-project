@@ -4,15 +4,15 @@ export type SectionOrder = "project_first" | "journey_first";
 export type LayoutStyle = "bento" | "split" | "indice";
 
 export const THEMES: { id: ThemeName; label: string; layoutLabel: string }[] = [
-  { id: "moderno", label: "Moderno", layoutLabel: "Bento" },
-  { id: "quente", label: "Quente", layoutLabel: "Split" },
-  { id: "minimal", label: "Minimal", layoutLabel: "Índice" },
+  { id: "moderno", label: "Moderno", layoutLabel: "Painel" },
+  { id: "quente", label: "Quente", layoutLabel: "Coluna" },
+  { id: "minimal", label: "Minimal", layoutLabel: "Editorial" },
 ];
 
 export const LAYOUT_STYLES: { id: LayoutStyle; label: string }[] = [
-  { id: "bento", label: "Bento Grid" },
+  { id: "bento", label: "Painel em Blocos" },
   { id: "split", label: "Coluna Lateral" },
-  { id: "indice", label: "Índice Linear" },
+  { id: "indice", label: "Editorial Limpo" },
 ];
 
 export function resolveLayoutStyle(theme: ThemeName, custom?: LayoutStyle): LayoutStyle {
@@ -37,9 +37,9 @@ export const AVATAR_PRESETS: { label: string; url: string }[] = [
 ];
 
 export const PROJECT_IMAGE_PRESETS: { label: string; url: string }[] = [
-  { label: "App & Rotas", url: "/visuals/project-caronas.svg" },
-  { label: "Analytics & Dados", url: "/visuals/project-analytics.svg" },
-  { label: "Arquitetura Web", url: "/visuals/project-system.svg" },
+  { label: "Projeto & Impacto", url: "/visuals/project-caronas.svg" },
+  { label: "Dados & Indicadores", url: "/visuals/project-analytics.svg" },
+  { label: "Processo & Sistema", url: "/visuals/project-system.svg" },
 ];
 
 export type RawAnswers = {
