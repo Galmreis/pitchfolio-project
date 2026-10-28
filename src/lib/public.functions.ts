@@ -11,7 +11,8 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     if (data.slug === "ana-souza-demo") {
       const demoPortfolio: Portfolio = localStructure(DEMO_ANSWERS);
-      return { slug: "ana-souza-demo", theme: "moderno" as ThemeName, portfolio: demoPortfolio, deck: createDeck(demoPortfolio) };
+      const { applySectionsToDeck, EMPTY_SECTIONS } = await import("@/services/portfolioSections.service");
+      return { slug: "ana-souza-demo", theme: "moderno" as ThemeName, portfolio: demoPortfolio, deck: applySectionsToDeck(createDeck(demoPortfolio), EMPTY_SECTIONS), sections: EMPTY_SECTIONS };
     }
     const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
     const sb = createClient<Database>(process.env["SUPABASE_URL"]!, key, {
@@ -45,5 +46,7 @@ export const getPublicPortfolio = createServerFn({ method: "GET" })
     const parsedDeck = deckSchema.safeParse(deckRow);
     const deck: FiveSlideDeck = parsedDeck.success ? parsedDeck.data : createDeck(portfolio.data);
 
-    return { slug: row.slug, theme: theme.data, portfolio: portfolio.data, deck };
+    const { loadVisibleSections, applySectionsToDeck } = await import("@/services/portfolioSections.service");
+    const sections = await loadVisibleSections(sb, row.id);
+    return { slug: row.slug, theme: theme.data, portfolio: portfolio.data, deck: applySectionsToDeck(deck, sections), sections };
   });

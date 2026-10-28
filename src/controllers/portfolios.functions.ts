@@ -33,7 +33,7 @@ export const generatePitchDeck = createServerFn({ method: "POST" })
 // Retrieves the pitch deck of a published portfolio
 export const getPortfolioDeck = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: slugSchema }).parse(input))
-  .handler(async ({ data }): Promise<{ deck: FiveSlideDeck }> => {
+  .handler(async ({ data }) => {
     const { createRequestCloudClient } = await import("@/config/cloud.server");
     const client = createRequestCloudClient();
     const { data: row } = await client
@@ -54,5 +54,7 @@ export const getPortfolioDeck = createServerFn({ method: "GET" })
 
     const parsedDeck = deckSchema.safeParse(deckRow);
     const deck: FiveSlideDeck = parsedDeck.success ? parsedDeck.data : createDeck(parsed.data);
-    return { deck };
+    const { loadVisibleSections, applySectionsToDeck } = await import("@/services/portfolioSections.service");
+    const sections = await loadVisibleSections(client, row.id);
+    return { deck: applySectionsToDeck(deck, sections), sections };
   });

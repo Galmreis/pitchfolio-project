@@ -47,3 +47,28 @@ describe("Curation request", () => {
     expect(curationRequestSchema.safeParse({ items: [{ section: "skills", id, is_visible: false }] }).success).toBe(true);
   });
 });
+
+import { applySectionsToDeck, EMPTY_SECTIONS } from "@/services/portfolioSections.service";
+import { createDeck } from "@/validators/portfolio";
+import { localStructure, DEMO_ANSWERS } from "@/lib/portfolio";
+
+describe("Sections feed the deck", () => {
+  const base = createDeck(localStructure(DEMO_ANSWERS));
+  it("uses curated skills on slide 3 and the highlighted project on slide 4", () => {
+    const deck = applySectionsToDeck(base, {
+      ...EMPTY_SECTIONS,
+      skills: [{ id: "1", name: "SQL", category: "hard_skill", source: "manual" }],
+      projects: [
+        { id: "a", name: "Outro", description: "", technologies: [], repository_url: null, deploy_url: null, stars: 0, is_highlight: false },
+        { id: "b", name: "Estrela", description: "", technologies: [], repository_url: null, deploy_url: null, stars: 5, is_highlight: true },
+      ],
+    });
+    expect(deck.slide_3_skills.skills).toEqual(["SQL"]);
+    expect(deck.slide_4_highlight.title).toBe("Estrela");
+  });
+  it("keeps the original deck when nothing was imported", () => {
+    const deck = applySectionsToDeck(base, EMPTY_SECTIONS);
+    expect(deck.slide_3_skills.skills).toEqual(base.slide_3_skills.skills);
+    expect(deck.slide_4_highlight.title).toBe(base.slide_4_highlight.title);
+  });
+});
