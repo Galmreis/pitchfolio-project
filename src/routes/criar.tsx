@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, ArrowRight, Loader2, Sparkles, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Sparkles, Check, FileUp } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/pf/Logo";
 import { structurePortfolio } from "@/lib/ai.functions";
+import { extractResume } from "@/lib/resume.functions";
 import { ANSWERS_KEY, DRAFT_KEY, EMPTY_ANSWERS, splitSkills, type RawAnswers } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/criar")({
@@ -41,8 +42,10 @@ function Criar() {
   const [step, setStep] = useState(0);
   const [a, setA] = useState<RawAnswers>(EMPTY_ANSWERS);
   const [loading, setLoading] = useState(false);
+  const [importing, setImporting] = useState(false);
   const navigate = useNavigate();
   const structure = useServerFn(structurePortfolio);
+  const extract = useServerFn(extractResume);
 
   useEffect(() => {
     const saved = localStorage.getItem(ANSWERS_KEY);
@@ -58,6 +61,31 @@ function Criar() {
     a.challenge.trim() && a.action.trim() && a.result.trim(),
     splitSkills(a.skills).length >= 3 && a.goal.trim(),
   ][step];
+
+  async function importPdf(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return void toast.error("O PDF deve ter no máximo 5 MB.");
+    setImporting(true);
+    try {
+      const buf = new Uint8Array(await file.arrayBuffer());
+      let bin = "";
+      for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+      const { answers, error } = await extract({ data: { filename: file.name, base64: btoa(bin) } });
+      if (!answers) return void toast.error(error ?? "Não foi possível ler o currículo.");
+      setA((s) => {
+        const next = { ...s };
+        for (const [k, v] of Object.entries(answers)) if (v) next[k as keyof RawAnswers] = v;
+        return next;
+      });
+      toast.success("Currículo importado! Revise os campos antes de gerar.");
+    } catch {
+      toast.error("Não foi possível ler o currículo agora.");
+    } finally {
+      setImporting(false);
+    }
+  }
 
   async function generate() {
     setLoading(true);
@@ -104,6 +132,18 @@ function Criar() {
           ))}
         </div>
 
+        {step === 0 && (
+          <label className="mb-6 flex cursor-pointer items-center gap-4 rounded-3xl border border-dashed border-primary/50 bg-primary/5 p-5 transition hover:bg-primary/10">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              {importing ? <Loader2 className="h-6 w-6 animate-spin" /> : <FileUp className="h-6 w-6" />}
+            </div>
+            <div>
+              <p className="font-semibold">{importing ? "Lendo seu currículo…" : "Importar currículo (PDF)"}</p>
+              <p className="text-sm text-muted-foreground">A IA preenche os 3 passos com os dados do seu currículo. Até 5 MB.</p>
+            </div>
+            <input type="file" accept="application/pdf,.pdf" className="sr-only" disabled={importing} onChange={importPdf} aria-label="Importar currículo em PDF" />
+          </label>
+        )}
         <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-10">
           <h1 className="text-3xl font-bold sm:text-4xl">{STEPS[step]}</h1>
           <div className="mt-8 space-y-6">
