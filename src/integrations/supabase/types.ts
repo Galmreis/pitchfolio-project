@@ -181,6 +181,19 @@ export type Database = {
     }
     Functions: {
       consume_pitchfolio_budget: { Args: { p_kind: string }; Returns: boolean }
+      publish_pitchfolio_draft: {
+        Args: {
+          p_data: Json
+          p_input_method?: Database["public"]["Enums"]["portfolio_input_method"]
+          p_photo_url?: string
+          p_slug?: string
+          p_theme: Database["public"]["Enums"]["portfolio_theme"]
+        }
+        Returns: {
+          portfolio_id: string
+          slug: string
+        }[]
+      }
     }
     Enums: {
       portfolio_input_method:

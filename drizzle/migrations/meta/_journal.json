@@ -15,6 +15,13 @@
       "when": 1793190246126,
       "tag": "0001_pitchfolio_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793190271454,
+      "tag": "0002_pitchfolio_atomic_publish_validation",
+      "breakpoints": true
     }
   ]
 }
