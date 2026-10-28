@@ -30,36 +30,47 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
 
       {/* 01 · Case Study (STAR Method) */}
       <section className="mx-auto max-w-4xl border-t border-pf-line px-6 py-14 md:px-10">
-        <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <div>
-            <span className="font-mono text-xs text-pf-muted">01 / Caso em destaque</span>
-            <h2 className="mt-1 font-display text-2xl font-bold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
-          </div>
-          {p.metrics.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {p.metrics.map((m, i) => (
-                <span key={i} className="rounded-lg bg-pf-accent px-3.5 py-1 font-mono text-xs font-semibold text-pf-accent-fg shadow-xs">
-                  {m}
-                </span>
-              ))}
-            </div>
-          )}
+        <div>
+          <span className="font-mono text-xs text-pf-muted">01 / Caso em destaque (Método STAR)</span>
+          <h2 className="mt-1 font-display text-2xl font-bold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {[
-            { num: "01", t: "Contexto & Desafio", d: p.challenge },
-            { num: "02", t: "Execução na prática", d: p.action },
-            { num: "03", t: "Resultados & Impacto", d: p.result },
-          ].map(({ num, t, d }) => (
-            <div key={num} className="rounded-xl border border-pf-line bg-pf-card p-5 space-y-2.5">
-              <div className="flex items-center gap-2">
-                <span className="rounded bg-pf-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">{num}</span>
-                <h3 className="text-sm font-semibold">{t}</h3>
-              </div>
-              <p className="text-sm leading-relaxed text-pf-muted">{d}</p>
+        <div className="mt-8 grid gap-4 md:grid-cols-[0.95fr_1.15fr]">
+          <div className="rounded-lg border border-pf-line bg-pf-card p-5 space-y-2.5">
+            <div className="flex items-center gap-2">
+              <span className="rounded bg-pf-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">S / T</span>
+              <h3 className="text-sm font-semibold">Contexto & Desafio</h3>
             </div>
-          ))}
+            <p className="text-sm leading-relaxed text-pf-muted">{p.challenge}</p>
+          </div>
+          <div className="rounded-lg border border-pf-line bg-pf-card p-5 space-y-2.5">
+            <div className="flex items-center gap-2">
+              <span className="rounded bg-pf-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">A</span>
+              <h3 className="text-sm font-semibold">Execução na prática</h3>
+            </div>
+            <p className="text-sm leading-relaxed text-pf-muted">{p.action}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-lg border border-pf-line border-l-4 border-l-pf-accent bg-pf-card p-5 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="max-w-xl space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-pf-accent px-1.5 py-0.5 font-mono text-[11px] font-bold text-pf-accent-fg">R</span>
+                <h3 className="text-sm font-bold">Resultados & Impacto</h3>
+              </div>
+              <p className="text-sm leading-relaxed text-pf-fg sm:text-base">{p.result}</p>
+            </div>
+            {p.metrics.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {p.metrics.map((m, i) => (
+                  <span key={i} className="rounded-md bg-pf-accent px-3 py-1.5 font-mono text-xs font-bold text-pf-accent-fg shadow-xs">
+                    {m}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

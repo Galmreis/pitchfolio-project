@@ -233,88 +233,72 @@ function Criar() {
           ))}
         </div>
 
-        {step === 0 && (
-          <div className="mb-6 space-y-3">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-primary/50 bg-primary/5 p-3.5 transition hover:bg-primary/10">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  {importing ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileUp className="h-5 w-5" />}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">{importing ? "Lendo…" : "Importar PDF"}</p>
-                  <p className="truncate text-xs text-muted-foreground">Currículo até 5 MB</p>
-                </div>
-                <input type="file" accept="application/pdf,.pdf" className="sr-only" disabled={importing} onChange={importPdf} aria-label="Importar currículo em PDF" />
-              </label>
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-10">
+          <div className="flex flex-wrap items-baseline justify-between gap-4">
+            <h1 className="text-3xl font-bold sm:text-4xl">{STEPS[step]}</h1>
+            {step === 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/15">
+                  {importing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileUp className="h-3.5 w-3.5" />}
+                  {importing ? "Lendo…" : "Importar PDF"}
+                  <input type="file" accept="application/pdf,.pdf" className="sr-only" disabled={importing} onChange={importPdf} aria-label="Importar currículo em PDF" />
+                </label>
 
-              <button
-                type="button"
-                disabled={importing}
-                onClick={() => setPasteOpen((v) => !v)}
-                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3.5 text-left transition hover:border-primary/50"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
-                  <Github className="h-5 w-5" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">GitHub & LinkedIn</p>
-                  <p className="truncate text-xs text-muted-foreground">Sincronizar perfil e repos</p>
-                </div>
-              </button>
+                <button
+                  type="button"
+                  disabled={importing}
+                  onClick={() => setPasteOpen((v) => !v)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary/40"
+                >
+                  <Github className="h-3.5 w-3.5" /> GitHub / LinkedIn
+                </button>
 
-              <button
-                type="button"
-                onClick={fillDemo}
-                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3.5 text-left transition hover:border-primary/50"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                  <Wand2 className="h-5 w-5" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">Usar exemplo</p>
-                  <p className="truncate text-xs text-muted-foreground">Dados fictícios (Demo)</p>
-                </div>
-              </button>
-            </div>
-
-            {pasteOpen && (
-              <div className="space-y-4 rounded-xl border border-border bg-card p-5">
-                <div className="space-y-1.5">
-                  <Label className="flex items-center gap-1.5 text-sm font-semibold">
-                    <Github className="h-4 w-4" /> Usuário ou link do GitHub (opcional)
-                  </Label>
-                  <p className="text-xs text-muted-foreground">Buscamos sua bio, linguagens mais usadas e seu repositório de maior destaque via GitHub API.</p>
-                  <Input
-                    value={githubInput}
-                    onChange={(e) => setGithubInput(e.target.value)}
-                    placeholder="ex: torvalds ou github.com/seu-usuario"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="flex items-center gap-1.5 text-sm font-semibold">
-                    <ClipboardPaste className="h-4 w-4" /> Texto do LinkedIn ou currículo (opcional)
-                  </Label>
-                  <p className="text-xs text-muted-foreground">No LinkedIn, clique em "Mais → Salvar como PDF" (use o botão acima) ou cole sua seção Sobre e Experiências aqui.</p>
-                  <Textarea
-                    rows={4}
-                    value={pasteText}
-                    onChange={(e) => setPasteText(e.target.value)}
-                    placeholder="Cole aqui sua seção Sobre, experiências, projetos e habilidades…"
-                  />
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => setPasteOpen(false)}>Cancelar</Button>
-                  <Button size="sm" disabled={importing || (!githubInput.trim() && pasteText.trim().length < 20)} onClick={importPastedText}>
-                    {importing ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Sparkles className="mr-1.5 h-4 w-4" />}
-                    Importar e resumir com IA
-                  </Button>
-                </div>
+                <button
+                  type="button"
+                  onClick={fillDemo}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+                >
+                  <Wand2 className="h-3.5 w-3.5 text-primary" /> Usar exemplo
+                </button>
               </div>
             )}
           </div>
-        )}
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-10">
-          <h1 className="text-3xl font-bold sm:text-4xl">{STEPS[step]}</h1>
+
+          {step === 0 && pasteOpen && (
+            <div className="mt-5 space-y-4 rounded-lg border border-border bg-secondary/30 p-4">
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5 text-sm font-semibold">
+                  <Github className="h-4 w-4" /> Usuário ou link do GitHub (opcional)
+                </Label>
+                <p className="text-xs text-muted-foreground">Buscamos sua bio, linguagens mais usadas e seu repositório de maior destaque via GitHub API.</p>
+                <Input
+                  value={githubInput}
+                  onChange={(e) => setGithubInput(e.target.value)}
+                  placeholder="ex: torvalds ou github.com/seu-usuario"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5 text-sm font-semibold">
+                  <ClipboardPaste className="h-4 w-4" /> Texto do LinkedIn ou currículo (opcional)
+                </Label>
+                <p className="text-xs text-muted-foreground">No LinkedIn, clique em "Mais → Salvar como PDF" (use o botão acima) ou cole sua seção Sobre e Experiências aqui.</p>
+                <Textarea
+                  rows={4}
+                  value={pasteText}
+                  onChange={(e) => setPasteText(e.target.value)}
+                  placeholder="Cole aqui sua seção Sobre, experiências, projetos e habilidades…"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="ghost" size="sm" onClick={() => setPasteOpen(false)}>Cancelar</Button>
+                <Button size="sm" disabled={importing || (!githubInput.trim() && pasteText.trim().length < 20)} onClick={importPastedText}>
+                  {importing ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Sparkles className="mr-1.5 h-4 w-4" />}
+                  Importar e resumir com IA
+                </Button>
+              </div>
+            </div>
+          )}
+
           <div className="mt-8 space-y-6">
             {step === 0 && (
               <>

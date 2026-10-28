@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Presentation, LayoutTemplate, Share2, Clock, Github, FileText, Building2, GraduationCap } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/pf/Logo";
 import { PitchDeck } from "@/components/pf/PitchDeck";
@@ -38,96 +38,129 @@ function Index() {
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 pb-20 pt-8 lg:grid-cols-[1fr_1.15fr] lg:pt-14">
-        <div>
-          <p className="font-mono text-xs text-muted-foreground">
-            01 · Dossiê STAR & Pitch Deck em 5 slides
-          </p>
-          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl">
-            Sua trajetória traduzida em um <span className="text-primary">dossiê executivo</span> e pitch de 5 slides.
+      <section className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-20 pt-6 lg:grid-cols-[0.9fr_1.2fr] lg:gap-14 lg:pt-12">
+        <div className="lg:pt-4">
+          <span className="inline-block rounded-md bg-primary/10 px-2.5 py-1 font-mono text-xs font-semibold text-primary">
+            Empregabilidade & 1ª Oportunidade
+          </span>
+          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">
+            Transforme projetos acadêmicos e código em um <span className="text-primary">pitch de 5 slides</span>.
           </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
-            Recrutadores descartam currículos genéricos em segundos. Sincronize seu GitHub, envie seu PDF do LinkedIn ou responda 3 perguntas para estruturar um estudo de caso pelo Método STAR e uma apresentação navegável.
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+            Quem busca o primeiro emprego trava na página em branco. O PitchFolio lê seu GitHub, seu PDF do LinkedIn ou suas respostas guiadas e estrutura um dossiê pelo Método STAR pronto para entrevistas.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg" className="h-11 rounded-lg px-6 text-sm font-medium">
-              <Link to="/criar">Criar meu portfólio <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+            <Button asChild size="lg" className="h-11 rounded-lg px-6 text-sm font-semibold">
+              <Link to="/criar">Montar meu pitch agora <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="h-11 rounded-lg px-5 text-sm font-medium">
-              <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }}>Ver exemplo público</Link>
+              <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }}>
+                Ver dossiê publicado <ArrowUpRight className="ml-1 h-4 w-4" />
+              </Link>
             </Button>
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-5 border-t border-border pt-5 font-mono text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Github className="h-3.5 w-3.5 text-foreground" /> GitHub API</span>
-            <span className="inline-flex items-center gap-1.5"><FileText className="h-3.5 w-3.5 text-foreground" /> PDF / LinkedIn</span>
-            <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-foreground" /> Sem cadastro prévio</span>
-          </div>
+          <p className="mt-4 font-mono text-xs text-muted-foreground">
+            Sem cadastro prévio · Importação via GitHub API ou PDF
+          </p>
         </div>
 
         {/* Live Interactive 5-Slide Deck right in the Hero */}
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
           <div className="mb-3 flex items-center justify-between font-mono text-xs text-muted-foreground">
-            <span>Prévia interativa · Ana Souza</span>
-            <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="text-foreground underline underline-offset-4">
-              Abrir dossiê completo
+            <span>Demonstração ao vivo · Navegue pelos 5 slides</span>
+            <Link to="/p/$slug" params={{ slug: "ana-souza-demo" }} className="font-semibold text-primary hover:underline">
+              /p/ana-souza-demo →
             </Link>
           </div>
           <PitchDeck p={DEMO_PORTFOLIO} deck={DEMO_DECK} theme="moderno" />
         </div>
       </section>
 
+      {/* Asymmetric 1/3 + 2/3 Editorial Ledger (replaces symmetrical 3-card feature row) */}
       <section className="border-t border-border bg-card">
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-3 md:gap-0 md:divide-x md:divide-border">
-          {[
-            { icon: LayoutTemplate, num: "01", t: "Dossiê pelo Método STAR", d: "A IA transforma atividades de faculdade, estágio ou GitHub em Contexto, Execução na prática e Resultados verificáveis." },
-            { icon: Presentation, num: "02", t: "Pitch Deck de 5 slides", d: "Apresentação estruturada pronta para entrevistas técnicas, dinâmicas de grupo e feiras de recrutamento." },
-            { icon: Share2, num: "03", t: "Link público e exportação PDF", d: "Publique seu link /p/seu-nome com QR Code ou exporte os 5 slides em PDF para anexar em processos seletivos." },
-          ].map(({ icon: Icon, num, t, d }, idx) => (
-            <div key={num} className={`space-y-3 ${idx > 0 ? "md:pl-8" : ""} ${idx < 2 ? "md:pr-8" : ""}`}>
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span className="font-mono text-xs">{num}</span>
-                <Icon className="h-4 w-4 text-foreground" />
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[0.8fr_1.4fr] lg:gap-16">
+          <div>
+            <p className="font-mono text-xs font-semibold text-primary">01 / Como funciona</p>
+            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+              Três etapas para sair do currículo genérico.
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Em vez de exigir que você saiba redigir um currículo corporativo do zero, traduzimos trabalhos práticos, TCC, iniciação científica ou repositórios em evidências claras.
+            </p>
+          </div>
+
+          <div className="divide-y divide-border border-t border-border lg:border-t-0">
+            {[
+              {
+                num: "01",
+                tag: "GitHub API · PDF · Guiado",
+                t: "Coleta sem síndrome da página em branco",
+                d: "Sincronize seus repositórios públicos do GitHub, envie o PDF exportado do LinkedIn ou use modelos de frases prontas para contar sua história em 3 passos.",
+              },
+              {
+                num: "02",
+                tag: "Método STAR · Fact-Safe",
+                t: "Estruturação executiva sem inventar dados",
+                d: "A IA organiza seu projeto principal em Contexto, Ação na prática e Resultados mensuráveis — mantendo 100% de fidelidade aos fatos que você informou.",
+              },
+              {
+                num: "03",
+                tag: "Link /p/slug · QR Code · PDF",
+                t: "Dois formatos prontos para o recrutador",
+                d: "Com um clique, publique uma página web de leitura rápida e um Pitch Deck interativo de 5 slides (com modo tela cheia e impressão nativa em PDF).",
+              },
+            ].map(({ num, tag, t, d }) => (
+              <div key={num} className="grid gap-3 py-6 first:pt-4 lg:first:pt-0 sm:grid-cols-[56px_1fr]">
+                <span className="font-mono text-sm font-bold text-primary">{num}</span>
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="font-display text-lg font-bold">{t}</h3>
+                    <span className="rounded bg-secondary px-2 py-0.5 font-mono text-[11px] font-medium text-secondary-foreground">
+                      {tag}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{d}</p>
+                </div>
               </div>
-              <h2 className="font-display text-lg font-semibold">{t}</h2>
-              <p className="text-sm leading-relaxed text-muted-foreground">{d}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
+      {/* Asymmetric B2B2C Split Block (replaces twin 2-column cards) */}
       <section className="border-t border-border">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <div className="max-w-2xl">
-            <p className="font-mono text-xs text-muted-foreground">02 · Modelo de negócio B2B2C</p>
-            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              Gratuito para quem busca a primeira vaga. <span className="text-primary">Escalável</span> para quem forma talentos.
-            </h2>
-          </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="rounded-xl border border-border bg-card p-7">
-              <div className="flex items-center justify-between border-b border-border pb-4">
-                <div>
-                  <h3 className="font-display text-lg font-semibold">Estudantes e Candidatos</h3>
-                  <p className="font-mono text-xs text-muted-foreground">B2C · Acesso gratuito (Freemium)</p>
-                </div>
-                <GraduationCap className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                Criação ilimitada de rascunhos, importação via GitHub e PDF do LinkedIn, estruturação com IA fact-safe, 3 temas editoriais e link público compartilhável.
+          <div className="overflow-hidden rounded-xl border border-border bg-card lg:grid lg:grid-cols-[1.35fr_0.85fr]">
+            <div className="p-7 sm:p-10">
+              <p className="font-mono text-xs font-semibold text-primary">02 / Modelo B2B2C Sustentável</p>
+              <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Para Universidades, Bootcamps e Feiras de Carreira
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                Instituições de ensino superior e escolas técnicas licenciam o PitchFolio para padronizar a vitrine de alunos formandos, conectar turmas inteiras a empresas parceiras e acompanhar taxas de empregabilidade por curso.
               </p>
+              <div className="mt-6 flex flex-wrap gap-2 font-mono text-xs">
+                <span className="rounded-md border border-border bg-background px-3 py-1.5 font-medium">Diretório de Talentos Verificados</span>
+                <span className="rounded-md border border-border bg-background px-3 py-1.5 font-medium">Catálogo QR para Feiras</span>
+                <span className="rounded-md border border-border bg-background px-3 py-1.5 font-medium">Métricas por Coorte</span>
+              </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-card p-7">
-              <div className="flex items-center justify-between border-b border-border pb-4">
-                <div>
-                  <h3 className="font-display text-lg font-semibold">Universidades, Bootcamps e HR Techs</h3>
-                  <p className="font-mono text-xs text-muted-foreground">B2B · Licenciamento institucional (SaaS)</p>
-                </div>
-                <Building2 className="h-5 w-5 text-muted-foreground" />
+            <div className="flex flex-col justify-between border-t border-border bg-secondary/45 p-7 sm:p-10 lg:border-l lg:border-t-0">
+              <div>
+                <span className="inline-block rounded bg-primary px-2 py-0.5 font-mono text-[11px] font-bold text-primary-foreground">
+                  100% Gratuito no B2C
+                </span>
+                <h3 className="mt-3 font-display text-xl font-bold">Para Estudantes e Candidatos</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  Quem está buscando estágio ou primeiro emprego nunca paga para criar, editar, exportar em PDF ou publicar seu link público.
+                </p>
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                Diretório padronizado de alunos formandos para feiras de carreira, métricas agregadas de empregabilidade por curso e vitrine verificada de talentos para empresas parceiras.
-              </p>
+              <div className="mt-6 pt-4 border-t border-border/80">
+                <Link to="/criar" className="inline-flex items-center font-display text-sm font-bold text-primary hover:underline">
+                  Criar meu portfólio gratuito <ArrowRight className="ml-1.5 h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
