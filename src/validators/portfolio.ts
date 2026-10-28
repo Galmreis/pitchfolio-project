@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 // React escapes plain text. Reject markup instead of mutating career facts.
+// eslint-disable-next-line no-control-regex
 const text = (max: number, min = 0) => z.string().trim().min(min).max(max).refine((s) => !/[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(s), "Use apenas texto, sem HTML.");
 const link = text(500).refine((s) => {
   if (!s) return true;
