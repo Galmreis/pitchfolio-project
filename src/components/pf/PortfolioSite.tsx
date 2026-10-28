@@ -9,11 +9,11 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
       <section className="mx-auto max-w-4xl px-6 pb-14 pt-12 md:px-10 md:pt-16">
         <div className="flex flex-wrap items-start justify-between gap-6 border-b border-pf-line pb-8">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-pf-line bg-pf-card font-mono text-sm font-semibold text-pf-fg">
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-xl bg-pf-accent font-mono text-sm font-bold text-pf-accent-fg shadow-xs">
               {initials || "PF"}
             </div>
             <div>
-              <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight md:text-3xl">{p.name || "Seu nome"}</h1>
+              <h1 className="font-display text-2xl font-bold leading-tight tracking-tight md:text-3xl">{p.name || "Seu nome"}</h1>
               <p className="mt-0.5 font-mono text-xs text-pf-muted">{p.role || "Área de atuação"}</p>
             </div>
           </div>
@@ -33,12 +33,12 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
         <div className="flex flex-wrap items-baseline justify-between gap-4">
           <div>
             <span className="font-mono text-xs text-pf-muted">01 / Caso em destaque</span>
-            <h2 className="mt-1 font-display text-2xl font-semibold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
+            <h2 className="mt-1 font-display text-2xl font-bold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
           </div>
           {p.metrics.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {p.metrics.map((m, i) => (
-                <span key={i} className="rounded-md border border-pf-line bg-pf-card px-3 py-1 font-mono text-xs font-medium text-pf-fg">
+                <span key={i} className="rounded-lg bg-pf-accent px-3.5 py-1 font-mono text-xs font-semibold text-pf-accent-fg shadow-xs">
                   {m}
                 </span>
               ))}
@@ -46,15 +46,15 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
           )}
         </div>
 
-        <div className="mt-8 grid gap-6 border-t border-pf-line pt-8 md:grid-cols-3 md:gap-0 md:divide-x md:divide-pf-line">
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
           {[
             { num: "01", t: "Contexto & Desafio", d: p.challenge },
             { num: "02", t: "Execução na prática", d: p.action },
             { num: "03", t: "Resultados & Impacto", d: p.result },
-          ].map(({ num, t, d }, idx) => (
-            <div key={num} className={`space-y-2 ${idx > 0 ? "md:pl-6" : ""} ${idx < 2 ? "md:pr-6" : ""}`}>
+          ].map(({ num, t, d }) => (
+            <div key={num} className="rounded-xl border border-pf-line bg-pf-card p-5 space-y-2.5">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-pf-muted">{num}</span>
+                <span className="rounded bg-pf-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">{num}</span>
                 <h3 className="text-sm font-semibold">{t}</h3>
               </div>
               <p className="text-sm leading-relaxed text-pf-muted">{d}</p>
@@ -68,10 +68,10 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
         <div className="grid gap-12 md:grid-cols-[1fr_1.3fr]">
           <div>
             <span className="font-mono text-xs text-pf-muted">02 / Competências</span>
-            <h2 className="mt-1 font-display text-xl font-semibold">Habilidades essenciais</h2>
+            <h2 className="mt-1 font-display text-xl font-bold">Habilidades essenciais</h2>
             <div className="mt-5 flex flex-wrap gap-2">
               {p.skills.map((s, i) => (
-                <span key={i} className="rounded-md border border-pf-line bg-pf-card px-3 py-1.5 font-mono text-xs font-medium">
+                <span key={i} className="rounded-lg border border-pf-line bg-pf-card px-3.5 py-2 text-xs font-semibold">
                   {s}
                 </span>
               ))}
@@ -81,11 +81,11 @@ export function PortfolioSite({ p, theme }: { p: Portfolio; theme: ThemeName }) 
           {p.journey.length > 0 && (
             <div>
               <span className="font-mono text-xs text-pf-muted">03 / Trajetória</span>
-              <h2 className="mt-1 font-display text-xl font-semibold">Marcos e evolução</h2>
-              <ol className="mt-5 space-y-4 border-l border-pf-line pl-5">
+              <h2 className="mt-1 font-display text-xl font-bold">Marcos e evolução</h2>
+              <ol className="mt-5 space-y-4 border-l-2 border-pf-line pl-5">
                 {p.journey.map((j, i) => (
                   <li key={i} className="relative text-sm leading-relaxed text-pf-muted">
-                    <span className="absolute -left-[24px] top-2 h-1.5 w-1.5 rounded-full bg-pf-fg" />
+                    <span className="absolute -left-[25px] top-1.5 h-2.5 w-2.5 rounded-full bg-pf-accent" />
                     <span className="text-pf-fg">{j}</span>
                   </li>
                 ))}

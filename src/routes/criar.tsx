@@ -28,6 +28,58 @@ export const Route = createFileRoute("/criar")({
 
 const STEPS = ["Quem é você?", "Seu projeto de maior impacto", "Habilidades e próximo passo"];
 
+const BIO_STARTERS = [
+  { label: "+ 1º Estágio / Júnior", text: "Estudante em busca do primeiro estágio, com base prática em projetos acadêmicos e facilidade para aprender rápido em equipe." },
+  { label: "+ Transição de carreira", text: "Profissional em transição de carreira, trazendo experiência prévia em resolução de problemas e foco prático na nova área." },
+  { label: "+ Foco em projetos práticos", text: "Desenvolvedor(a) em formação que aprende construindo soluções reais para problemas do dia a dia no campus e na comunidade." },
+];
+
+const CHALLENGE_STARTERS = [
+  { label: "+ Processo manual lento", text: "Colegas e equipes perdiam muito tempo organizando informações manualmente em planilhas desconectadas." },
+  { label: "+ Problema no campus / curso", text: "Alunos do curso enfrentavam dificuldade para acompanhar demandas e compartilhar materiais de forma centralizada." },
+  { label: "+ Projeto de disciplina / TCC", text: "Durante um projeto prático da graduação, precisávamos validar uma solução funcional com prazo curto e recursos limitados." },
+];
+
+const ACTION_STARTERS = [
+  { label: "+ Criei protótipo / sistema", text: "Desenvolvi uma aplicação web do zero, estruturei o banco de dados e testei o fluxo com usuários reais." },
+  { label: "+ Liderei a organização", text: "Organizei a divisão de tarefas da equipe, documentei o processo e construí os principais fluxos da solução." },
+  { label: "+ Automatizei tarefas", text: "Implementei um fluxo automatizado para centralizar os dados e eliminar o retrabalho manual da equipe." },
+];
+
+const RESULT_STARTERS = [
+  { label: "+ Redução de tempo", text: "Reduzi o tempo gasto na tarefa em cerca de 40% e facilitei a rotina de mais de 30 pessoas." },
+  { label: "+ Nota máxima / Destaque", text: "O projeto recebeu nota máxima da banca avaliadora e passou a ser utilizado como referência pelos alunos." },
+  { label: "+ Primeiros usuários", text: "Alcancei os primeiros 50 usuários ativos nas primeiras semanas e validei a solução na prática." },
+];
+
+const SKILL_SUGGESTIONS = [
+  "Comunicação", "Resolução de Problemas", "Trabalho em Equipe", "Proatividade",
+  "JavaScript", "TypeScript", "React", "Python", "SQL", "Git", "Figma", "Excel", "Inglês",
+];
+
+const GOAL_STARTERS = [
+  { label: "+ Estágio / 1º Emprego", text: "Busco minha primeira oportunidade de estágio ou posição júnior para aplicar minha base técnica e evoluir junto ao time." },
+  { label: "+ Trainee / Júnior", text: "Procuro atuar como pessoa desenvolvedora júnior ou trainee em projetos onde eu possa gerar impacto rápido e aprender com mentores." },
+];
+
+function StarterChips({ items, onSelect }: { items: { label: string; text: string }[]; onSelect: (text: string) => void }) {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+      <span className="text-[11px] font-medium text-muted-foreground mr-1">Não sabe como começar? Clique para usar um modelo:</span>
+      {items.map((item) => (
+        <button
+          key={item.label}
+          type="button"
+          onClick={() => onSelect(item.text)}
+          className="rounded-full border border-primary/25 bg-primary/5 px-2.5 py-1 text-xs font-medium text-primary transition hover:border-primary/50 hover:bg-primary/10"
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
@@ -63,6 +115,13 @@ function Criar() {
 
   const set = (k: keyof RawAnswers) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setA((s) => ({ ...s, [k]: e.target.value }));
+
+  const toggleSkill = (skill: string) => {
+    const current = splitSkills(a.skills);
+    const exists = current.some((s) => s.toLowerCase() === skill.toLowerCase());
+    const next = exists ? current.filter((s) => s.toLowerCase() !== skill.toLowerCase()) : [...current, skill];
+    setA((s) => ({ ...s, skills: next.join(", ") }));
+  };
 
   const valid = [
     a.name.trim() && a.area.trim() && a.bio.trim(),
@@ -261,36 +320,63 @@ function Criar() {
               <>
                 <Field label="Nome completo"><Input value={a.name} onChange={set("name")} placeholder="Ana Souza" /></Field>
                 <Field label="Área de atuação ou curso"><Input value={a.area} onChange={set("area")} placeholder="Engenharia de Software · UFPE" /></Field>
-                <Field label="Resumo de perfil" hint="Conte em poucas linhas quem você é e o que te move.">
+                <Field label="Resumo de perfil" hint="Conte em poucas linhas quem você é e o que te move. Não precisa ser formal — a IA lapida o texto depois.">
                   <Textarea rows={4} value={a.bio} onChange={set("bio")} placeholder="Sou estudante do 6º período, apaixonada por produtos que resolvem problemas reais…" />
+                  <StarterChips items={BIO_STARTERS} onSelect={(text) => setA((s) => ({ ...s, bio: text }))} />
                 </Field>
               </>
             )}
             {step === 1 && (
               <>
-                <Field label="Qual era o problema ou desafio?">
+                <div className="rounded-2xl border border-primary/25 bg-primary/5 px-4 py-3 text-xs leading-relaxed text-foreground">
+                  <strong className="font-semibold text-primary">Ainda não teve emprego formal?</strong> Tudo bem! Use um trabalho de disciplina, TCC, iniciação científica, empresa júnior, hackathon ou projeto pessoal. O que importa é mostrar como você resolve problemas (Método STAR).
+                </div>
+                <Field label="Qual era o problema ou desafio? (Situação / Tarefa)">
                   <Textarea rows={3} value={a.challenge} onChange={set("challenge")} placeholder="Alunos gastavam muito com transporte até o campus…" />
+                  <StarterChips items={CHALLENGE_STARTERS} onSelect={(text) => setA((s) => ({ ...s, challenge: text }))} />
                 </Field>
-                <Field label="O que você fez na prática?">
+                <Field label="O que você fez na prática? (Ação)">
                   <Textarea rows={3} value={a.action} onChange={set("action")} placeholder="Desenvolvi um app de caronas com React Native e organizei testes com 50 alunos…" />
+                  <StarterChips items={ACTION_STARTERS} onSelect={(text) => setA((s) => ({ ...s, action: text }))} />
                 </Field>
-                <Field label="Quais foram os resultados ou aprendizados?" hint="Números ajudam muito: usuários, %, tempo, prêmios.">
+                <Field label="Quais foram os resultados ou aprendizados? (Resultado)" hint="Números ajudam muito: usuários, %, tempo economizado, nota ou entregas.">
                   <Textarea rows={3} value={a.result} onChange={set("result")} placeholder="1.200 usuários em 4 meses, redução de 30% no custo médio…" />
+                  <StarterChips items={RESULT_STARTERS} onSelect={(text) => setA((s) => ({ ...s, result: text }))} />
                 </Field>
               </>
             )}
             {step === 2 && (
               <>
-                <Field label="Top 3 a 5 habilidades" hint="Técnicas e interpessoais, separadas por vírgula.">
+                <Field label="Top 3 a 5 habilidades" hint="Clique nas sugestões abaixo ou digite as suas separadas por vírgula.">
                   <Input value={a.skills} onChange={set("skills")} placeholder="React, Python, Liderança, Comunicação, SQL" />
+                  <div className="flex flex-wrap gap-1.5 pt-1.5">
+                    {SKILL_SUGGESTIONS.map((skill) => {
+                      const active = splitSkills(a.skills).some((s) => s.toLowerCase() === skill.toLowerCase());
+                      return (
+                        <button
+                          key={skill}
+                          type="button"
+                          onClick={() => toggleSkill(skill)}
+                          className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
+                            active
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                          }`}
+                        >
+                          {active ? `✓ ${skill}` : `+ ${skill}`}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </Field>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <Field label="LinkedIn"><Input value={a.linkedin} onChange={set("linkedin")} placeholder="linkedin.com/in/…" /></Field>
                   <Field label="GitHub"><Input value={a.github} onChange={set("github")} placeholder="github.com/…" /></Field>
                   <Field label="E-mail"><Input type="email" value={a.email} onChange={set("email")} placeholder="voce@email.com" /></Field>
                 </div>
-                <Field label="Objetivo profissional">
+                <Field label="Objetivo profissional" hint="O que você busca agora? (Estágio, 1º emprego, trainee, freelancer)">
                   <Textarea rows={3} value={a.goal} onChange={set("goal")} placeholder="Busco estágio em desenvolvimento front-end em uma startup de impacto…" />
+                  <StarterChips items={GOAL_STARTERS} onSelect={(text) => setA((s) => ({ ...s, goal: text }))} />
                 </Field>
               </>
             )}
