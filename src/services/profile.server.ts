@@ -31,8 +31,13 @@ export async function updateProfile(client: Client, userId: string, input: unkno
     if (error) throw new ProfileError(/registered|exists/i.test(error.message) ? "CONFLICT" : "INVALID", "Não foi possível alterar o e-mail.");
     emailPending = true;
   }
-  if (Object.keys(fields).length) {
-    const { error } = await client.from("profiles").update(fields).eq("id", userId);
+  type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
+  const patch: ProfileUpdate = {};
+  if (fields.first_name !== undefined) patch.first_name = fields.first_name;
+  if (fields.last_name !== undefined) patch.last_name = fields.last_name;
+  if (fields.phone_number !== undefined) patch.phone_number = fields.phone_number;
+  if (Object.keys(patch).length) {
+    const { error } = await client.from("profiles").update(patch).eq("id", userId);
     if (error) throw new ProfileError("INVALID", "Dados do perfil inválidos.");
   }
   return { profile: await getProfile(client, userId), emailPending };
@@ -58,7 +63,9 @@ export async function uploadAvatar(client: Client, userId: string, input: unknow
 export async function updateIntegrations(client: Client, userId: string, input: unknown) {
   const { fetch_github, ...links } = integrationsSchema.parse(input);
   const before = await getProfile(client, userId);
-  const patch = Object.fromEntries(Object.entries(links).filter(([, v]) => v !== undefined));
+  const patch: Database["public"]["Tables"]["profiles"]["Update"] = {};
+  if (links.linkedin_url !== undefined) patch.linkedin_url = links.linkedin_url;
+  if (links.github_url !== undefined) patch.github_url = links.github_url;
   if (Object.keys(patch).length) {
     const { error } = await client.from("profiles").update(patch).eq("id", userId);
     if (error) throw new ProfileError("INVALID", "Links inválidos.");
