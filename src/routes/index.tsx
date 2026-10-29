@@ -134,7 +134,7 @@ function Index() {
             Transforme{" "}
             <span
               key={rotatingIdx}
-              className="inline-block animate-in fade-in slide-in-from-bottom-1 duration-300"
+              className="inline-block text-primary animate-in fade-in slide-in-from-bottom-1 duration-300"
             >
               {ROTATING_TARGETS[rotatingIdx]}
             </span>{" "}
