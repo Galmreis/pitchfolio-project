@@ -50,20 +50,21 @@ function Index() {
       {/* Focused Editorial Hero (No competing H2s or controls) */}
       <section className="mx-auto max-w-6xl px-6 pb-12 pt-8 lg:pt-14">
         <div className="max-w-3xl">
-          <span className="inline-block rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
-            Empregabilidade & 1ª Oportunidade
-          </span>
-          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.06] tracking-tight sm:text-6xl">
-            Transforme trabalhos, projetos e experiências em um <span className="text-primary">pitch de 5 slides</span>.
+          <div className="flex items-center gap-2 font-mono text-xs text-primary">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            Hackathon Startups & Lovable · Case 3: Empregabilidade e Carreira
+          </div>
+          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl text-foreground">
+            Transforme experiências acadêmicas e projetos em um pitch executivo de 5 slides.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             Quem busca o primeiro emprego trava na página em branco. O PitchFolio lê seu currículo em PDF, seu perfil do LinkedIn ou suas respostas guiadas e estrutura sua apresentação pelo Método STAR pronta para entrevistas.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg" className="h-11 rounded-lg px-6 text-sm font-semibold">
+            <Button asChild size="lg" className="h-11 rounded-lg px-6 text-sm font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.98]">
               <Link to="/criar">Montar meu pitch agora <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-11 rounded-lg px-5 text-sm font-medium">
+            <Button asChild variant="outline" size="lg" className="h-11 rounded-lg px-5 text-sm font-medium transition-all hover:-translate-y-0.5 active:scale-[0.98]">
               <Link to="/p/$slug" params={{ slug: persona.slug }}>
                 Ver dossiê publicado <ArrowUpRight className="ml-1 h-4 w-4" />
               </Link>

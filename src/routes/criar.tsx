@@ -64,14 +64,14 @@ const GOAL_STARTERS = [
 
 function StarterChips({ items, onSelect }: { items: { label: string; text: string }[]; onSelect: (text: string) => void }) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5 pt-1">
-      <span className="text-[11px] font-medium text-muted-foreground mr-1">Não sabe como começar? Clique para usar um modelo:</span>
+    <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
+      <span className="text-[11px] font-medium text-muted-foreground mr-1">Sugestões de redação:</span>
       {items.map((item) => (
         <button
           key={item.label}
           type="button"
           onClick={() => onSelect(item.text)}
-          className="rounded-full border border-primary/25 bg-primary/5 px-2.5 py-1 text-xs font-medium text-primary transition hover:border-primary/50 hover:bg-primary/10"
+          className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/50 px-2.5 py-1 text-xs font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 active:scale-95"
         >
           {item.label}
         </button>
@@ -410,11 +410,11 @@ function Criar() {
               <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
             </Button>
             {step < 2 ? (
-              <Button size="lg" className="rounded-lg" disabled={!valid} onClick={() => setStep(step + 1)}>
+              <Button size="lg" className="rounded-lg transition-all active:scale-95 hover:-translate-y-0.5" disabled={!valid} onClick={() => setStep(step + 1)}>
                 Continuar <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             ) : (
-              <Button size="lg" className="rounded-lg" disabled={!valid} onClick={generate}>
+              <Button size="lg" className="rounded-lg transition-all active:scale-95 hover:-translate-y-0.5" disabled={!valid} onClick={generate}>
                 <Sparkles className="mr-1 h-4 w-4" /> Gerar com IA
               </Button>
             )}
