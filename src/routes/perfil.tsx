@@ -398,13 +398,13 @@ function PerfilPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-4 sm:py-5">
         <Logo />
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <Link to="/instituicoes">Para Instituições</Link>
           </Button>
-          <Button asChild variant="ghost">
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <Link to="/editor">Editor</Link>
           </Button>
           {user ? (
@@ -451,28 +451,28 @@ function PerfilPage() {
           <div className="space-y-8">
             {/* Candidate Header Ledger */}
             <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <div className="flex items-center gap-4">
+              <div className="flex min-w-0 items-center gap-4">
                 {profile.avatarUrl ? (
                   <img
                     src={profile.avatarUrl}
                     alt={profile.fullName || "Foto de perfil"}
-                    className="h-16 w-16 rounded-2xl border border-border object-cover shadow-xs"
+                    className="h-16 w-16 shrink-0 rounded-2xl border border-border object-cover shadow-xs"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary font-display text-xl font-bold text-primary-foreground shadow-xs">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary font-display text-xl font-bold text-primary-foreground shadow-xs">
                     {initials}
                   </div>
                 )}
-                <div>
+                <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="font-display text-2xl font-bold text-foreground">
+                    <h1 className="truncate font-display text-2xl font-bold text-foreground">
                       {profile.fullName || "Candidato(a)"}
                     </h1>
-                    <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                    <span className="shrink-0 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
                       Conta Ativa
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{profile.email}</p>
+                  <p className="truncate text-xs text-muted-foreground">{profile.email}</p>
                 </div>
               </div>
 

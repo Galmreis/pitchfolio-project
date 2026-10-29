@@ -750,7 +750,7 @@ function Editor() {
       {/* Desktop split */}
       <div className="mx-auto hidden max-w-[1400px] gap-6 px-6 py-6 lg:grid lg:grid-cols-[380px_1fr] print:block print:max-w-none print:p-0">
         <aside className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto rounded-xl border border-border bg-card p-5 print:hidden">{form}</aside>
-        <main>{preview}</main>
+        <main className="min-w-0">{preview}</main>
       </div>
 
       {/* Mobile tabs */}

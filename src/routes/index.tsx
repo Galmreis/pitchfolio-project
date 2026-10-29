@@ -113,13 +113,13 @@ function Index() {
 
   return (
     <div className="min-h-screen">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-4 sm:py-5">
         <Logo />
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost"><Link to="/instituicoes">Para Instituições</Link></Button>
-          <Button asChild variant="ghost"><Link to="/perfil">Meu Perfil</Link></Button>
-          <Button asChild variant="ghost"><Link to="/editor">Editor</Link></Button>
-          <Button asChild><Link to="/criar">Começar</Link></Button>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><Link to="/instituicoes">Para Instituições</Link></Button>
+          <Button asChild variant="ghost" size="sm"><Link to="/perfil">Meu Perfil</Link></Button>
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><Link to="/editor">Editor</Link></Button>
+          <Button asChild size="sm"><Link to="/criar">Começar</Link></Button>
         </div>
       </header>
 

@@ -21,15 +21,15 @@ function Frame({
 }) {
   const info = DECK_SLIDES_METADATA[n] ?? { title: `Slide ${n + 1}`, subtitle: "" };
   return (
-    <div className="flex h-full flex-col justify-between p-6 sm:p-10">
-      <div className="flex items-center justify-between border-b border-pf-line pb-3 text-xs text-pf-muted">
-        <div className="flex items-center gap-2.5">
-          <span className="rounded-md bg-pf-accent px-2 py-0.5 font-mono text-[11px] font-bold text-pf-accent-fg">
+    <div className="flex h-full min-h-full flex-col justify-between p-4 sm:p-6 md:p-8 lg:p-10">
+      <div className="flex items-center justify-between border-b border-pf-line pb-2.5 sm:pb-3 text-xs text-pf-muted">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-2.5">
+          <span className="shrink-0 rounded-md bg-pf-accent px-2 py-0.5 font-mono text-[11px] font-bold text-pf-accent-fg">
             0{n + 1} / 05
           </span>
-          <span className="font-semibold text-pf-fg">{info.title}</span>
+          <span className="truncate font-semibold text-pf-fg">{info.title}</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           {info.subtitle ? (
             <span className="hidden text-xs text-pf-muted md:inline">{info.subtitle}</span>
           ) : null}
@@ -48,7 +48,7 @@ function Frame({
       </div>
       <div
         key={n}
-        className={`my-auto py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in ${
+        className={`my-auto min-w-0 py-3 sm:py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in ${
           direction === "next" ? "slide-in-from-right-6" : "slide-in-from-left-6"
         }`}
       >
@@ -117,51 +117,51 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     <Frame n={0} key={0} direction={direction} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       {layout === "split" ? (
         <div className="grid items-center gap-6 sm:grid-cols-[0.85fr_1.15fr] sm:divide-x sm:divide-pf-line">
-          <div className="space-y-3 sm:pr-6">
+          <div className="min-w-0 space-y-3 sm:pr-6">
             <AvatarBadge p={p} size="lg" />
             <span className="inline-block rounded bg-pf-accent px-2.5 py-0.5 text-xs font-semibold text-pf-accent-fg">
               {s1.role}
             </span>
-            <h2 className="font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-4xl">{s1.name}</h2>
+            <h2 className="break-words font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-4xl">{s1.name}</h2>
           </div>
-          <div className="space-y-3 sm:pl-6">
+          <div className="min-w-0 space-y-3 sm:pl-6">
             {s1.headline && s1.headline !== s1.role && (
-              <p className="font-display text-lg font-semibold text-pf-fg">{s1.headline}</p>
+              <p className="break-words font-display text-lg font-semibold text-pf-fg">{s1.headline}</p>
             )}
-            <p className="text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
+            <p className="break-words text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
           </div>
         </div>
       ) : layout === "indice" ? (
         <div className="grid gap-4 border-l-2 border-pf-accent pl-5 sm:grid-cols-[180px_1fr]">
-          <div className="space-y-2.5">
+          <div className="min-w-0 space-y-2.5">
             <AvatarBadge p={p} size="md" />
             <span className="block font-mono text-xs font-bold text-pf-accent">01 / PERFIL</span>
-            <p className="text-xs font-semibold text-pf-muted">{s1.role}</p>
+            <p className="truncate text-xs font-semibold text-pf-muted">{s1.role}</p>
           </div>
-          <div>
-            <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{s1.name}</h2>
+          <div className="min-w-0">
+            <h2 className="break-words font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{s1.name}</h2>
             {s1.headline && s1.headline !== s1.role && (
-              <p className="mt-2 font-display text-base font-semibold text-pf-fg">{s1.headline}</p>
+              <p className="mt-2 break-words font-display text-base font-semibold text-pf-fg">{s1.headline}</p>
             )}
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-pf-muted">{s1.bio}</p>
+            <p className="mt-3 max-w-xl break-words text-sm leading-relaxed text-pf-muted">{s1.bio}</p>
           </div>
         </div>
       ) : (
         <div className="flex flex-wrap items-center justify-between gap-6">
-          <div className="max-w-xl flex-1">
+          <div className="min-w-0 max-w-xl flex-1">
             <p className="text-xs font-semibold text-pf-muted sm:text-sm">{s1.role}</p>
-            <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
+            <h2 className="mt-2 break-words font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
             {s1.headline && s1.headline !== s1.role && (
-              <p className="mt-3 font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
+              <p className="mt-3 break-words font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
             )}
-            <p className="mt-4 text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
+            <p className="mt-4 break-words text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
           </div>
           <AvatarBadge p={p} size="lg" />
         </div>
       )}
     </Frame>,
     <Frame n={1} key={1} direction={direction} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Projeto de maior impacto"}</h2>
+      <h2 className="break-words font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Projeto de maior impacto"}</h2>
       {layout === "indice" ? (
         <div className="mt-5 divide-y divide-pf-line border-t border-pf-line">
           {[
@@ -171,62 +171,62 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           ].map(([title, value]) => (
             <div key={title} className="grid gap-2 py-3 sm:grid-cols-[160px_1fr]">
               <span className="text-xs font-bold text-pf-accent">{title}</span>
-              <p className="text-xs leading-relaxed text-pf-fg sm:text-sm">{value}</p>
+              <p className="break-words text-xs leading-relaxed text-pf-fg sm:text-sm">{value}</p>
             </div>
           ))}
         </div>
       ) : layout === "split" ? (
         <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_1.15fr]">
           <div className="space-y-3">
-            <div className="rounded-lg border border-pf-line bg-pf-card p-3.5">
+            <div className="min-w-0 rounded-lg border border-pf-line bg-pf-card p-3.5">
               <span className="text-xs font-semibold text-pf-muted">01 · Desafio</span>
-              <p className="mt-1 text-xs leading-relaxed text-pf-fg">{s2.challenge}</p>
+              <p className="mt-1 break-words text-xs leading-relaxed text-pf-fg">{s2.challenge}</p>
             </div>
-            <div className="rounded-lg border border-pf-line bg-pf-card p-3.5">
+            <div className="min-w-0 rounded-lg border border-pf-line bg-pf-card p-3.5">
               <span className="text-xs font-semibold text-pf-muted">02 · Ação</span>
-              <p className="mt-1 text-xs leading-relaxed text-pf-fg">{s2.action}</p>
+              <p className="mt-1 break-words text-xs leading-relaxed text-pf-fg">{s2.action}</p>
             </div>
           </div>
-          <div className="flex flex-col justify-center rounded-lg border-l-4 border-pf-accent bg-pf-card p-5">
+          <div className="flex min-w-0 flex-col justify-center rounded-lg border-l-4 border-pf-accent bg-pf-card p-4 sm:p-5">
             <span className="w-fit rounded bg-pf-accent px-2 py-0.5 text-xs font-bold text-pf-accent-fg">
               03 · Resultado & Impacto
             </span>
-            <p className="mt-3 font-display text-base font-semibold leading-snug text-pf-fg sm:text-lg">{s2.result}</p>
+            <p className="mt-3 break-words font-display text-base font-semibold leading-snug text-pf-fg sm:text-lg">{s2.result}</p>
           </div>
         </div>
       ) : (
-        <div className="mt-6 grid gap-3.5 sm:grid-cols-3">
+        <div className="mt-4 sm:mt-6 grid gap-2.5 sm:gap-3.5 sm:grid-cols-3">
           {[
             ["01", "Desafio", s2.challenge],
             ["02", "Ação na prática", s2.action],
             ["03", "Resultado", s2.result],
           ].map(([num, title, value]) => (
-            <div key={num} className="rounded-lg border border-pf-line bg-pf-card p-4">
+            <div key={num} className="min-w-0 rounded-lg border border-pf-line bg-pf-card p-3 sm:p-4">
               <span className="inline-block rounded bg-pf-accent/20 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-pf-fg">{num}</span>
-              <p className="mt-2 text-sm font-semibold">{title}</p>
-              <p className="mt-1.5 text-xs leading-relaxed text-pf-muted sm:text-sm">{value}</p>
+              <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm font-semibold">{title}</p>
+              <p className="mt-1 break-words text-xs leading-relaxed text-pf-muted sm:text-sm">{value}</p>
             </div>
           ))}
         </div>
       )}
     </Frame>,
     <Frame n={2} key={2} direction={direction} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Competências que trago para o time</h2>
+      <h2 className="break-words font-display text-2xl font-bold tracking-tight sm:text-3xl">Competências que trago para o time</h2>
       {layout === "indice" ? (
-        <div className="mt-6 grid grid-cols-2 gap-y-4 border-t border-pf-line pt-5 sm:grid-cols-3">
+        <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-y-3 sm:gap-y-4 border-t border-pf-line pt-4 sm:pt-5 sm:grid-cols-3">
           {s3.skills.map((s, k) => (
-            <div key={k} className="border-l-2 border-pf-accent pl-3">
+            <div key={k} className="min-w-0 border-l-2 border-pf-accent pl-3">
               <span className="block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
-              <span className="text-sm font-bold text-pf-fg">{s}</span>
+              <span className="truncate text-xs sm:text-sm font-bold text-pf-fg">{s}</span>
             </div>
           ))}
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
           {s3.skills.map((s, k) => (
-            <div key={k} className="rounded-lg border border-pf-line bg-pf-card px-4 py-3 text-sm font-semibold">
-              <span className="mb-1 block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
-              {s}
+            <div key={k} className="min-w-0 rounded-lg border border-pf-line bg-pf-card px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold">
+              <span className="mb-0.5 sm:mb-1 block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
+              <span className="truncate block">{s}</span>
             </div>
           ))}
         </div>
@@ -234,8 +234,8 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     </Frame>,
     <Frame n={3} key={3} direction={direction} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <div className={`grid items-center gap-6 ${p.projectImageUrl ? "sm:grid-cols-[1fr_1.05fr]" : ""}`}>
-        <div>
-          <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Destaques e trajetória"}</h2>
+        <div className="min-w-0">
+          <h2 className="break-words font-display text-2xl font-bold tracking-tight sm:text-3xl">{s4.title || "Destaques e trajetória"}</h2>
           {s4.metrics.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
               {s4.metrics.map((m, k) => (
@@ -243,16 +243,16 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
               ))}
             </div>
           )}
-          <ol className="mt-5 space-y-2.5 border-l-2 border-pf-line pl-5">
+          <ol className="mt-4 sm:mt-5 space-y-2 sm:space-y-2.5 border-l-2 border-pf-line pl-4 sm:pl-5">
             {s4.journey.map((j, k) => (
-              <li key={k} className="relative text-xs leading-relaxed sm:text-sm">
-                <span className="absolute -left-[25px] top-1.5 h-2.5 w-2.5 rounded-full bg-pf-accent" />
+              <li key={k} className="relative break-words text-xs leading-relaxed sm:text-sm">
+                <span className="absolute -left-[21px] sm:-left-[25px] top-1.5 h-2.5 w-2.5 rounded-full bg-pf-accent" />
                 {j}
               </li>
             ))}
           </ol>
           {s4Certs.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-1.5">
+            <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5">
               {s4Certs.slice(0, 2).map((c) => (
                 <span key={c.id} className="rounded border border-pf-line bg-pf-card px-2.5 py-1 text-[11px] font-medium text-pf-muted">
                   ✓ {c.title}
@@ -262,7 +262,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           )}
         </div>
         {p.projectImageUrl && (
-          <div className="overflow-hidden rounded-lg border border-pf-line bg-pf-card shadow-md">
+          <div className="overflow-hidden rounded-lg border border-pf-line bg-pf-card shadow-md max-h-[180px] sm:max-h-none">
             <img src={p.projectImageUrl} alt={s4.title || "Prévia do projeto"} className="aspect-video w-full object-cover" />
           </div>
         )}
@@ -270,8 +270,8 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     </Frame>,
     <Frame n={4} key={4} direction={direction} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
       <p className="text-xs font-semibold text-pf-muted">Próximo passo & Contato</p>
-      <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-snug tracking-tight sm:text-3xl">{s5.goal}</h2>
-      <ContactLinks p={{ ...p, ...s5 }} className="mt-8" />
+      <h2 className="mt-3 max-w-2xl break-words font-display text-2xl font-bold leading-snug tracking-tight sm:text-3xl">{s5.goal}</h2>
+      <ContactLinks p={{ ...p, ...s5 }} className="mt-6 sm:mt-8" />
     </Frame>,
   ];
 
@@ -280,7 +280,9 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       <div
         ref={containerRef}
         className={`relative w-full overflow-hidden border border-pf-line bg-pf-bg text-pf-fg shadow-xl print:hidden ${
-          isFs ? "flex h-screen items-center justify-center rounded-none border-0" : "aspect-video rounded-xl"
+          isFs
+            ? "flex h-screen items-center justify-center rounded-none border-0"
+            : "min-h-[480px] sm:min-h-[440px] md:min-h-[400px] lg:min-h-0 lg:aspect-video rounded-xl"
         }`}
         onTouchStart={(e) => (touch.current = e.touches[0]?.clientX ?? null)}
         onTouchEnd={(e) => {
@@ -291,7 +293,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           touch.current = null;
         }}
       >
-        <div className="absolute inset-0 overflow-auto">{slides[i]}</div>
+        <div className="absolute inset-0 overflow-y-auto overflow-x-hidden">{slides[i]}</div>
         <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_0_10px_currentColor]" style={{ width: `${((i + 1) / 5) * 100}%` }} />
       </div>
       <div className="hidden space-y-6 print:block">

@@ -133,13 +133,18 @@ function InstituicoesPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 print:hidden">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-4 sm:py-5 print:hidden">
         <Logo />
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost"><Link to="/">Início</Link></Button>
-          <Button asChild variant="ghost"><Link to="/perfil">Meu Perfil</Link></Button>
-          <Button asChild variant="outline"><Link to="/editor">Editor</Link></Button>
-          <Button asChild><Link to="/criar">Publicar meu perfil</Link></Button>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><Link to="/">Início</Link></Button>
+          <Button asChild variant="ghost" size="sm"><Link to="/perfil">Meu Perfil</Link></Button>
+          <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex"><Link to="/editor">Editor</Link></Button>
+          <Button asChild size="sm">
+            <Link to="/criar">
+              <span className="sm:hidden">Publicar</span>
+              <span className="hidden sm:inline">Publicar meu perfil</span>
+            </Link>
+          </Button>
         </div>
       </header>
 
@@ -285,23 +290,23 @@ function InstituicoesPage() {
                   className="grid gap-6 rounded-xl border border-border bg-card p-6 shadow-xs transition hover:border-primary/40 lg:grid-cols-[260px_1fr_210px]"
                 >
                   {/* Candidate Identity Column */}
-                  <div className="space-y-3 border-b border-border pb-4 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
+                  <div className="min-w-0 space-y-3 border-b border-border pb-4 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
                     <div className="flex items-center gap-3">
                       <AvatarBadge p={p} size="md" />
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
                           <h2 className="truncate font-display text-lg font-bold text-foreground">{p.name}</h2>
                           {item.isLivePublished && (
-                            <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-bold text-primary">Novo</span>
+                            <span className="shrink-0 rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-bold text-primary">Novo</span>
                           )}
                         </div>
                         <p className="truncate text-xs font-medium text-muted-foreground">{p.role}</p>
                       </div>
                     </div>
-                    <p className="text-xs leading-relaxed text-muted-foreground">{p.bio}</p>
+                    <p className="break-words text-xs leading-relaxed text-muted-foreground">{p.bio}</p>
                     <div className="flex flex-wrap gap-1">
                       {p.skills.slice(0, 5).map((s) => (
-                        <span key={s} className="rounded bg-secondary px-2 py-0.5 text-[11px] font-semibold text-secondary-foreground">
+                        <span key={s} className="truncate rounded bg-secondary px-2 py-0.5 text-[11px] font-semibold text-secondary-foreground">
                           {s}
                         </span>
                       ))}
@@ -309,11 +314,11 @@ function InstituicoesPage() {
                   </div>
 
                   {/* STAR Evidence Column */}
-                  <div className="space-y-3">
+                  <div className="min-w-0 space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div>
+                      <div className="min-w-0">
                         <span className="text-xs font-semibold text-primary">Caso Verificado · Método STAR</span>
-                        <h3 className="font-display text-base font-bold text-foreground">{p.projectTitle || "Projeto em destaque"}</h3>
+                        <h3 className="break-words font-display text-base font-bold text-foreground">{p.projectTitle || "Projeto em destaque"}</h3>
                       </div>
                       {p.metrics.length > 0 && (
                         <div className="flex flex-wrap gap-1.5">
@@ -327,26 +332,26 @@ function InstituicoesPage() {
                     </div>
 
                     <div className="grid gap-2.5 sm:grid-cols-3">
-                      <div className="rounded-lg border border-border bg-background/60 p-3">
+                      <div className="min-w-0 rounded-lg border border-border bg-background/60 p-3">
                         <span className="text-xs font-semibold text-muted-foreground">01 · Desafio</span>
-                        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-foreground">{p.challenge}</p>
+                        <p className="mt-1 line-clamp-3 break-words text-xs leading-relaxed text-foreground">{p.challenge}</p>
                       </div>
-                      <div className="rounded-lg border border-border bg-background/60 p-3">
+                      <div className="min-w-0 rounded-lg border border-border bg-background/60 p-3">
                         <span className="text-xs font-semibold text-muted-foreground">02 · Ação na prática</span>
-                        <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-foreground">{p.action}</p>
+                        <p className="mt-1 line-clamp-3 break-words text-xs leading-relaxed text-foreground">{p.action}</p>
                       </div>
-                      <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
+                      <div className="min-w-0 rounded-lg border border-primary/30 bg-primary/5 p-3">
                         <span className="text-xs font-semibold text-primary">03 · Resultado</span>
-                        <p className="mt-1 line-clamp-3 text-xs font-semibold leading-relaxed text-foreground">{p.result}</p>
+                        <p className="mt-1 line-clamp-3 break-words text-xs font-semibold leading-relaxed text-foreground">{p.result}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Recruiter Actions Column */}
-                  <div className="flex flex-col justify-between border-t border-border pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+                  <div className="flex min-w-0 flex-col justify-between border-t border-border pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                     <div>
                       <span className="text-xs font-semibold text-muted-foreground">Objetivo</span>
-                      <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{p.goal}</p>
+                      <p className="mt-1 line-clamp-3 break-words text-xs leading-relaxed text-muted-foreground">{p.goal}</p>
                     </div>
                     <div className="mt-4 flex flex-col gap-2 print:hidden">
                       <Button asChild size="sm" className="w-full justify-between rounded-lg">
@@ -377,9 +382,9 @@ function InstituicoesPage() {
               return (
                 <div
                   key={item.slug}
-                  className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-xs break-inside-avoid"
+                  className="flex min-w-0 flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-xs break-inside-avoid"
                 >
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex items-start justify-between gap-3 border-b border-border pb-4">
                       <div className="flex items-center gap-3 min-w-0">
                         <AvatarBadge p={p} size="md" />
@@ -400,9 +405,11 @@ function InstituicoesPage() {
                       />
                     </div>
 
-                    <div className="mt-4 space-y-2">
-                      <p className="text-xs font-bold text-foreground">{p.projectTitle || "Projeto em destaque"}</p>
-                      <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{p.result}</p>
+                    <div className="mt-4 min-w-0 space-y-2">
+                      <p className="truncate text-xs font-bold text-foreground" title={p.projectTitle || "Projeto em destaque"}>
+                        {p.projectTitle || "Projeto em destaque"}
+                      </p>
+                      <p className="line-clamp-2 break-words text-xs leading-relaxed text-muted-foreground">{p.result}</p>
                       {p.metrics.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 pt-1">
                           {p.metrics.map((m) => (
