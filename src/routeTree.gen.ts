@@ -17,8 +17,12 @@ import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as ApiHealthzRouteImport } from './routes/api/healthz'
 import { Route as ApiReadyzRouteImport } from './routes/api/readyz'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
+import { Route as ApiAuthSignupRouteImport } from './routes/api/auth/signup'
 import { Route as ApiPortfoliosPublishDraftRouteImport } from './routes/api/portfolios/publish-draft'
+import { Route as ApiProfileMeRouteImport } from './routes/api/profile/me'
 import { Route as ApiPortfoliosPortfolioIdCurationRouteImport } from './routes/api/portfolios/$portfolioId.curation'
+import { Route as ApiProfileMeAvatarRouteImport } from './routes/api/profile/me.avatar'
+import { Route as ApiProfileMeIntegrationsRouteImport } from './routes/api/profile/me.integrations'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -60,17 +64,38 @@ const PSlugRoute = PSlugRouteImport.update({
   path: '/p/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthSignupRoute = ApiAuthSignupRouteImport.update({
+  id: '/api/auth/signup',
+  path: '/api/auth/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPortfoliosPublishDraftRoute =
   ApiPortfoliosPublishDraftRouteImport.update({
     id: '/api/portfolios/publish-draft',
     path: '/api/portfolios/publish-draft',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiProfileMeRoute = ApiProfileMeRouteImport.update({
+  id: '/api/profile/me',
+  path: '/api/profile/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPortfoliosPortfolioIdCurationRoute =
   ApiPortfoliosPortfolioIdCurationRouteImport.update({
     id: '/api/portfolios/$portfolioId/curation',
     path: '/api/portfolios/$portfolioId/curation',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiProfileMeAvatarRoute = ApiProfileMeAvatarRouteImport.update({
+  id: '/avatar',
+  path: '/avatar',
+  getParentRoute: () => ApiProfileMeRoute,
+} as any)
+const ApiProfileMeIntegrationsRoute =
+  ApiProfileMeIntegrationsRouteImport.update({
+    id: '/integrations',
+    path: '/integrations',
+    getParentRoute: () => ApiProfileMeRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -82,8 +107,12 @@ export interface FileRoutesByFullPath {
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
+  '/api/auth/signup': typeof ApiAuthSignupRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
+  '/api/profile/me': typeof ApiProfileMeRouteWithChildren
   '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
+  '/api/profile/me/avatar': typeof ApiProfileMeAvatarRoute
+  '/api/profile/me/integrations': typeof ApiProfileMeIntegrationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,8 +123,12 @@ export interface FileRoutesByTo {
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
+  '/api/auth/signup': typeof ApiAuthSignupRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
+  '/api/profile/me': typeof ApiProfileMeRouteWithChildren
   '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
+  '/api/profile/me/avatar': typeof ApiProfileMeAvatarRoute
+  '/api/profile/me/integrations': typeof ApiProfileMeIntegrationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,8 +140,12 @@ export interface FileRoutesById {
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
+  '/api/auth/signup': typeof ApiAuthSignupRoute
   '/api/portfolios/publish-draft': typeof ApiPortfoliosPublishDraftRoute
+  '/api/profile/me': typeof ApiProfileMeRouteWithChildren
   '/api/portfolios/$portfolioId/curation': typeof ApiPortfoliosPortfolioIdCurationRoute
+  '/api/profile/me/avatar': typeof ApiProfileMeAvatarRoute
+  '/api/profile/me/integrations': typeof ApiProfileMeIntegrationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,8 +158,12 @@ export interface FileRouteTypes {
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
+    | '/api/auth/signup'
     | '/api/portfolios/publish-draft'
+    | '/api/profile/me'
     | '/api/portfolios/$portfolioId/curation'
+    | '/api/profile/me/avatar'
+    | '/api/profile/me/integrations'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,8 +174,12 @@ export interface FileRouteTypes {
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
+    | '/api/auth/signup'
     | '/api/portfolios/publish-draft'
+    | '/api/profile/me'
     | '/api/portfolios/$portfolioId/curation'
+    | '/api/profile/me/avatar'
+    | '/api/profile/me/integrations'
   id:
     | '__root__'
     | '/'
@@ -145,8 +190,12 @@ export interface FileRouteTypes {
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
+    | '/api/auth/signup'
     | '/api/portfolios/publish-draft'
+    | '/api/profile/me'
     | '/api/portfolios/$portfolioId/curation'
+    | '/api/profile/me/avatar'
+    | '/api/profile/me/integrations'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,7 +207,9 @@ export interface RootRouteChildren {
   ApiHealthzRoute: typeof ApiHealthzRoute
   ApiReadyzRoute: typeof ApiReadyzRoute
   PSlugRoute: typeof PSlugRoute
+  ApiAuthSignupRoute: typeof ApiAuthSignupRoute
   ApiPortfoliosPublishDraftRoute: typeof ApiPortfoliosPublishDraftRoute
+  ApiProfileMeRoute: typeof ApiProfileMeRouteWithChildren
   ApiPortfoliosPortfolioIdCurationRoute: typeof ApiPortfoliosPortfolioIdCurationRoute
 }
 
@@ -220,11 +271,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/signup': {
+      id: '/api/auth/signup'
+      path: '/api/auth/signup'
+      fullPath: '/api/auth/signup'
+      preLoaderRoute: typeof ApiAuthSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/portfolios/publish-draft': {
       id: '/api/portfolios/publish-draft'
       path: '/api/portfolios/publish-draft'
       fullPath: '/api/portfolios/publish-draft'
       preLoaderRoute: typeof ApiPortfoliosPublishDraftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/profile/me': {
+      id: '/api/profile/me'
+      path: '/api/profile/me'
+      fullPath: '/api/profile/me'
+      preLoaderRoute: typeof ApiProfileMeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/portfolios/$portfolioId/curation': {
@@ -234,8 +299,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPortfoliosPortfolioIdCurationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/profile/me/avatar': {
+      id: '/api/profile/me/avatar'
+      path: '/avatar'
+      fullPath: '/api/profile/me/avatar'
+      preLoaderRoute: typeof ApiProfileMeAvatarRouteImport
+      parentRoute: typeof ApiProfileMeRoute
+    }
+    '/api/profile/me/integrations': {
+      id: '/api/profile/me/integrations'
+      path: '/integrations'
+      fullPath: '/api/profile/me/integrations'
+      preLoaderRoute: typeof ApiProfileMeIntegrationsRouteImport
+      parentRoute: typeof ApiProfileMeRoute
+    }
   }
 }
+
+interface ApiProfileMeRouteChildren {
+  ApiProfileMeAvatarRoute: typeof ApiProfileMeAvatarRoute
+  ApiProfileMeIntegrationsRoute: typeof ApiProfileMeIntegrationsRoute
+}
+
+const ApiProfileMeRouteChildren: ApiProfileMeRouteChildren = {
+  ApiProfileMeAvatarRoute: ApiProfileMeAvatarRoute,
+  ApiProfileMeIntegrationsRoute: ApiProfileMeIntegrationsRoute,
+}
+
+const ApiProfileMeRouteWithChildren = ApiProfileMeRoute._addFileChildren(
+  ApiProfileMeRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -246,7 +339,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthzRoute: ApiHealthzRoute,
   ApiReadyzRoute: ApiReadyzRoute,
   PSlugRoute: PSlugRoute,
+  ApiAuthSignupRoute: ApiAuthSignupRoute,
   ApiPortfoliosPublishDraftRoute: ApiPortfoliosPublishDraftRoute,
+  ApiProfileMeRoute: ApiProfileMeRouteWithChildren,
   ApiPortfoliosPortfolioIdCurationRoute: ApiPortfoliosPortfolioIdCurationRoute,
 }
 export const routeTree = rootRouteImport
