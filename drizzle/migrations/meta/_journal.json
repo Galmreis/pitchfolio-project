@@ -50,6 +50,13 @@
       "when": 1793278750022,
       "tag": "0006_profile_registration_sync",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793286543461,
+      "tag": "0007_profile_policy_and_avatar_guard",
+      "breakpoints": true
     }
   ]
 }

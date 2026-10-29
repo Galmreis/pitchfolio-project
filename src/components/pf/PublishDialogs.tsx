@@ -8,12 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authSchema } from "@/validators/portfolio";
+import { signupSchema } from "@/validators/profile";
 import { fireConfetti } from "./Confetti";
 
 export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; onOpenChange: (o: boolean) => void; onAuthed: () => void }) {
   const [mode, setMode] = useState<"signup" | "signin">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState(false);
 
@@ -21,21 +25,29 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
     e.preventDefault();
     setLoading(true);
     try {
-      const credentials = authSchema.parse({ email, password });
       if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
-          ...credentials, options: { emailRedirectTo: window.location.origin },
+        // Validate on the client for instant feedback; the server validates again.
+        const parsed = signupSchema.safeParse({ email, password, first_name: firstName, last_name: lastName, phone_number: phone });
+        if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos."); return; }
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(parsed.data),
         });
+        const body = (await res.json().catch(() => ({}))) as { error?: string; confirmation_required?: boolean };
+        if (!res.ok) { toast.error(body.error ?? "Não foi possível criar a conta."); return; }
+        if (body.confirmation_required) { setPending(true); return; }
+        const { error } = await supabase.auth.signInWithPassword({ email: parsed.data.email, password: parsed.data.password });
         if (error) throw error;
-        if (!data.session) { setPending(true); return; }
       } else {
+        const credentials = authSchema.parse({ email, password });
         const { error } = await supabase.auth.signInWithPassword(credentials);
         if (error) throw error;
       }
       onAuthed();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "";
-      toast.error(msg.includes("Invalid login") ? "E-mail ou senha incorretos." : msg || "Algo deu errado.");
+      toast.error(msg.includes("Invalid login") ? "E-mail ou senha incorretos." : msg.includes("Email not confirmed") ? "Confirme seu e-mail antes de entrar." : "Algo deu errado. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -62,8 +74,21 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
               </TabsList>
             </Tabs>
             <form onSubmit={submit} className="space-y-4">
-              <div className="space-y-2"><Label>E-mail</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-              <div className="space-y-2"><Label>Senha</Label><Input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+              {mode === "signup" && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2"><Label>Nome</Label><Input required maxLength={60} autoComplete="given-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} /></div>
+                    <div className="space-y-2"><Label>Sobrenome</Label><Input required maxLength={60} autoComplete="family-name" value={lastName} onChange={(e) => setLastName(e.target.value)} /></div>
+                  </div>
+                  <div className="space-y-2"><Label>Telefone</Label><Input required type="tel" autoComplete="tel" placeholder="+55 11 98765-4321" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
+                </>
+              )}
+              <div className="space-y-2"><Label>E-mail</Label><Input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+              <div className="space-y-2">
+                <Label>Senha</Label>
+                <Input type="password" required minLength={mode === "signup" ? 8 : 6} autoComplete={mode === "signup" ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} />
+                {mode === "signup" && <p className="text-[11px] text-muted-foreground">8+ caracteres com maiúscula, minúscula, número e símbolo.</p>}
+              </div>
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {mode === "signup" ? "Criar conta e publicar" : "Entrar e publicar"}
