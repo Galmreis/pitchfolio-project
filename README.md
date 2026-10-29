@@ -182,6 +182,16 @@ npm run lint
 npm run build
 ```
 
+### Credenciais de Demonstração & Avaliação (Edital)
+
+Para facilitar a triagem dos avaliadores sem necessidade de criar conta pessoal:
+
+- **E-mail de Teste**: `demo@pitchfolio.app`
+- **Senha**: `DemoUser2026!`
+- **Acesso com 1 Clique no App**: Nos modais de autenticação (`/editor` e `/perfil`), utilize o botão *"Preencher dados"* para carregar as credenciais instantaneamente.
+- **Painel do Candidato Pré-Carregado**: Acesse diretamente [`/perfil?demo=1`](http://localhost:3000/perfil?demo=1) para visualizar a conta da Ana Souza com dossiês STAR e decks de 5 slides já publicados.
+- **Jornada Completa Interativa (19 Telas)**: Acesse [`/flow.html`](http://localhost:3000/flow.html) para navegar pelo mapa panorâmico de todas as rotas com modo tela cheia interativo.
+
 ---
 
 ## 7. Equipe "Los Penguinos"

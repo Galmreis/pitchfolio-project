@@ -94,6 +94,24 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
                 {mode === "signup" ? "Criar conta e publicar" : "Entrar e publicar"}
               </Button>
             </form>
+
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-foreground">Credenciais de Teste (Edital):</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("signin");
+                    setEmail("demo@pitchfolio.app");
+                    setPassword("DemoUser2026!");
+                  }}
+                  className="font-semibold text-primary hover:underline"
+                >
+                  Preencher dados
+                </button>
+              </div>
+              <p className="mt-1 font-mono text-[11px] text-foreground/80">demo@pitchfolio.app · DemoUser2026!</p>
+            </div>
           </>
         )}
       </DialogContent>
