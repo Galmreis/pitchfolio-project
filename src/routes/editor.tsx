@@ -698,12 +698,12 @@ function Editor() {
   );
 
   const preview = (
-    <div className="space-y-4">
+    <div className="space-y-4 print:space-y-0">
       {toolbar}
       {view === "site" ? (
-        <div className="overflow-hidden rounded-xl border border-border shadow-lg duration-300 animate-in fade-in-50"><PortfolioSite p={p} theme={draft.theme} /></div>
+        <div className="overflow-hidden rounded-xl border border-border shadow-lg duration-300 animate-in fade-in-50 print:duration-0 print:animate-none print:opacity-100 print:border-0 print:shadow-none"><PortfolioSite p={p} theme={draft.theme} /></div>
       ) : (
-        <div className="duration-300 animate-in fade-in-50"><PitchDeck p={p} deck={draft.deck} theme={draft.theme} /></div>
+        <div className="duration-300 animate-in fade-in-50 print:duration-0 print:animate-none print:opacity-100 print:border-0 print:shadow-none"><PitchDeck p={p} deck={draft.deck} theme={draft.theme} /></div>
       )}
     </div>
   );

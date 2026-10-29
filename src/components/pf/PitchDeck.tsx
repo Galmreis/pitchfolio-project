@@ -50,7 +50,7 @@ function Frame({
         key={n}
         className={`my-auto min-w-0 py-3 sm:py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in ${
           direction === "next" ? "slide-in-from-right-6" : "slide-in-from-left-6"
-        }`}
+        } print:animate-none print:opacity-100 print:transform-none`}
       >
         {children}
       </div>
@@ -296,9 +296,14 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         <div className="absolute inset-0 overflow-y-auto overflow-x-hidden">{slides[i]}</div>
         <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_0_10px_currentColor]" style={{ width: `${((i + 1) / 5) * 100}%` }} />
       </div>
-      <div className="hidden space-y-6 print:block">
+      <div className="hidden space-y-6 print:block print:space-y-0">
         {slides.map((s, idx) => (
-          <div key={idx} className="aspect-video w-full break-inside-avoid overflow-hidden rounded-xl border border-pf-line bg-pf-bg text-pf-fg">
+          <div
+            key={idx}
+            className={`flex flex-col aspect-video w-full break-inside-avoid overflow-hidden rounded-xl border border-pf-line bg-pf-bg text-pf-fg shadow-xl print:shadow-none print:rounded-lg print:border-pf-line/40 print:overflow-visible ${
+              idx < slides.length - 1 ? "print-slide-page print:mb-0" : ""
+            }`}
+          >
             {s}
           </div>
         ))}

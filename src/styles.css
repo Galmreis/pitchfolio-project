@@ -213,3 +213,50 @@
     letter-spacing: -0.025em;
   }
 }
+
+/* =========================================================================
+   Print & PDF Generation Hardening
+   Ensures pitch deck slides, badges, and portfolio pages print crisply
+   without browser background-stripping, animation freezes, or white-out.
+   ========================================================================= */
+@media print {
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Force immediate visibility on any Tailwind animate-in enter states */
+  .animate-in,
+  .fade-in,
+  .fade-in-50,
+  [class*="slide-in-from-"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  html,
+  body {
+    background-color: var(--pf-bg, #ffffff) !important;
+    color: var(--pf-fg, #0f172a) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Slide page breaks for presentation export */
+  .print-slide-page {
+    break-after: page !important;
+    page-break-after: always !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Suppress scrollbars and unneeded print artifacts */
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
