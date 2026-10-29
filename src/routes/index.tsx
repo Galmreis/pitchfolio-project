@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUpRight, Globe, Presentation } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Globe, Presentation, Sparkles, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/pf/Logo";
 import { PitchDeck } from "@/components/pf/PitchDeck";
@@ -30,11 +30,71 @@ const ROTATING_TARGETS = [
   "estágios e monitorias",
 ];
 
+const AMBIENT_GLOW: Record<string, string> = {
+  "ana-souza": "from-cyan-500/25 via-sky-500/15 to-indigo-500/20",
+  "lucas-lima": "from-amber-500/25 via-orange-500/15 to-rose-500/20",
+  "beatriz-rocha": "from-emerald-500/25 via-teal-500/15 to-cyan-500/20",
+};
+
+const SIMULATOR_EXAMPLES = [
+  {
+    id: "carona",
+    tabLabel: "App de Carona",
+    category: "Projeto de Graduação / Tecnologia",
+    rawLabel: "Anotação informal de estudante",
+    rawText:
+      '"Organizei um projeto de caronas na faculdade com uns amigos porque o ônibus era caro e demorava. Muita gente do campus começou a usar no dia a dia…"',
+    star: {
+      situation: "Dificuldade de transporte e alto custo de deslocamento para alunos do campus.",
+      action: "Desenvolveu app mobile com geolocalização e rotas com autenticação institucional.",
+      result: "1.200 viagens combinadas em 4 meses e redução de 30% nos custos de deslocamento.",
+      metric: "-30% custo · 1.2k viagens",
+    },
+  },
+  {
+    id: "pesquisa",
+    tabLabel: "Iniciação Científica",
+    category: "Pesquisa Acadêmica / IA",
+    rawLabel: "Relatório bruto de laboratório",
+    rawText:
+      '"Fiz pesquisa voluntária no laboratório de IA limpando e organizando planilhas médicas que chegavam cheias de erro para os doutorandos analisarem…"',
+    star: {
+      situation: "Gargalo no pré-processamento manual de 5.000 prontuários médicos não padronizados.",
+      action: "Criou pipeline automatizado em Python com detecção de anomalias e deduplicação.",
+      result: "Tempo de limpeza reduzido de 14 dias para 3 horas, viabilizando artigo em congresso.",
+      metric: "98% tempo poupado · 5k registros",
+    },
+  },
+  {
+    id: "consultoria",
+    tabLabel: "Empresa Júnior",
+    category: "Consultoria de Gestão",
+    rawLabel: "Relato de experiência informal",
+    rawText:
+      '"Participei da empresa júnior ajudando um pequeno comércio perto da faculdade que estava com estoque descontrolado e perdendo mercadoria toda semana…"',
+    star: {
+      situation: "Perda semanal de 18% de insumos perecíveis por falta de controle de estoque.",
+      action: "Mapeou fluxo de suprimentos, implementou curva ABC e treinou equipe em controle visual.",
+      result: "Redução de 42% no desperdício no primeiro mês com payback do projeto em 3 semanas.",
+      metric: "-42% desperdício · Payback 3 sem",
+    },
+  },
+];
+
 function Index() {
   const [persona, setPersona] = useState<DemoPersona>(DEMO_PERSONAS[0]!);
   const [demoView, setDemoView] = useState<"deck" | "site">("deck");
   const [demoTheme, setDemoTheme] = useState<ThemeName>("moderno");
   const [rotatingIdx, setRotatingIdx] = useState(0);
+  const [simIdx, setSimIdx] = useState(0);
+  const [isScanning, setIsScanning] = useState(false);
+
+  const selectSimulatorExample = (idx: number) => {
+    if (idx === simIdx) return;
+    setIsScanning(true);
+    setSimIdx(idx);
+    setTimeout(() => setIsScanning(false), 400);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -99,79 +159,89 @@ function Index() {
         </div>
 
         {/* Dedicated Dual Product Showcase Stage Directly Below Hero */}
-        <div id="vitrine-interativa" className="mt-12 rounded-xl border border-border bg-card p-4 shadow-md sm:p-6">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border/70 pb-3">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="mr-1 text-xs font-semibold text-muted-foreground">Exemplos por área:</span>
-              {DEMO_PERSONAS.map((dp) => {
-                const active = persona.id === dp.id;
-                return (
-                  <button
-                    key={dp.id}
-                    type="button"
-                    onClick={() => selectPersona(dp)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition ${
-                      active
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border bg-background text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <img src={dp.avatarUrl} alt={dp.answers.name} className="h-4 w-4 rounded-full object-cover" />
-                    {dp.shortLabel} · {dp.answers.name.split(" ")[0]}
-                  </button>
-                );
-              })}
-            </div>
-            <Link to="/p/$slug" params={{ slug: persona.slug }} className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
-              Abrir página pública <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
+        <div className="relative mt-12">
+          {/* Dynamic Ambient Aura matching selected persona */}
+          <div
+            className={`pointer-events-none absolute -inset-2 rounded-2xl bg-gradient-to-tr ${
+              AMBIENT_GLOW[persona.id] ?? "from-primary/20 via-primary/10 to-transparent"
+            } blur-2xl opacity-60 transition-all duration-700`}
+            aria-hidden="true"
+          />
 
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3.5">
-            <div className="inline-flex rounded-lg border border-border bg-background p-1">
-              <button
-                type="button"
-                onClick={() => setDemoView("deck")}
-                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${
-                  demoView === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Presentation className="h-3.5 w-3.5" /> Pitch Deck (5 Slides)
-              </button>
-              <button
-                type="button"
-                onClick={() => setDemoView("site")}
-                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${
-                  demoView === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Globe className="h-3.5 w-3.5" /> Dossiê Web Completo
-              </button>
+          <div id="vitrine-interativa" className="relative rounded-xl border border-border bg-card p-4 shadow-xl sm:p-6 backdrop-blur-xs">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border/70 pb-3">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="mr-1 text-xs font-semibold text-muted-foreground">Exemplos por área:</span>
+                {DEMO_PERSONAS.map((dp) => {
+                  const active = persona.id === dp.id;
+                  return (
+                    <button
+                      key={dp.id}
+                      type="button"
+                      onClick={() => selectPersona(dp)}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition active:scale-95 ${
+                        active
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border bg-background text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <img src={dp.avatarUrl} alt={dp.answers.name} className="h-4 w-4 rounded-full object-cover" />
+                      {dp.shortLabel} · {dp.answers.name.split(" ")[0]}
+                    </button>
+                  );
+                })}
+              </div>
+              <Link to="/p/$slug" params={{ slug: persona.slug }} className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+                Abrir página pública <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
 
-            <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-background p-1">
-              {THEMES.map((t) => (
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3.5">
+              <div className="inline-flex rounded-lg border border-border bg-background p-1">
                 <button
-                  key={t.id}
                   type="button"
-                  onClick={() => setDemoTheme(t.id)}
-                  className={`rounded-md px-2.5 py-1 text-xs font-semibold transition ${
-                    demoTheme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
+                  onClick={() => setDemoView("deck")}
+                  className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition active:scale-95 sm:text-sm ${
+                    demoView === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {t.label} · {t.layoutLabel}
+                  <Presentation className="h-3.5 w-3.5" /> Pitch Deck (5 Slides)
                 </button>
-              ))}
-            </div>
-          </div>
+                <button
+                  type="button"
+                  onClick={() => setDemoView("site")}
+                  className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition active:scale-95 sm:text-sm ${
+                    demoView === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Globe className="h-3.5 w-3.5" /> Dossiê Web Completo
+                </button>
+              </div>
 
-          {demoView === "deck" ? (
-            <PitchDeck p={activePortfolio} deck={activeDeck} theme={demoTheme} />
-          ) : (
-            <div className="max-h-[540px] overflow-y-auto rounded-lg border border-border">
-              <PortfolioSite p={activePortfolio} theme={demoTheme} />
+              <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-background p-1">
+                {THEMES.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setDemoTheme(t.id)}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold transition active:scale-95 ${
+                      demoTheme === t.id ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {t.label} · {t.layoutLabel}
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
+
+            {demoView === "deck" ? (
+              <PitchDeck p={activePortfolio} deck={activeDeck} theme={demoTheme} />
+            ) : (
+              <div className="max-h-[540px] overflow-y-auto rounded-lg border border-border">
+                <PortfolioSite p={activePortfolio} theme={demoTheme} />
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
@@ -189,25 +259,85 @@ function Index() {
               </p>
             </div>
 
-            {/* Contextual Before -> After Visual Card */}
-            <div className="rounded-xl border border-border bg-background p-4 shadow-xs space-y-3">
-              <div className="rounded-lg border border-dashed border-border bg-muted/50 p-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Antes · Anotação solta ou trabalho da faculdade</span>
-                <p className="mt-1 text-xs italic text-muted-foreground">
-                  "Organizei um projeto de caronas na faculdade e bastante gente do campus começou a usar no dia a dia…"
-                </p>
+            {/* Interactive STAR Transformation Simulator */}
+            <div className="rounded-xl border border-border bg-background p-4 shadow-sm space-y-3.5">
+              <div className="flex items-center justify-between border-b border-border/70 pb-2.5">
+                <span className="flex items-center gap-1.5 font-mono text-[11px] font-semibold text-primary">
+                  <Wand2 className="h-3.5 w-3.5" /> Simulador de Transformação STAR
+                </span>
+                <span className="text-[10px] text-muted-foreground">Clique para testar:</span>
               </div>
-              <div className="flex items-center justify-center text-xs font-bold text-primary">
-                ↓ Estruturação pelo Método STAR
+
+              {/* Selector Pills */}
+              <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Casos de exemplo STAR">
+                {SIMULATOR_EXAMPLES.map((ex, i) => {
+                  const active = i === simIdx;
+                  return (
+                    <button
+                      key={ex.id}
+                      type="button"
+                      onClick={() => selectSimulatorExample(i)}
+                      className={`rounded-md px-2.5 py-1 text-xs font-semibold transition active:scale-95 ${
+                        active
+                          ? "bg-primary text-primary-foreground shadow-xs"
+                          : "border border-border bg-card text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {ex.tabLabel}
+                    </button>
+                  );
+                })}
               </div>
-              <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary">Depois · Caso Executivo</span>
-                  <span className="rounded bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold text-primary-foreground">-30% custo</span>
+
+              {/* Raw Academic Note (Before) */}
+              <div className="relative overflow-hidden rounded-lg border border-dashed border-border bg-muted/40 p-3">
+                {isScanning && (
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/15 via-transparent to-transparent animate-pulse" />
+                )}
+                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <span>Antes · {SIMULATOR_EXAMPLES[simIdx]!.rawLabel}</span>
+                  <span className="font-mono text-[9px]">{SIMULATOR_EXAMPLES[simIdx]!.category}</span>
                 </div>
-                <p className="mt-1 text-xs font-semibold text-foreground">
-                  1.200 viagens combinadas em 4 meses com validação institucional.
+                <p className="mt-1.5 text-xs italic leading-relaxed text-muted-foreground">
+                  {SIMULATOR_EXAMPLES[simIdx]!.rawText}
                 </p>
+              </div>
+
+              {/* Interactive Transformation Indicator */}
+              <div className="flex items-center justify-center gap-2 text-xs font-semibold text-primary">
+                <Sparkles className={`h-3.5 w-3.5 ${isScanning ? "animate-spin text-primary" : ""}`} />
+                <span>{isScanning ? "Estruturando caso com IA…" : "Estruturado pelo Método STAR"}</span>
+              </div>
+
+              {/* Structured STAR Executive Case (After) */}
+              <div
+                className={`relative overflow-hidden rounded-lg border border-primary/30 bg-primary/5 p-3.5 transition-all duration-300 ${
+                  isScanning ? "opacity-40 scale-[0.99]" : "opacity-100 scale-100"
+                }`}
+              >
+                <div className="flex items-center justify-between border-b border-primary/20 pb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                    Depois · Evidência Executiva
+                  </span>
+                  <span className="rounded bg-primary px-2 py-0.5 font-mono text-[10px] font-bold text-primary-foreground shadow-xs">
+                    {SIMULATOR_EXAMPLES[simIdx]!.star.metric}
+                  </span>
+                </div>
+
+                <div className="mt-2.5 space-y-1.5 text-xs">
+                  <p className="leading-snug">
+                    <strong className="text-primary font-semibold">S / T:</strong>{" "}
+                    <span className="text-foreground">{SIMULATOR_EXAMPLES[simIdx]!.star.situation}</span>
+                  </p>
+                  <p className="leading-snug">
+                    <strong className="text-primary font-semibold">Ação:</strong>{" "}
+                    <span className="text-foreground">{SIMULATOR_EXAMPLES[simIdx]!.star.action}</span>
+                  </p>
+                  <p className="leading-snug">
+                    <strong className="text-primary font-semibold">Resultado:</strong>{" "}
+                    <span className="font-medium text-foreground">{SIMULATOR_EXAMPLES[simIdx]!.star.result}</span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
