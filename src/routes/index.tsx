@@ -41,7 +41,8 @@ function Index() {
         <Logo />
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost"><Link to="/instituicoes">Para Instituições</Link></Button>
-          <Button asChild variant="ghost"><Link to="/editor">Meu portfólio</Link></Button>
+          <Button asChild variant="ghost"><Link to="/perfil">Meu Perfil</Link></Button>
+          <Button asChild variant="ghost"><Link to="/editor">Editor</Link></Button>
           <Button asChild><Link to="/criar">Começar</Link></Button>
         </div>
       </header>

@@ -711,6 +711,9 @@ function Editor() {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 sm:px-6">
           <Logo />
           <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm" className="rounded-lg">
+              <Link to="/perfil">Meu Perfil</Link>
+            </Button>
             <Button
               variant="outline"
               size="sm"

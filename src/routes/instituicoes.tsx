@@ -136,8 +136,9 @@ function InstituicoesPage() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 print:hidden">
         <Logo />
         <div className="flex items-center gap-2">
-          <Button asChild variant="ghost"><Link to="/">Visão do Candidato</Link></Button>
-          <Button asChild variant="outline"><Link to="/editor">Meu portfólio</Link></Button>
+          <Button asChild variant="ghost"><Link to="/">Início</Link></Button>
+          <Button asChild variant="ghost"><Link to="/perfil">Meu Perfil</Link></Button>
+          <Button asChild variant="outline"><Link to="/editor">Editor</Link></Button>
           <Button asChild><Link to="/criar">Publicar meu perfil</Link></Button>
         </div>
       </header>
