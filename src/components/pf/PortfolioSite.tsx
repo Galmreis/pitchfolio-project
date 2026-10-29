@@ -42,7 +42,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
   const certificationsBlock =
     sections && sections.certifications.length > 0 ? (
       <div className="mt-8 border-t border-pf-line pt-6">
-        <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Certificações & Formação Complementar</span>
+        <span className="text-xs font-semibold text-pf-muted">Certificações & Formação Complementar</span>
         <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
           {sections.certifications.map((c) => (
             <div key={c.id} className="flex items-start gap-2.5 rounded-lg border border-pf-line bg-pf-card p-3">
@@ -64,7 +64,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
     const splitProject = (
       <section key="project" className="space-y-5 border-b border-pf-line pb-10">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Caso em destaque · Método STAR</span>
+          <span className="text-xs font-semibold text-pf-muted">Caso em destaque · Método STAR</span>
           <h2 className="mt-1 font-display text-2xl font-bold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
         </div>
 
@@ -72,15 +72,15 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
 
         <div className="space-y-4">
           <div className="rounded-lg border border-pf-line bg-pf-card p-5">
-            <span className="text-xs font-bold uppercase tracking-wider text-pf-muted">01 · Contexto & Desafio</span>
+            <span className="text-xs font-semibold text-pf-muted">01 · Contexto & Desafio</span>
             <p className="mt-2 text-sm leading-relaxed text-pf-fg">{p.challenge}</p>
           </div>
           <div className="rounded-lg border border-pf-line bg-pf-card p-5">
-            <span className="text-xs font-bold uppercase tracking-wider text-pf-muted">02 · Execução na prática</span>
+            <span className="text-xs font-semibold text-pf-muted">02 · Execução na prática</span>
             <p className="mt-2 text-sm leading-relaxed text-pf-fg">{p.action}</p>
           </div>
           <div className="rounded-lg border-l-4 border-pf-accent bg-pf-card p-6 shadow-xs">
-            <span className="inline-block rounded bg-pf-accent px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-pf-accent-fg">
+            <span className="inline-block rounded bg-pf-accent px-2 py-0.5 text-xs font-bold text-pf-accent-fg">
               03 · Resultados & Impacto
             </span>
             <p className="mt-3 font-display text-lg font-semibold leading-snug text-pf-fg">{p.result}</p>
@@ -101,7 +101,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
     const splitJourney = p.journey.length > 0 ? (
       <section key="journey" className="space-y-5 border-b border-pf-line pb-10">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Trajetória & Experiência</span>
+          <span className="text-xs font-semibold text-pf-muted">Trajetória & Experiência</span>
           <h2 className="mt-1 font-display text-2xl font-bold">Marcos e evolução</h2>
         </div>
         <ol className="space-y-4 border-l-2 border-pf-accent/40 pl-5">
@@ -124,12 +124,12 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
             <AvatarBadge p={p} size="lg" />
             <div>
               <h1 className="font-display text-2xl font-bold leading-tight tracking-tight">{p.name || "Seu nome"}</h1>
-              <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-pf-muted">{p.role || "Área de atuação"}</p>
+              <p className="mt-1 text-xs font-semibold text-pf-muted">{p.role || "Área de atuação"}</p>
             </div>
             <p className="text-sm leading-relaxed text-pf-muted">{p.bio}</p>
 
             <div className="border-t border-pf-line pt-5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Habilidades</span>
+              <span className="text-xs font-semibold text-pf-muted">Habilidades</span>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {p.skills.map((s, i) => (
                   <span key={i} className="rounded-md bg-pf-accent/15 px-2.5 py-1 text-xs font-semibold text-pf-fg">
@@ -140,7 +140,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
             </div>
 
             <div className="border-t border-pf-line pt-5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Contato</span>
+              <span className="text-xs font-semibold text-pf-muted">Contato</span>
               <ContactLinks p={p} className="mt-3" />
             </div>
           </aside>
@@ -149,7 +149,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
           <div className="space-y-10">
             {p.headline && p.headline !== p.role && (
               <div className="border-b border-pf-line pb-8">
-                <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Posicionamento</span>
+                <span className="text-xs font-semibold text-pf-muted">Posicionamento</span>
                 <p className="mt-2 font-display text-2xl font-bold leading-snug tracking-tight md:text-3xl">{p.headline}</p>
               </div>
             )}
@@ -157,7 +157,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
             {journeyFirst ? [splitJourney, splitProject] : [splitProject, splitJourney]}
 
             <section className="space-y-3 pt-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Próximo passo</span>
+              <span className="text-xs font-semibold text-pf-muted">Próximo passo</span>
               <p className="font-display text-xl font-bold leading-snug md:text-2xl">{p.goal}</p>
             </section>
           </div>
@@ -174,7 +174,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
       <section key="project" className="grid gap-6 border-t border-pf-line py-10 md:grid-cols-[200px_1fr]">
         <div>
           <span className="font-mono text-xs font-bold text-pf-accent">01</span>
-          <h2 className="mt-1 text-xs font-bold uppercase tracking-wider text-pf-muted">Caso STAR</h2>
+          <h2 className="mt-1 text-xs font-semibold text-pf-muted">Caso STAR</h2>
           {p.metrics.length > 0 && (
             <div className="mt-4 flex flex-col gap-1.5">
               {p.metrics.map((m, i) => (
@@ -208,11 +208,11 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
       <section key="journey" className="grid gap-6 border-t border-pf-line py-10 md:grid-cols-[200px_1fr]">
         <div>
           <span className="font-mono text-xs font-bold text-pf-accent">02</span>
-          <h2 className="mt-1 text-xs font-bold uppercase tracking-wider text-pf-muted">Trajetória & Habilidades</h2>
+          <h2 className="mt-1 text-xs font-semibold text-pf-muted">Trajetória & Habilidades</h2>
         </div>
         <div className="space-y-8">
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Competências essenciais</h3>
+            <h3 className="text-xs font-semibold text-pf-muted">Competências essenciais</h3>
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
               {p.skills.map((s, i) => (
                 <span key={i} className="inline-flex items-center gap-1.5 text-sm font-semibold text-pf-fg">
@@ -242,7 +242,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
           <header className="grid gap-6 pb-10 md:grid-cols-[200px_1fr]">
             <div>
               <AvatarBadge p={p} size="md" />
-              <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-pf-muted">{p.role || "Área de atuação"}</p>
+              <p className="mt-3 text-xs font-semibold text-pf-muted">{p.role || "Área de atuação"}</p>
             </div>
             <div>
               <h1 className="font-display text-3xl font-extrabold tracking-tight md:text-4xl">{p.name || "Seu nome"}</h1>
@@ -259,7 +259,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
           <section className="grid gap-6 border-t border-pf-line pt-10 md:grid-cols-[200px_1fr]">
             <div>
               <span className="font-mono text-xs font-bold text-pf-accent">03</span>
-              <h2 className="mt-1 text-xs font-bold uppercase tracking-wider text-pf-muted">Objetivo</h2>
+              <h2 className="mt-1 text-xs font-semibold text-pf-muted">Objetivo</h2>
             </div>
             <div>
               <p className="font-display text-xl font-semibold leading-snug md:text-2xl">{p.goal}</p>
@@ -277,7 +277,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
   const projectSection = (
     <section key="project" className="mx-auto max-w-4xl border-t border-pf-line px-6 py-14 md:px-10">
       <div>
-        <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Caso em destaque · Método STAR</span>
+        <span className="text-xs font-semibold text-pf-muted">Caso em destaque · Método STAR</span>
         <h2 className="mt-1 font-display text-2xl font-bold md:text-3xl">{p.projectTitle || "Projeto em destaque"}</h2>
       </div>
 
@@ -327,7 +327,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
     <section key="journey" className="mx-auto max-w-4xl border-t border-pf-line px-6 py-14 md:px-10">
       <div className="grid gap-12 md:grid-cols-[1fr_1.3fr]">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Competências</span>
+          <span className="text-xs font-semibold text-pf-muted">Competências</span>
           <h2 className="mt-1 font-display text-xl font-bold">Habilidades essenciais</h2>
           <div className="mt-5 grid grid-cols-2 gap-2.5">
             {p.skills.map((s, i) => (
@@ -341,7 +341,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
 
         {p.journey.length > 0 && (
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Trajetória & Experiência</span>
+            <span className="text-xs font-semibold text-pf-muted">Trajetória & Experiência</span>
             <h2 className="mt-1 font-display text-xl font-bold">Marcos e evolução</h2>
             <ol className="mt-5 space-y-4 border-l-2 border-pf-line pl-5">
               {p.journey.map((j, i) => (
@@ -379,11 +379,11 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
 
           <div className="flex flex-col justify-between rounded-xl border border-pf-line bg-pf-card p-6">
             <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Objetivo atual</span>
+              <span className="text-xs font-semibold text-pf-muted">Objetivo atual</span>
               <p className="mt-2 font-display text-base font-semibold leading-snug text-pf-fg">{p.goal}</p>
             </div>
             <div className="mt-6 border-t border-pf-line pt-4">
-              <span className="mb-2.5 block text-xs font-semibold uppercase tracking-wider text-pf-muted">Canais diretos</span>
+              <span className="mb-2.5 block text-xs font-semibold text-pf-muted">Canais diretos</span>
               <ContactLinks p={p} />
             </div>
           </div>

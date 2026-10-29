@@ -695,13 +695,13 @@ function PerfilPage() {
                               <p className="text-xs text-muted-foreground">{item.data.role}</p>
                             </div>
 
-                            <span className="rounded border border-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            <span className="rounded border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground">
                               Tema {item.selectedTheme}
                             </span>
                           </div>
 
                           <div className="space-y-2">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                            <span className="text-xs font-semibold text-primary">
                               Caso STAR · {item.data.projectTitle}
                             </span>
                             <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">

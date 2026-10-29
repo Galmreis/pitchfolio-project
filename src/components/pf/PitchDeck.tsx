@@ -119,7 +119,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         <div className="grid items-center gap-6 sm:grid-cols-[0.85fr_1.15fr] sm:divide-x sm:divide-pf-line">
           <div className="space-y-3 sm:pr-6">
             <AvatarBadge p={p} size="lg" />
-            <span className="inline-block rounded bg-pf-accent px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-pf-accent-fg">
+            <span className="inline-block rounded bg-pf-accent px-2.5 py-0.5 text-xs font-semibold text-pf-accent-fg">
               {s1.role}
             </span>
             <h2 className="font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-4xl">{s1.name}</h2>
@@ -136,7 +136,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           <div className="space-y-2.5">
             <AvatarBadge p={p} size="md" />
             <span className="block font-mono text-xs font-bold text-pf-accent">01 / PERFIL</span>
-            <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted">{s1.role}</p>
+            <p className="text-xs font-semibold text-pf-muted">{s1.role}</p>
           </div>
           <div>
             <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{s1.name}</h2>
@@ -149,7 +149,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       ) : (
         <div className="flex flex-wrap items-center justify-between gap-6">
           <div className="max-w-xl flex-1">
-            <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted sm:text-sm">{s1.role}</p>
+            <p className="text-xs font-semibold text-pf-muted sm:text-sm">{s1.role}</p>
             <h2 className="mt-2 font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
             {s1.headline && s1.headline !== s1.role && (
               <p className="mt-3 font-display text-lg font-semibold text-pf-fg sm:text-xl">{s1.headline}</p>
@@ -170,7 +170,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
             ["03 · Resultado", s2.result],
           ].map(([title, value]) => (
             <div key={title} className="grid gap-2 py-3 sm:grid-cols-[160px_1fr]">
-              <span className="text-xs font-bold uppercase tracking-wider text-pf-accent">{title}</span>
+              <span className="text-xs font-bold text-pf-accent">{title}</span>
               <p className="text-xs leading-relaxed text-pf-fg sm:text-sm">{value}</p>
             </div>
           ))}
@@ -179,16 +179,16 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_1.15fr]">
           <div className="space-y-3">
             <div className="rounded-lg border border-pf-line bg-pf-card p-3.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-pf-muted">01 · Desafio</span>
+              <span className="text-xs font-semibold text-pf-muted">01 · Desafio</span>
               <p className="mt-1 text-xs leading-relaxed text-pf-fg">{s2.challenge}</p>
             </div>
             <div className="rounded-lg border border-pf-line bg-pf-card p-3.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-pf-muted">02 · Ação</span>
+              <span className="text-xs font-semibold text-pf-muted">02 · Ação</span>
               <p className="mt-1 text-xs leading-relaxed text-pf-fg">{s2.action}</p>
             </div>
           </div>
           <div className="flex flex-col justify-center rounded-lg border-l-4 border-pf-accent bg-pf-card p-5">
-            <span className="w-fit rounded bg-pf-accent px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-pf-accent-fg">
+            <span className="w-fit rounded bg-pf-accent px-2 py-0.5 text-xs font-bold text-pf-accent-fg">
               03 · Resultado & Impacto
             </span>
             <p className="mt-3 font-display text-base font-semibold leading-snug text-pf-fg sm:text-lg">{s2.result}</p>
@@ -269,7 +269,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       </div>
     </Frame>,
     <Frame n={4} key={4} direction={direction} isFullscreen={isFs} onToggleFullscreen={toggleFullscreen}>
-      <p className="text-xs font-semibold uppercase tracking-wider text-pf-muted">Próximo passo & Contato</p>
+      <p className="text-xs font-semibold text-pf-muted">Próximo passo & Contato</p>
       <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold leading-snug tracking-tight sm:text-3xl">{s5.goal}</h2>
       <ContactLinks p={{ ...p, ...s5 }} className="mt-8" />
     </Frame>,

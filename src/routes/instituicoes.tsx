@@ -147,11 +147,11 @@ function InstituicoesPage() {
       <section className="mx-auto max-w-6xl px-6 pb-10 pt-6 lg:pt-10">
         <div className="grid gap-8 lg:grid-cols-[1.3fr_0.9fr] lg:items-end">
           <div>
-            <span className="inline-block rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
+            <span className="inline-block rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
               Parcerias Institucionais & Feiras de Carreira
             </span>
             <h1 className="mt-4 font-display text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl">
-              Vitrine verificada de talentos no <span className="text-primary">Método STAR</span>.
+              Vitrine verificada de talentos no Método STAR.
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
               Em vez de distribuir pastas com dezenas de currículos genéricos em PDF, universidades e feiras de carreira disponibilizam um diretório padronizado onde recrutadores filtram candidatos por evidência prática, resultados mensuráveis e QR Code.
@@ -312,7 +312,7 @@ function InstituicoesPage() {
                   <div className="space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Caso Verificado · Método STAR</span>
+                        <span className="text-xs font-semibold text-primary">Caso Verificado · Método STAR</span>
                         <h3 className="font-display text-base font-bold text-foreground">{p.projectTitle || "Projeto em destaque"}</h3>
                       </div>
                       {p.metrics.length > 0 && (
@@ -328,15 +328,15 @@ function InstituicoesPage() {
 
                     <div className="grid gap-2.5 sm:grid-cols-3">
                       <div className="rounded-lg border border-border bg-background/60 p-3">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">01 · Desafio</span>
+                        <span className="text-xs font-semibold text-muted-foreground">01 · Desafio</span>
                         <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-foreground">{p.challenge}</p>
                       </div>
                       <div className="rounded-lg border border-border bg-background/60 p-3">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">02 · Ação na prática</span>
+                        <span className="text-xs font-semibold text-muted-foreground">02 · Ação na prática</span>
                         <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-foreground">{p.action}</p>
                       </div>
                       <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-primary">03 · Resultado</span>
+                        <span className="text-xs font-semibold text-primary">03 · Resultado</span>
                         <p className="mt-1 line-clamp-3 text-xs font-semibold leading-relaxed text-foreground">{p.result}</p>
                       </div>
                     </div>
@@ -345,7 +345,7 @@ function InstituicoesPage() {
                   {/* Recruiter Actions Column */}
                   <div className="flex flex-col justify-between border-t border-border pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Objetivo</span>
+                      <span className="text-xs font-semibold text-muted-foreground">Objetivo</span>
                       <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{p.goal}</p>
                     </div>
                     <div className="mt-4 flex flex-col gap-2 print:hidden">
@@ -384,7 +384,7 @@ function InstituicoesPage() {
                       <div className="flex items-center gap-3 min-w-0">
                         <AvatarBadge p={p} size="md" />
                         <div className="min-w-0">
-                          <span className="inline-block rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                          <span className="inline-block rounded bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
                             {item.areaCategory}
                           </span>
                           <h2 className="mt-1 truncate font-display text-lg font-bold text-foreground">{p.name}</h2>
@@ -436,7 +436,7 @@ function InstituicoesPage() {
       <section className="border-t border-border bg-card print:hidden">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-6 py-12">
           <div className="max-w-xl">
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Implantação para Universidades e Eventos</p>
+            <p className="text-xs font-semibold text-primary">Implantação para Universidades e Eventos</p>
             <h2 className="mt-1 font-display text-2xl font-bold">Leve o PitchFolio para a próxima feira de carreiras da sua instituição</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Os estudantes criam seus portfólios gratuitamente em menos de 10 minutos e a coordenação recebe a vitrine padronizada da turma com catálogo QR pronto para empresas parceiras.

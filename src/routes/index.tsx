@@ -134,7 +134,7 @@ function Index() {
             Transforme{" "}
             <span
               key={rotatingIdx}
-              className="inline-block text-primary underline decoration-primary/30 underline-offset-4 animate-in fade-in slide-in-from-bottom-1 duration-300"
+              className="inline-block animate-in fade-in slide-in-from-bottom-1 duration-300"
             >
               {ROTATING_TARGETS[rotatingIdx]}
             </span>{" "}
@@ -250,7 +250,7 @@ function Index() {
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[0.85fr_1.35fr] lg:gap-16">
           <div className="flex flex-col justify-between space-y-6">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Como funciona</p>
+              <p className="text-xs font-semibold text-primary">Como funciona</p>
               <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 Três etapas para sair do currículo genérico.
               </h2>
@@ -294,9 +294,9 @@ function Index() {
                 {isScanning && (
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/15 via-transparent to-transparent animate-pulse" />
                 )}
-                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                   <span>Antes · {SIMULATOR_EXAMPLES[simIdx]!.rawLabel}</span>
-                  <span className="font-mono text-[9px]">{SIMULATOR_EXAMPLES[simIdx]!.category}</span>
+                  <span className="font-mono text-[10px]">{SIMULATOR_EXAMPLES[simIdx]!.category}</span>
                 </div>
                 <p className="mt-1.5 text-xs italic leading-relaxed text-muted-foreground">
                   {SIMULATOR_EXAMPLES[simIdx]!.rawText}
@@ -316,7 +316,7 @@ function Index() {
                 }`}
               >
                 <div className="flex items-center justify-between border-b border-primary/20 pb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                  <span className="text-xs font-semibold text-primary">
                     Depois · Evidência Executiva
                   </span>
                   <span className="rounded bg-primary px-2 py-0.5 font-mono text-[10px] font-bold text-primary-foreground shadow-xs">
@@ -385,7 +385,7 @@ function Index() {
         <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="overflow-hidden rounded-xl border border-border bg-card lg:grid lg:grid-cols-[1.35fr_0.85fr]">
             <div className="p-7 sm:p-10">
-              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Parcerias Institucionais</p>
+              <p className="text-xs font-semibold text-primary">Parcerias Institucionais</p>
               <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 Para Universidades, Escolas Técnicas e Feiras de Carreira
               </h2>
@@ -440,7 +440,7 @@ function Index() {
 
             <div className="flex flex-col justify-between border-t border-border bg-secondary/45 p-7 sm:p-10 lg:border-l lg:border-t-0">
               <div>
-                <span className="inline-block rounded bg-primary px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
+                <span className="inline-block rounded bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground">
                   100% Gratuito para Candidatos
                 </span>
                 <h3 className="mt-3 font-display text-xl font-bold">Para Estudantes e Candidatos</h3>
