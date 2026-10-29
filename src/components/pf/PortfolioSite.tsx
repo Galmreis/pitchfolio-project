@@ -24,11 +24,11 @@ export function AvatarBadge({ p, size = "md" }: { p: Portfolio; size?: "sm" | "m
 function ProjectVisual({ p }: { p: Portfolio }) {
   if (!p.projectImageUrl) return null;
   return (
-    <div className="mt-5 overflow-hidden rounded-xl border border-pf-line bg-pf-card shadow-sm">
+    <div className="group mt-5 overflow-hidden rounded-xl border border-pf-line bg-pf-card shadow-sm">
       <img
         src={p.projectImageUrl}
         alt={p.projectTitle || "Prévia visual do projeto"}
-        className="aspect-video w-full object-cover"
+        className="aspect-video w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
       />
     </div>
   );
@@ -407,7 +407,7 @@ export function ContactLinks({ p, className = "" }: { p: Portfolio; className?: 
     <div className={`flex flex-wrap gap-3 ${className}`}>
       {items.map(({ icon: Icon, label, href }) => (
         <a key={label} href={href} target="_blank" rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg border border-pf-line bg-pf-card px-4 py-2 text-sm font-medium transition hover:bg-pf-accent hover:text-pf-accent-fg">
+          className="inline-flex items-center gap-2 rounded-lg border border-pf-line bg-pf-card px-4 py-2 text-sm font-medium transition hover:bg-pf-accent hover:text-pf-accent-fg active:scale-95 hover:-translate-y-0.5">
           <Icon className="h-4 w-4" /> {label}
         </a>
       ))}

@@ -256,8 +256,8 @@ function Criar() {
         <div className="mb-8 flex gap-2">
           {STEPS.map((s, i) => (
             <div key={s} className="flex-1">
-              <div className={`h-1.5 rounded-full ${i <= step ? "bg-primary" : "bg-border"}`} />
-              <p className={`mt-2 hidden text-xs font-medium sm:block ${i === step ? "text-foreground" : "text-muted-foreground"}`}>
+              <div className={`h-1.5 rounded-full transition-all duration-500 ${i <= step ? "bg-primary" : "bg-border"}`} />
+              <p className={`mt-2 hidden text-xs font-medium sm:block transition-colors ${i === step ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
                 {i < step && <Check className="mr-1 inline h-3 w-3" />}{s}
               </p>
             </div>
@@ -338,7 +338,7 @@ function Criar() {
             </div>
           )}
 
-          <div className="mt-8 space-y-6">
+          <div key={step} className="mt-8 space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             {step === 0 && (
               <>
                 <Field label="Nome completo"><Input value={a.name} onChange={set("name")} placeholder="Ana Souza" /></Field>

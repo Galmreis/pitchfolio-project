@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, Globe, Presentation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/pf/Logo";
@@ -22,10 +22,26 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const ROTATING_TARGETS = [
+  "experiências acadêmicas",
+  "iniciação científica",
+  "trabalhos de TCC",
+  "projetos práticos",
+  "estágios e monitorias",
+];
+
 function Index() {
   const [persona, setPersona] = useState<DemoPersona>(DEMO_PERSONAS[0]!);
   const [demoView, setDemoView] = useState<"deck" | "site">("deck");
   const [demoTheme, setDemoTheme] = useState<ThemeName>("moderno");
+  const [rotatingIdx, setRotatingIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRotatingIdx((prev) => (prev + 1) % ROTATING_TARGETS.length);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, []);
 
   const activePortfolio = buildPersonaPortfolio(persona);
   const activeDeck = createDeck(activePortfolio);
@@ -50,17 +66,24 @@ function Index() {
       {/* Focused Editorial Hero (No competing H2s or controls) */}
       <section className="mx-auto max-w-6xl px-6 pb-12 pt-8 lg:pt-14">
         <div className="max-w-3xl">
-          <div className="flex items-center gap-2 font-mono text-xs text-primary">
+          <div className="flex items-center gap-2 font-mono text-xs text-primary animate-in fade-in duration-500">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
             Hackathon Startups & Lovable · Case 3: Empregabilidade e Carreira
           </div>
-          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl text-foreground">
-            Transforme experiências acadêmicas e projetos em um pitch executivo de 5 slides.
+          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl text-foreground animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
+            Transforme{" "}
+            <span
+              key={rotatingIdx}
+              className="inline-block text-primary underline decoration-primary/30 underline-offset-4 animate-in fade-in slide-in-from-bottom-1 duration-300"
+            >
+              {ROTATING_TARGETS[rotatingIdx]}
+            </span>{" "}
+            em um pitch executivo de 5 slides.
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg animate-in fade-in slide-in-from-bottom-2 duration-500 delay-150">
             Quem busca o primeiro emprego trava na página em branco. O PitchFolio lê seu currículo em PDF, seu perfil do LinkedIn ou suas respostas guiadas e estrutura sua apresentação pelo Método STAR pronta para entrevistas.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
             <Button asChild size="lg" className="h-11 rounded-lg px-6 text-sm font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.98]">
               <Link to="/criar">Montar meu pitch agora <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
             </Button>
@@ -210,8 +233,8 @@ function Index() {
                 d: "Com um clique, publique uma página web de leitura rápida e um Pitch Deck interativo de 5 slides (com modo tela cheia e impressão nativa em PDF).",
               },
             ].map(({ num, tag, t, d }) => (
-              <div key={num} className="grid gap-3 py-6 first:pt-4 lg:first:pt-0 sm:grid-cols-[56px_1fr]">
-                <span className="font-mono text-sm font-bold text-primary">{num}</span>
+              <div key={num} className="group grid gap-3 rounded-xl p-3 transition-colors hover:bg-muted/40 py-6 first:pt-4 lg:first:pt-0 sm:grid-cols-[56px_1fr]">
+                <span className="font-mono text-sm font-bold text-primary transition-transform group-hover:scale-110">{num}</span>
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <h3 className="font-display text-lg font-bold">{t}</h3>
