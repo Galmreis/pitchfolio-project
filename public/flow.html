@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PitchFolio — Mapa Completo da Jornada (Todas as Telas)</title>
+  <style>
+    :root { --bg: #0c0e14; --card: #151924; --line: #262c3f; --fg: #f5f6fa; --muted: #939bb5; --accent: #b8f23a; --primary: #e85d2a; }
+    * { box-sizing: border-box; margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--fg); padding: 24px 32px 60px; }
+    header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: rgba(12,14,20,0.92); backdrop-filter: blur(8px); padding-top: 8px; }
+    h1 { font-size: 20px; letter-spacing: -0.02em; }
+    .sub { color: var(--muted); font-size: 13px; margin-top: 3px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button { cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 8px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; transition: 0.15s; }
+    button.primary { background: var(--accent); color: #111; border-color: var(--accent); }
+    button:hover { opacity: 0.9; transform: translateY(-1px); }
+    .phase { margin-top: 32px; }
+    .phase-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; border-left: 3px solid var(--accent); padding-left: 12px; }
+    .phase-header h2 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+    .phase-header span { font-size: 12px; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 18px; }
+    .screen { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+    .screen-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); background: #10131c; }
+    .screen-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .num { background: var(--primary); color: #fff; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 99px; }
+    .route { font-family: monospace; font-size: 11px; color: var(--accent); background: rgba(184,242,58,0.1); padding: 3px 8px; border-radius: 6px; text-decoration: none; }
+    .route:hover { text-decoration: underline; }
+    .desc { padding: 8px 14px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); background: #131722; }
+    .viewport { position: relative; width: 100%; height: 420px; overflow: hidden; background: #fff; }
+    .viewport iframe { width: 125%; height: 125%; border: 0; transform: scale(0.8); transform-origin: 0 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>PitchFolio — Storyboard Completo da Jornada do Usuário (12 Estados)</h1>
+      <p class="sub">Visão panorâmica de todas as rotas, passos, temas, modais e links públicos lado a lado.</p>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="seedDemoAndReload()">Recarregar Dados Fictícios (Ana Souza)</button>
+      <button onclick="clearStorageAndReload()">Simular Visitante Novo (Limpar localStorage)</button>
+    </div>
+  </header>
+
+  <!-- FASE 1: ENTRADA & INGESTÃO -->
+  <section class="phase">
+    <div class="phase-header">
+      <h2>Fase 1 · Descoberta e Ingestão (Caminho A: PDF/Texto e Caminho B: 3 Passos)</h2>
+      <span>Rotas: / e /criar</span>
+    </div>
+    <div class="grid">
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">01</span> Landing Page</div>
+          <a class="route" href="/" target="_blank">/ ↗</a>
+        </div>
+        <div class="desc">Tela inicial com proposta de valor, preview de slide e CTAs para "Começar" ou "Meu portfólio".</div>
+        <div class="viewport"><iframe src="/"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">02</span> Passo 1 + Importar PDF / LinkedIn</div>
+          <a class="route" href="/criar?paste=1" target="_blank">/criar (Passo 1) ↗</a>
+        </div>
+        <div class="desc">Caminho A (Upload PDF ou Colar LinkedIn aberto) + Passo 1 do Caminho B ("Quem é você?").</div>
+        <div class="viewport"><iframe src="/criar?paste=1"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">03</span> Passo 2 · Projeto de Maior Impacto</div>
+          <a class="route" href="/criar?step=1" target="_blank">/criar?step=1 ↗</a>
+        </div>
+        <div class="desc">Coleta estruturada pelo método STAR: Desafio, O que fez na prática (Ação) e Resultados.</div>
+        <div class="viewport"><iframe src="/criar?step=1"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">04</span> Passo 3 · Habilidades e Objetivo</div>
+          <a class="route" href="/criar?step=2" target="_blank">/criar?step=2 ↗</a>
+        </div>
+        <div class="desc">Top 3-5 habilidades, links de contato (LinkedIn, GitHub, E-mail), objetivo e botão "Gerar com IA".</div>
+        <div class="viewport"><iframe src="/criar?step=2"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">05</span> Estado de Processamento da IA</div>
+          <a class="route" href="/criar?loading=1" target="_blank">/criar?loading=1 ↗</a>
+        </div>
+        <div class="desc">Feedback visual enquanto a Lovable AI reescreve as respostas com verbos de impacto e gera os 5 slides.</div>
+        <div class="viewport"><iframe src="/criar?loading=1"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FASE 2: EDITOR, TEMAS E MODOS -->
+  <section class="phase">
+    <div class="phase-header">
+      <h2>Fase 2 · Edição, Temas e Alternância Site vs. Pitch Deck (5 Slides)</h2>
+      <span>Rota: /editor</span>
+    </div>
+    <div class="grid">
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">06</span> Editor · Modo Site (Tema Moderno)</div>
+          <a class="route" href="/editor?theme=moderno" target="_blank">/editor (Site) ↗</a>
+        </div>
+        <div class="desc">Visão dividida: formulário editável à esquerda e prévia ao vivo do Site do Portfólio à direita.</div>
+        <div class="viewport"><iframe src="/editor?theme=moderno"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">07</span> Editor · Modo Pitch Deck (5 Slides)</div>
+          <a class="route" href="/editor?view=deck&theme=quente" target="_blank">/editor?view=deck ↗</a>
+        </div>
+        <div class="desc">Modo apresentação interativa de 5 slides (navegável por setas ← → ou clique), exibido no Tema Quente.</div>
+        <div class="viewport"><iframe src="/editor?view=deck&theme=quente"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">08</span> Editor · Estado Vazio / Recuperação</div>
+          <a class="route" href="/editor?empty=1" target="_blank">/editor?empty=1 ↗</a>
+        </div>
+        <div class="desc">Exibido quando o visitante abre /editor sem rascunho: permite criar novo, carregar demo ou fazer login.</div>
+        <div class="viewport"><iframe src="/editor?empty=1"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FASE 3: AUTENTICAÇÃO E COMPARTILHAMENTO -->
+  <section class="phase">
+    <div class="phase-header">
+      <h2>Fase 3 · Autenticação (Supabase) e Modal de Publicação</h2>
+      <span>Componentes: AuthDialog & ShareDialog em /editor</span>
+    </div>
+    <div class="grid">
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">09</span> Modal de Cadastro / Login</div>
+          <a class="route" href="/editor?modal=auth" target="_blank">/editor?modal=auth ↗</a>
+        </div>
+        <div class="desc">Acionado ao clicar em "Publicar portfólio" sem sessão ativa. Suporta Criar Conta e Entrar.</div>
+        <div class="viewport"><iframe src="/editor?modal=auth"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">10</span> Modal de Compartilhamento</div>
+          <a class="route" href="/editor?modal=share" target="_blank">/editor?modal=share ↗</a>
+        </div>
+        <div class="desc">Exibido após salvar no banco via RPC: copiar link /p/:slug, enviar no WhatsApp ou publicar no LinkedIn.</div>
+        <div class="viewport"><iframe src="/editor?modal=share"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FASE 4: VISÃO DO RECRUTADOR (/p/$slug) -->
+  <section class="phase">
+    <div class="phase-header">
+      <h2>Fase 4 · Visão Pública do Recrutador (SSR)</h2>
+      <span>Rota: /p/$slug</span>
+    </div>
+    <div class="grid">
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">11</span> Página Pública · Visão Portfólio</div>
+          <a class="route" href="/p/ana-souza-demo" target="_blank">/p/ana-souza-demo ↗</a>
+        </div>
+        <div class="desc">Link público que o recrutador recebe. Mostra o case estruturado, métricas, habilidades e botão PDF.</div>
+        <div class="viewport"><iframe src="/p/ana-souza-demo"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">12</span> Página Pública · Visão Pitch Deck</div>
+          <a class="route" href="/p/ana-souza-demo?view=deck" target="_blank">/p/ana-souza-demo?view=deck ↗</a>
+        </div>
+        <div class="desc">O recrutador alterna para "Pitch" no topo da página pública para navegar pelos 5 slides do candidato.</div>
+        <div class="viewport"><iframe src="/p/ana-souza-demo?view=deck"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const DEMO_ANSWERS = {
+      name: "Ana Souza",
+      area: "Engenharia de Software · UFPE",
+      bio: "Estudante do 6º período focada em desenvolvimento full-stack e produtos digitais acessíveis.",
+      challenge: "Mais de 400 alunos do campus dependiam de grupos desencontrados para dividir transporte diário.",
+      action: "Desenvolvi uma aplicação web em React e TypeScript com rotas compartilhadas e validação por e-mail institucional.",
+      result: "1.200 viagens combinadas em 4 meses e redução de 30% no gasto médio semanal dos estudantes.",
+      skills: "React, TypeScript, Node.js, PostgreSQL, Pesquisa com Usuários",
+      linkedin: "linkedin.com/in/ana-souza-demo",
+      github: "github.com/anasouza-demo",
+      email: "ana.demo@exemplo.com",
+      goal: "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário."
+    };
+
+    const DEMO_DRAFT = {
+      theme: "moderno",
+      portfolio: {
+        name: "Ana Souza",
+        role: "Engenharia de Software · UFPE",
+        headline: "Engenharia de Software · UFPE",
+        bio: "Estudante do 6º período focada em desenvolvimento full-stack e produtos digitais acessíveis.",
+        projectTitle: "App de Caronas Universitárias",
+        challenge: "Mais de 400 alunos do campus dependiam de grupos desencontrados para dividir transporte diário.",
+        action: "Desenvolvi uma aplicação web em React e TypeScript com rotas compartilhadas e validação por e-mail institucional.",
+        result: "1.200 viagens combinadas em 4 meses e redução de 30% no gasto médio semanal dos estudantes.",
+        metrics: ["1.200 viagens", "4 meses", "30% economia"],
+        skills: ["React", "TypeScript", "Node.js", "PostgreSQL", "Pesquisa com Usuários"],
+        journey: [
+          "Estudante do 6º período focada em desenvolvimento full-stack e produtos digitais acessíveis.",
+          "Desenvolvi uma aplicação web em React e TypeScript com rotas compartilhadas e validação por e-mail institucional.",
+          "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário."
+        ],
+        goal: "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário.",
+        linkedin: "linkedin.com/in/ana-souza-demo",
+        github: "github.com/anasouza-demo",
+        email: "ana.demo@exemplo.com"
+      }
+    };
+
+    function ensureSeeded() {
+      if (!localStorage.getItem("pitchfolio-answers")) {
+        localStorage.setItem("pitchfolio-answers", JSON.stringify(DEMO_ANSWERS));
+      }
+      if (!localStorage.getItem("pitchfolio-draft")) {
+        localStorage.setItem("pitchfolio-draft", JSON.stringify(DEMO_DRAFT));
+      }
+    }
+
+    function seedDemoAndReload() {
+      localStorage.setItem("pitchfolio-answers", JSON.stringify(DEMO_ANSWERS));
+      localStorage.setItem("pitchfolio-draft", JSON.stringify(DEMO_DRAFT));
+      document.querySelectorAll("iframe").forEach((f) => f.contentWindow.location.reload());
+    }
+
+    function clearStorageAndReload() {
+      localStorage.removeItem("pitchfolio-answers");
+      localStorage.removeItem("pitchfolio-draft");
+      document.querySelectorAll("iframe").forEach((f) => f.contentWindow.location.reload());
+    }
+
+    ensureSeeded();
+  </script>
+</body>
+</html>

@@ -45,12 +45,16 @@ export const structurePortfolio = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ portfolio: Portfolio; deck: FiveSlideDeck; ai: boolean }> => {
     const fallback = localStructure(data);
     const fallbackDeck = createDeck(fallback);
-    const { createRequestCloudClient } = await import("@/config/cloud.server");
-    const client = createRequestCloudClient();
-    const { data: allowed, error: budgetError } = await client.rpc("consume_pitchfolio_budget", { p_kind: "ai" });
-    if (budgetError || !allowed) return { portfolio: fallback, deck: fallbackDeck, ai: false };
     const key = process.env['LOVABLE_API_KEY'];
     if (!key) return { portfolio: fallback, deck: fallbackDeck, ai: false };
+    try {
+      const { createRequestCloudClient } = await import("@/config/cloud.server");
+      const client = createRequestCloudClient();
+      const { data: allowed, error: budgetError } = await client.rpc("consume_pitchfolio_budget", { p_kind: "ai" });
+      if (budgetError || !allowed) return { portfolio: fallback, deck: fallbackDeck, ai: false };
+    } catch {
+      return { portfolio: fallback, deck: fallbackDeck, ai: false };
+    }
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
         method: "POST",

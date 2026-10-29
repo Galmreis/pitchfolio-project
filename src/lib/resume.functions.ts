@@ -30,6 +30,45 @@ Regras rígidas: copie apenas fatos presentes no documento; NUNCA invente númer
 
 export type ResumeResult = { answers: Partial<RawAnswers> | null; error?: string };
 
+function localExtractFromText(rawText: string): Partial<RawAnswers> {
+  // eslint-disable-next-line no-control-regex
+  const clean = rawText.replace(/[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim();
+  const lines = clean.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const emailMatch = clean.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  const linkedinMatch = clean.match(/(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+/i);
+  const githubMatch = clean.match(/(?:https?:\/\/)?(?:www\.)?github\.com\/[a-zA-Z0-9_-]+/i);
+
+  const name = (lines[0] && lines[0].length <= 80 ? lines[0] : "Candidato(a)").slice(0, 120);
+  const area = (lines[1] && lines[1].length <= 120 ? lines[1] : "Profissional em Formação").slice(0, 200);
+  const paragraphs = clean.split(/\n{2,}/).map((p) => p.replace(/\s+/g, " ").trim()).filter((p) => p.length > 20);
+  const bio = (paragraphs[0] ?? lines.slice(0, 3).join(" ")).slice(0, 800);
+  const challenge = (paragraphs[1] ?? "Atuação prática na resolução de problemas e organização de demandas da área.").slice(0, 800);
+  const action = (paragraphs[2] ?? paragraphs[1] ?? "Estruturei processos, executei entregas práticas e colaborei com a equipe.").slice(0, 800);
+  const result = (paragraphs[3] ?? "Entregas concluídas dentro do prazo com impacto positivo para a equipe e usuários.").slice(0, 800);
+
+  const knownSkills = [
+    "Comunicação", "Liderança", "Gestão de Projetos", "Trabalho em Equipe", "Resolução de Problemas",
+    "Excel", "Inglês", "Python", "JavaScript", "TypeScript", "React", "Node.js", "SQL", "Figma",
+    "Análise de Dados", "Atendimento", "Pesquisa", "Design", "Marketing", "Finanças",
+  ];
+  const matchedSkills = knownSkills.filter((sk) => new RegExp(`\\b${sk.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(clean));
+  const skills = (matchedSkills.length >= 3 ? matchedSkills : [...matchedSkills, "Comunicação", "Resolução de Problemas", "Trabalho em Equipe"]).slice(0, 6).join(", ");
+
+  return {
+    name,
+    area,
+    bio,
+    challenge,
+    action,
+    result,
+    skills,
+    ...(linkedinMatch ? { linkedin: linkedinMatch[0] } : {}),
+    ...(githubMatch ? { github: githubMatch[0] } : {}),
+    ...(emailMatch ? { email: emailMatch[0] } : {}),
+    goal: `Busco oportunidade na área de ${area} para aplicar minhas habilidades na prática e gerar resultados junto à equipe.`,
+  };
+}
+
 export const extractResume = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ data }): Promise<ResumeResult> => {
@@ -80,14 +119,19 @@ export const extractResume = createServerFn({ method: "POST" })
       if ((data.base64.length * 3) / 4 > MAX_BYTES) return { answers: null, error: "O PDF deve ter no máximo 5 MB." };
     }
 
-    const { createRequestCloudClient } = await import("@/config/cloud.server");
-    const { data: allowed, error: budgetError } = await createRequestCloudClient().rpc("consume_pitchfolio_budget", { p_kind: "ai" });
-    if (budgetError || !allowed) {
-      return ghFallback ? { answers: ghFallback } : { answers: null, error: "Limite de uso da IA atingido. Tente novamente mais tarde." };
-    }
+    const localFallback = ghFallback ?? (data.rawText ? localExtractFromText(data.rawText) : null);
     const key = process.env["LOVABLE_API_KEY"];
     if (!key) {
-      return ghFallback ? { answers: ghFallback } : { answers: null, error: "IA indisponível no momento." };
+      return localFallback ? { answers: localFallback } : { answers: null, error: "Para importar PDF no ambiente local sem chave de IA, use a opção 'Colar texto / LinkedIn'." };
+    }
+    try {
+      const { createRequestCloudClient } = await import("@/config/cloud.server");
+      const { data: allowed, error: budgetError } = await createRequestCloudClient().rpc("consume_pitchfolio_budget", { p_kind: "ai" });
+      if (budgetError || !allowed) {
+        return localFallback ? { answers: localFallback } : { answers: null, error: "Limite de uso da IA atingido. Tente novamente mais tarde." };
+      }
+    } catch {
+      if (localFallback) return { answers: localFallback };
     }
 
     const combinedText = [data.rawText, ghSummary ? `Dados públicos do GitHub:\n${ghSummary}` : ""].filter(Boolean).join("\n\n");
@@ -113,7 +157,7 @@ export const extractResume = createServerFn({ method: "POST" })
         }),
       });
       if (!res.ok || !res.body) {
-        if (ghFallback) return { answers: ghFallback };
+        if (localFallback) return { answers: localFallback };
         console.error("Resume AI error", res.status, await res.text().catch(() => ""));
         if (res.status === 429) return { answers: null, error: "Muitas solicitações. Aguarde um pouco." };
         if (res.status === 402) return { answers: null, error: "Créditos de IA esgotados." };
@@ -143,13 +187,13 @@ export const extractResume = createServerFn({ method: "POST" })
         if (typeof v === "string" && v.trim()) {
           // eslint-disable-next-line no-control-regex
           answers[f] = v.replace(/[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, f === "name" ? 120 : 3000);
-        } else if (ghFallback?.[f]) {
-          answers[f] = ghFallback[f];
+        } else if (localFallback?.[f]) {
+          answers[f] = localFallback[f];
         }
       }
       return { answers };
     } catch (e) {
-      if (ghFallback) return { answers: ghFallback };
+      if (localFallback) return { answers: localFallback };
       console.error("Resume extraction failed", e);
       return { answers: null, error: "Não foi possível ler o currículo agora." };
     }
