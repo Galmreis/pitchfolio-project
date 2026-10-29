@@ -37,6 +37,7 @@ import {
   type Portfolio,
 } from "@/lib/portfolio";
 import { portfolioSchema } from "@/validators/portfolio";
+import { githubUrlSchema, linkedinUrlSchema, phoneSchema } from "@/validators/profile";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({
@@ -261,29 +262,60 @@ function PerfilPage() {
   async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
+
+    let normalizedPhone = "";
+    if (contacts.phone.trim()) {
+      const phoneCheck = phoneSchema.safeParse(contacts.phone.trim());
+      if (!phoneCheck.success) {
+        toast.error("Telefone inválido. Use um formato como (11) 98765-4321 ou +55 11 98765-4321.");
+        return;
+      }
+      normalizedPhone = phoneCheck.data;
+    }
+
+    let normalizedLinkedin: string | null = null;
+    if (contacts.linkedin.trim()) {
+      const check = linkedinUrlSchema.safeParse(contacts.linkedin.trim());
+      if (!check.success) {
+        toast.error("LinkedIn inválido. Use linkedin.com/in/seu-perfil.");
+        return;
+      }
+      normalizedLinkedin = check.data;
+    }
+
+    let normalizedGithub: string | null = null;
+    if (contacts.github.trim()) {
+      const check = githubUrlSchema.safeParse(contacts.github.trim());
+      if (!check.success) {
+        toast.error("GitHub inválido. Use github.com/seu-usuario.");
+        return;
+      }
+      normalizedGithub = check.data;
+    }
+
     setSaving(true);
     try {
       const trimmedFirst = profile.firstName.trim();
       const trimmedLast = profile.lastName.trim();
       const derivedFull = [trimmedFirst, trimmedLast].filter(Boolean).join(" ") || profile.fullName.trim();
 
-      // 1. Update public.profiles
+      // 1. Update public.profiles (triggers DB function sync_profile_to_portfolio)
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
           first_name: trimmedFirst || derivedFull.split(" ")[0] || "",
           last_name: trimmedLast || derivedFull.split(" ").slice(1).join(" ") || "",
           full_name: derivedFull.slice(0, 120),
-          phone_number: contacts.phone.trim(),
-          linkedin_url: contacts.linkedin.trim() || null,
-          github_url: contacts.github.trim() || null,
+          phone_number: normalizedPhone,
+          linkedin_url: normalizedLinkedin,
+          github_url: normalizedGithub,
           avatar_url: profile.avatarUrl.trim() || null,
         })
         .eq("id", user.id);
 
       if (profileError) throw profileError;
 
-      // 2. Also update local draft if exists so it stays synchronized
+      // 2. Also update local draft in browser if present
       if (localDraft) {
         const updatedLocalDraft: Draft = {
           ...localDraft,
@@ -291,8 +323,8 @@ function PerfilPage() {
             ...localDraft.portfolio,
             name: derivedFull || localDraft.portfolio.name,
             avatarUrl: profile.avatarUrl.trim() || localDraft.portfolio.avatarUrl,
-            linkedin: contacts.linkedin.trim(),
-            github: contacts.github.trim(),
+            linkedin: normalizedLinkedin || contacts.linkedin.trim(),
+            github: normalizedGithub || contacts.github.trim(),
             email: contacts.contactEmail.trim(),
           },
         };
@@ -300,28 +332,8 @@ function PerfilPage() {
         setLocalDraft(updatedLocalDraft);
       }
 
-      // 3. If user has active portfolios, synchronize the contact and name fields in their data column
-      if (portfolios.length > 0) {
-        for (const item of portfolios) {
-          const nextData: Portfolio = {
-            ...item.data,
-            name: derivedFull || item.data.name,
-            avatarUrl: profile.avatarUrl.trim() || item.data.avatarUrl,
-            linkedin: contacts.linkedin.trim(),
-            github: contacts.github.trim(),
-            email: contacts.contactEmail.trim(),
-          };
-          await supabase
-            .from("portfolios")
-            .update({
-              name: nextData.name,
-              data: nextData,
-            })
-            .eq("id", item.id);
-        }
-      }
-
       toast.success("Perfil e contatos sincronizados com sucesso!");
+      await loadUserData();
     } catch (err) {
       console.error("Error saving profile", err);
       toast.error("Não foi possível salvar o perfil. Tente novamente.");
