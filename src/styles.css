@@ -162,6 +162,26 @@
   --pf-accent: oklch(0.55 0.19 15);
   --pf-accent-fg: oklch(0.99 0.005 15);
 }
+.pf-accent-ambar {
+  --pf-accent: oklch(0.68 0.16 75);
+  --pf-accent-fg: oklch(0.18 0.02 45);
+}
+.pf-accent-ciano {
+  --pf-accent: oklch(0.62 0.14 215);
+  --pf-accent-fg: oklch(0.99 0.005 215);
+}
+.pf-accent-indigo {
+  --pf-accent: oklch(0.52 0.22 275);
+  --pf-accent-fg: oklch(0.99 0.005 275);
+}
+.pf-accent-lima {
+  --pf-accent: oklch(0.66 0.18 132);
+  --pf-accent-fg: oklch(0.16 0.02 130);
+}
+.pf-accent-grafite {
+  --pf-accent: oklch(0.50 0.025 250);
+  --pf-accent-fg: oklch(0.99 0.005 250);
+}
 
 .dark {
   --background: oklch(0.129 0.042 264.695);

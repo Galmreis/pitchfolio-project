@@ -45,7 +45,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
         <span className="text-xs font-semibold text-pf-muted">Certificações & Formação Complementar</span>
         <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
           {sections.certifications.map((c) => (
-            <div key={c.id} className="flex items-start gap-2.5 rounded-lg border border-pf-line bg-pf-card p-3">
+            <div key={c.id} className="flex items-start gap-2.5 rounded-lg border border-pf-line bg-pf-card p-3 transition hover:border-pf-accent/60 hover:bg-pf-accent/5">
               <Award className="mt-0.5 h-4 w-4 shrink-0 text-pf-accent" />
               <div className="min-w-0">
                 <p className="text-xs font-bold text-pf-fg">{c.title}</p>
@@ -331,7 +331,7 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
           <h2 className="mt-1 font-display text-xl font-bold">Habilidades essenciais</h2>
           <div className="mt-5 grid grid-cols-2 gap-2.5">
             {p.skills.map((s, i) => (
-              <div key={i} className="min-w-0 rounded-lg border border-pf-line bg-pf-card p-3 text-xs font-semibold">
+              <div key={i} className="min-w-0 rounded-lg border border-pf-line bg-pf-card p-3 text-xs font-semibold transition hover:border-pf-accent/60 hover:bg-pf-accent/5">
                 <span className="mb-1 block font-mono text-[10px] text-pf-accent">0{i + 1}</span>
                 <span className="truncate block">{s}</span>
               </div>

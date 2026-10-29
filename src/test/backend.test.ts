@@ -87,4 +87,23 @@ describe("PitchFolio business rules", () => {
   it("rejects an unsafe owner-upload filename", () => {
     expect(() => validateUpload({ bucket: "resumes", filename: "../resume.pdf", contentType: "application/pdf", base64: btoa("%PDF-1.7") })).toThrow();
   });
+  it("validates all 10 professional accent color choices", () => {
+    const validColors = [
+      "laranja",
+      "azul",
+      "esmeralda",
+      "violeta",
+      "rosa",
+      "ambar",
+      "ciano",
+      "indigo",
+      "lima",
+      "grafite",
+    ] as const;
+    for (const accentColor of validColors) {
+      const res = portfolioSchema.safeParse({ ...p, accentColor });
+      expect(res.success).toBe(true);
+    }
+    expect(portfolioSchema.safeParse({ ...p, accentColor: "neon-invalid" }).success).toBe(false);
+  });
 });

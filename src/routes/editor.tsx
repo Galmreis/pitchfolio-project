@@ -554,6 +554,29 @@ function Editor() {
           placeholder="Ou cole o link de uma foto sua (https://…)"
           shape="avatar"
         />
+        <div className="space-y-1.5 pt-1">
+          <Label className="text-xs text-muted-foreground">Cor de destaque (10 opções profissionais)</Label>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-1">
+            {ACCENT_COLORS.map((c) => {
+              const active = (p.accentColor ?? "laranja") === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => upd({ accentColor: c.id })}
+                  className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium transition active:scale-95 ${
+                    active
+                      ? "border-foreground bg-foreground/10 text-foreground ring-1 ring-foreground"
+                      : "border-border bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: c.swatch }} />
+                  <span className="truncate">{c.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </section>
       <section className="space-y-4 rounded-lg border border-border bg-background/60 p-4">
         <div className="flex items-center gap-2 border-b border-border pb-2.5">

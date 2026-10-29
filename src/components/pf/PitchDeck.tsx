@@ -224,8 +224,8 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       ) : (
         <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
           {s3.skills.map((s, k) => (
-            <div key={k} className="min-w-0 rounded-lg border border-pf-line bg-pf-card px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold">
-              <span className="mb-0.5 sm:mb-1 block font-mono text-[11px] text-pf-muted">0{k + 1}</span>
+            <div key={k} className="min-w-0 rounded-lg border border-pf-line bg-pf-card px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-semibold transition hover:border-pf-accent/60 hover:bg-pf-accent/5">
+              <span className="mb-0.5 sm:mb-1 block font-mono text-[11px] text-pf-accent">0{k + 1}</span>
               <span className="truncate block">{s}</span>
             </div>
           ))}
@@ -313,7 +313,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           onClick={prev}
           disabled={i === 0}
           aria-label="Slide anterior"
-          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold transition-all hover:border-primary/50 active:scale-95 disabled:opacity-40 sm:text-sm"
+          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold transition-all hover:border-pf-accent/60 hover:text-foreground active:scale-95 disabled:opacity-40 sm:text-sm"
         >
           <ChevronLeft className="h-4 w-4" /> Anterior
         </button>
@@ -328,8 +328,8 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
               aria-label={info.title}
               className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all active:scale-95 ${
                 k === i
-                  ? "bg-primary text-primary-foreground shadow-xs"
-                  : "border border-border bg-card text-muted-foreground hover:text-foreground"
+                  ? "bg-pf-accent text-pf-accent-fg shadow-xs ring-1 ring-pf-accent/40"
+                  : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-pf-accent/40"
               }`}
             >
               <span className="font-mono text-[10px]">0{k + 1}</span>
@@ -341,7 +341,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           onClick={next}
           disabled={i === 4}
           aria-label="Próximo slide"
-          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold transition-all hover:border-primary/50 active:scale-95 disabled:opacity-40 sm:text-sm"
+          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold transition-all hover:border-pf-accent/60 hover:text-foreground active:scale-95 disabled:opacity-40 sm:text-sm"
         >
           Próximo <ChevronRight className="h-4 w-4" />
         </button>

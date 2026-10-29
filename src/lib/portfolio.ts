@@ -1,5 +1,15 @@
 export type ThemeName = "moderno" | "quente" | "minimal";
-export type AccentColor = "laranja" | "azul" | "esmeralda" | "violeta" | "rosa";
+export type AccentColor =
+  | "laranja"
+  | "azul"
+  | "esmeralda"
+  | "violeta"
+  | "rosa"
+  | "ambar"
+  | "ciano"
+  | "indigo"
+  | "lima"
+  | "grafite";
 export type SectionOrder = "project_first" | "journey_first";
 export type LayoutStyle = "bento" | "split" | "indice";
 
@@ -28,6 +38,11 @@ export const ACCENT_COLORS: { id: AccentColor; label: string; swatch: string }[]
   { id: "esmeralda", label: "Esmeralda", swatch: "#059669" },
   { id: "violeta", label: "Violeta", swatch: "#7c3aed" },
   { id: "rosa", label: "Carmim", swatch: "#e11d48" },
+  { id: "ambar", label: "Âmbar Dourado", swatch: "#d97706" },
+  { id: "ciano", label: "Ciano Tech", swatch: "#0891b2" },
+  { id: "indigo", label: "Índigo Profundo", swatch: "#4f46e5" },
+  { id: "lima", label: "Verde Lima", swatch: "#65a30d" },
+  { id: "grafite", label: "Grafite Minimal", swatch: "#475569" },
 ];
 
 export const AVATAR_PRESETS: { label: string; url: string }[] = [
