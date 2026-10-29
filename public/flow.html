@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PitchFolio — Mapa Completo da Jornada (16 Telas e Estados)</title>
+  <title>PitchFolio — Storyboard Completo da Jornada (19 Telas e Estados)</title>
   <style>
     :root {
       --bg: #0c0e14;
@@ -48,6 +48,22 @@
     }
     button.primary { background: var(--accent); color: #111; border-color: var(--accent); }
     button:hover { opacity: 0.9; transform: translateY(-1px); }
+    .hint-bar {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hint-bar kbd {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--line);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: var(--fg);
+    }
     .nav-phases {
       display: flex;
       flex-wrap: wrap;
@@ -71,7 +87,7 @@
       border-color: var(--accent);
       background: rgba(184,242,58,0.1);
     }
-    .phase { margin-top: 38px; scroll-margin-top: 130px; }
+    .phase { margin-top: 38px; scroll-margin-top: 150px; }
     .phase-header {
       display: flex;
       align-items: baseline;
@@ -91,6 +107,10 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .screen:hover {
+      border-color: rgba(184,242,58,0.4);
     }
     .screen-top {
       display: flex;
@@ -99,11 +119,33 @@
       padding: 10px 14px;
       border-bottom: 1px solid var(--line);
       background: #10131c;
+      gap: 8px;
     }
-    .screen-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .num { background: var(--primary); color: #fff; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 99px; }
+    .screen-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; min-w: 0; }
+    .num { background: var(--primary); color: #fff; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 99px; shrink-0; }
     .num.b2b { background: #2563eb; }
     .num.profile { background: #8b5cf6; }
+    .screen-actions { display: flex; align-items: center; gap: 6px; }
+    .btn-fs {
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: rgba(38,44,63,0.7);
+      color: var(--fg);
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .btn-fs:hover {
+      background: var(--accent);
+      color: #111;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
     .route {
       font-family: monospace;
       font-size: 11px;
@@ -117,20 +159,69 @@
     .desc { padding: 8px 14px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); background: #131722; line-height: 1.4; }
     .viewport { position: relative; width: 100%; height: 420px; overflow: hidden; background: #fff; }
     .viewport iframe { width: 125%; height: 125%; border: 0; transform: scale(0.8); transform-origin: 0 0; }
+
+    /* =========================================================================
+     * FULLSCREEN MODAL STATE (Whole Page of that Section Experience)
+     * ========================================================================= */
+    .screen.is-fullscreen {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      border-radius: 0 !important;
+      border: 0 !important;
+      z-index: 999999 !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      background: var(--bg) !important;
+    }
+    .screen.is-fullscreen .screen-top {
+      padding: 10px 20px;
+      background: rgba(16, 19, 28, 0.98);
+      border-bottom: 1px solid var(--line);
+    }
+    .screen.is-fullscreen .desc {
+      display: none;
+    }
+    .screen.is-fullscreen .viewport {
+      flex: 1;
+      height: calc(100vh - 46px) !important;
+      width: 100vw !important;
+    }
+    .screen.is-fullscreen .viewport iframe {
+      width: 100% !important;
+      height: 100% !important;
+      transform: none !important;
+    }
+    .screen.is-fullscreen .btn-fs {
+      background: #ef4444;
+      color: #fff;
+      border-color: #ef4444;
+      padding: 4px 12px;
+      font-size: 12px;
+    }
+    .screen.is-fullscreen .btn-fs:hover {
+      background: #dc2626;
+      border-color: #dc2626;
+    }
   </style>
 </head>
 <body>
   <header>
     <div>
-      <h1>PitchFolio — Storyboard Completo da Jornada (18 Telas e Estados)</h1>
+      <h1>PitchFolio — Storyboard Completo da Jornada (19 Telas e Estados)</h1>
       <p class="sub">Visão panorâmica de todas as rotas (B2C, B2B Institucional, Simulador de Entrevista, Perfil do Usuário e Visualização Pública) lado a lado.</p>
+      <div class="hint-bar">
+        <span>💡 Clique em <strong>⛶ Tela Cheia</strong> em qualquer tela para interagir nela na resolução real de 100% da página. Pressione <kbd>Esc</kbd> para retornar.</span>
+      </div>
       <div class="nav-phases">
         <a href="#fase1">Fase 1: Ingestão (01-05)</a>
-        <a href="#fase2">Fase 2: Editor & Temas (06-08)</a>
-        <a href="#fase3">Fase 3: Autenticação, Compartilhamento & Entrevista (09-11)</a>
-        <a href="#fase4">Fase 4: Visão do Recrutador (12-13)</a>
-        <a href="#fase5">Fase 5: Instituições & Feira QR (14-15)</a>
-        <a href="#fase6">Fase 6: Painel do Candidato (16-18)</a>
+        <a href="#fase2">Fase 2: Editor & Temas (06-09)</a>
+        <a href="#fase3">Fase 3: Autenticação, Compartilhamento & Entrevista (10-12)</a>
+        <a href="#fase4">Fase 4: Visão do Recrutador (13-14)</a>
+        <a href="#fase5">Fase 5: Instituições & Feira QR (15-16)</a>
+        <a href="#fase6">Fase 6: Painel do Candidato (17-19)</a>
       </div>
     </div>
     <div class="actions">
@@ -149,7 +240,10 @@
       <div class="screen">
         <div class="screen-top">
           <div class="screen-title"><span class="num">01</span> Landing Page</div>
-          <a class="route" href="/" target="_blank">/ ↗</a>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/" target="_blank">/ ↗</a>
+          </div>
         </div>
         <div class="desc">Tela inicial com proposta de valor, vitrine interativa com personas (Dev, Gestão, Design) e CTAs para "Começar", "Meu Perfil" ou "Para Instituições".</div>
         <div class="viewport"><iframe src="/"></iframe></div>
@@ -158,7 +252,10 @@
       <div class="screen">
         <div class="screen-top">
           <div class="screen-title"><span class="num">02</span> Passo 1 + Importar PDF / LinkedIn</div>
-          <a class="route" href="/criar?paste=1" target="_blank">/criar (Passo 1) ↗</a>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/criar?paste=1" target="_blank">/criar (Passo 1) ↗</a>
+          </div>
         </div>
         <div class="desc">Caminho A (Upload PDF ou Colar LinkedIn aberto com suporte a GitHub) + Passo 1 do Caminho B ("Quem é você?").</div>
         <div class="viewport"><iframe src="/criar?paste=1"></iframe></div>
@@ -167,7 +264,10 @@
       <div class="screen">
         <div class="screen-top">
           <div class="screen-title"><span class="num">03</span> Passo 2 · Projeto de Maior Impacto</div>
-          <a class="route" href="/criar?step=1" target="_blank">/criar?step=1 ↗</a>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/criar?step=1" target="_blank">/criar?step=1 ↗</a>
+          </div>
         </div>
         <div class="desc">Coleta estruturada pelo método STAR: Desafio, O que fez na prática (Ação) e Resultados mensuráveis com chips de início rápido.</div>
         <div class="viewport"><iframe src="/criar?step=1"></iframe></div>
@@ -176,7 +276,10 @@
       <div class="screen">
         <div class="screen-top">
           <div class="screen-title"><span class="num">04</span> Passo 3 · Habilidades e Objetivo</div>
-          <a class="route" href="/criar?step=2" target="_blank">/criar?step=2 ↗</a>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/criar?step=2" target="_blank">/criar?step=2 ↗</a>
+          </div>
         </div>
         <div class="desc">Top 3-5 habilidades sugeridas, links de contato (LinkedIn, GitHub, E-mail), objetivo de carreira e botão "Gerar com IA".</div>
         <div class="viewport"><iframe src="/criar?step=2"></iframe></div>
@@ -185,9 +288,12 @@
       <div class="screen">
         <div class="screen-top">
           <div class="screen-title"><span class="num">05</span> Estado de Processamento da IA</div>
-          <a class="route" href="/criar?loading=1" target="_blank">/criar?loading=1 ↗</a>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/criar?loading=1" target="_blank">/criar?loading=1 ↗</a>
+          </div>
         </div>
-        <div class="desc">Feedback visual enquanto a Lovable AI reescreve as respostas com verbos de impacto e gera os 5 slides executivos.</div>
+        <div class="desc">Feedback visual enquanto a IA reescreve as respostas com verbos de impacto e gera os 5 slides executivos.</div>
         <div class="viewport"><iframe src="/criar?loading=1"></iframe></div>
       </div>
     </div>
@@ -202,17 +308,23 @@
     <div class="grid">
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">06</span> Editor · Modo Site (Tema Moderno)</div>
-          <a class="route" href="/editor?theme=moderno" target="_blank">/editor (Site) ↗</a>
+          <div class="screen-title"><span class="num">06</span> Editor · Modo Site (Tema Moderno Bento)</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/editor?theme=moderno" target="_blank">/editor (Site) ↗</a>
+          </div>
         </div>
-        <div class="desc">Visão dividida: formulário com fotos, STAR e ordenação à esquerda e prévia ao vivo do Dossiê Web à direita.</div>
+        <div class="desc">Visão dividida: formulário com fotos, STAR e ordenação à esquerda e prévia ao vivo do Dossiê Web Modular à direita.</div>
         <div class="viewport"><iframe src="/editor?theme=moderno"></iframe></div>
       </div>
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">07</span> Editor · Modo Pitch Deck (5 Slides)</div>
-          <a class="route" href="/editor?view=deck&theme=quente" target="_blank">/editor?view=deck ↗</a>
+          <div class="screen-title"><span class="num">07</span> Editor · Modo Pitch Deck (Tema Quente 5 Slides)</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/editor?view=deck&theme=quente" target="_blank">/editor?view=deck ↗</a>
+          </div>
         </div>
         <div class="desc">Modo apresentação interativa de 5 slides (navegável por setas ← →, toque ou tela cheia com F), exibido no Tema Quente.</div>
         <div class="viewport"><iframe src="/editor?view=deck&theme=quente"></iframe></div>
@@ -220,8 +332,23 @@
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">08</span> Editor · Estado Vazio / Recuperação</div>
-          <a class="route" href="/editor?empty=1" target="_blank">/editor?empty=1 ↗</a>
+          <div class="screen-title"><span class="num">08</span> Editor · Modo Minimal (Tema Minimal Suíço / Ledger)</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/editor?theme=minimal" target="_blank">/editor?theme=minimal ↗</a>
+          </div>
+        </div>
+        <div class="desc">Design editorial suíço estilo Read.cv com métricas em ledger, tipografia monoespaçada e índice narrativo.</div>
+        <div class="viewport"><iframe src="/editor?theme=minimal"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num">09</span> Editor · Estado Vazio / Recuperação</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/editor?empty=1" target="_blank">/editor?empty=1 ↗</a>
+          </div>
         </div>
         <div class="desc">Exibido quando o visitante abre /editor sem rascunho: permite criar novo, carregar exemplo com 1 clique ou fazer login.</div>
         <div class="viewport"><iframe src="/editor?empty=1"></iframe></div>
@@ -229,17 +356,20 @@
     </div>
   </section>
 
-  <!-- FASE 3: AUTENTICAÇÃO E COMPARTILHAMENTO -->
+  <!-- FASE 3: AUTENTICAÇÃO, COMPARTILHAMENTO & ENTREVISTA -->
   <section id="fase3" class="phase">
     <div class="phase-header">
-      <h2>Fase 3 · Autenticação (Supabase) e Modal de Publicação</h2>
-      <span>Componentes: AuthDialog & ShareDialog em /editor</span>
+      <h2>Fase 3 · Autenticação, Modal de Publicação e Simulador de Entrevista STAR</h2>
+      <span>Componentes: AuthDialog, ShareDialog & InterviewSimulatorDialog em /editor</span>
     </div>
     <div class="grid">
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">09</span> Modal de Cadastro / Login</div>
-          <a class="route" href="/editor?modal=auth" target="_blank">/editor?modal=auth ↗</a>
+          <div class="screen-title"><span class="num">10</span> Modal de Cadastro / Login</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/editor?modal=auth" target="_blank">/editor?modal=auth ↗</a>
+          </div>
         </div>
         <div class="desc">Acionado ao clicar em "Publicar portfólio" sem sessão ativa. Suporta Criar Conta e Entrar com RLS.</div>
         <div class="viewport"><iframe src="/editor?modal=auth"></iframe></div>
@@ -247,8 +377,11 @@
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">10</span> Modal de Compartilhamento & Cartão QR</div>
-          <a class="route" href="/editor?modal=share" target="_blank">/editor?modal=share ↗</a>
+          <div class="screen-title"><span class="num">11</span> Modal de Compartilhamento & Cartão QR</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/editor?modal=share" target="_blank">/editor?modal=share ↗</a>
+          </div>
         </div>
         <div class="desc">Exibido após salvar no banco via RPC: Cartão de Pitch Digital com QR Code, link /p/:slug e atalhos para WhatsApp e LinkedIn.</div>
         <div class="viewport"><iframe src="/editor?modal=share"></iframe></div>
@@ -256,8 +389,11 @@
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">11</span> Simulador de Entrevista STAR (IA)</div>
-          <a class="route" href="/editor?modal=interview" target="_blank">/editor?modal=interview ↗</a>
+          <div class="screen-title"><span class="num">12</span> Simulador de Entrevista STAR (IA)</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/editor?modal=interview" target="_blank">/editor?modal=interview ↗</a>
+          </div>
         </div>
         <div class="desc">Ponto Extra do Case 3: A IA analisa o projeto STAR e gera 3 perguntas comportamentais de recrutador com dicas estratégicas e rascunho prático.</div>
         <div class="viewport"><iframe src="/editor?modal=interview"></iframe></div>
@@ -274,8 +410,11 @@
     <div class="grid">
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">12</span> Página Pública · Visão Portfólio</div>
-          <a class="route" href="/p/ana-souza-demo" target="_blank">/p/ana-souza-demo ↗</a>
+          <div class="screen-title"><span class="num">13</span> Página Pública · Visão Portfólio</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/p/ana-souza-demo" target="_blank">/p/ana-souza-demo ↗</a>
+          </div>
         </div>
         <div class="desc">Link público que o recrutador recebe. Mostra o case estruturado, métricas em destaque, habilidades e exportação para PDF.</div>
         <div class="viewport"><iframe src="/p/ana-souza-demo"></iframe></div>
@@ -283,8 +422,11 @@
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">13</span> Página Pública · Visão Pitch Deck</div>
-          <a class="route" href="/p/ana-souza-demo?view=deck" target="_blank">/p/ana-souza-demo?view=deck ↗</a>
+          <div class="screen-title"><span class="num">14</span> Página Pública · Visão Pitch Deck</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/p/ana-souza-demo?view=deck" target="_blank">/p/ana-souza-demo?view=deck ↗</a>
+          </div>
         </div>
         <div class="desc">O recrutador alterna para "Pitch" no topo da página pública para navegar pelos 5 slides do candidato em modo apresentação.</div>
         <div class="viewport"><iframe src="/p/ana-souza-demo?view=deck"></iframe></div>
@@ -301,8 +443,11 @@
     <div class="grid">
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num b2b">14</span> Vitrine Institucional & Diretório STAR</div>
-          <a class="route" href="/instituicoes" target="_blank">/instituicoes ↗</a>
+          <div class="screen-title"><span class="num b2b">15</span> Vitrine Institucional & Diretório STAR</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/instituicoes" target="_blank">/instituicoes ↗</a>
+          </div>
         </div>
         <div class="desc">Portal B2B para universidades e centros de carreira com métricas da turma, busca e filtros por área (Tecnologia, Gestão, Design) e competências.</div>
         <div class="viewport"><iframe src="/instituicoes"></iframe></div>
@@ -310,11 +455,14 @@
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num b2b">15</span> Catálogo QR para Feira de Carreiras</div>
-          <a class="route" href="/instituicoes" target="_blank">/instituicoes (Modo QR) ↗</a>
+          <div class="screen-title"><span class="num b2b">16</span> Catálogo QR para Feira de Carreiras</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/instituicoes?mode=qr_catalog" target="_blank">/instituicoes (Modo QR) ↗</a>
+          </div>
         </div>
         <div class="desc">Modo crachás e cartões de pitch prontos para impressão em papel ou exibição em estandes, permitindo leitura direta por câmera de celular.</div>
-        <div class="viewport"><iframe src="/instituicoes"></iframe></div>
+        <div class="viewport"><iframe src="/instituicoes?mode=qr_catalog"></iframe></div>
       </div>
     </div>
   </section>
@@ -328,8 +476,11 @@
     <div class="grid">
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num profile">16</span> Painel do Candidato · Identidade & Contatos (Ana Souza)</div>
-          <a class="route" href="/perfil?demo=1" target="_blank">/perfil?demo=1 ↗</a>
+          <div class="screen-title"><span class="num profile">17</span> Painel do Candidato · Identidade & Contatos (Ana Souza)</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/perfil?demo=1" target="_blank">/perfil?demo=1 ↗</a>
+          </div>
         </div>
         <div class="desc">Painel autenticado da candidata: Nome, Sobrenome, WhatsApp, foto de perfil, presets e canais de contato sincronizados.</div>
         <div class="viewport"><iframe src="/perfil?demo=1"></iframe></div>
@@ -337,8 +488,11 @@
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num profile">17</span> Gestão de Dossiês & Pitch Decks Ativos (Ana Souza)</div>
-          <a class="route" href="/perfil?demo=1" target="_blank">/perfil?demo=1 (Dossiês) ↗</a>
+          <div class="screen-title"><span class="num profile">18</span> Gestão de Dossiês & Pitch Decks Ativos (Ana Souza)</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/perfil?demo=1" target="_blank">/perfil?demo=1 (Dossiês) ↗</a>
+          </div>
         </div>
         <div class="desc">Visão consolidada dos portfólios e decks publicados, status de sincronização, atalho rápido para o editor e cartão QR.</div>
         <div class="viewport"><iframe src="/perfil?demo=1"></iframe></div>
@@ -346,8 +500,11 @@
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num profile">18</span> Painel do Candidato · Estado Deslogado</div>
-          <a class="route" href="/perfil" target="_blank">/perfil ↗</a>
+          <div class="screen-title"><span class="num profile">19</span> Painel do Candidato · Estado Deslogado</div>
+          <div class="screen-actions">
+            <button type="button" class="btn-fs" onclick="toggleScreenFullscreen(this.closest('.screen'))" title="Expandir para tela cheia">⛶ Tela Cheia</button>
+            <a class="route" href="/perfil" target="_blank">/perfil ↗</a>
+          </div>
         </div>
         <div class="desc">Exibido para visitantes deslogados: tela de entrada e convite para criar conta ou testar sem cadastro.</div>
         <div class="viewport"><iframe src="/perfil"></iframe></div>
@@ -425,6 +582,61 @@
         try { f.contentWindow.location.reload(); } catch (e) { f.src = f.src; }
       });
     }
+
+    function toggleScreenFullscreen(screenEl) {
+      if (!screenEl) return;
+      const isFs = screenEl.classList.toggle("is-fullscreen");
+      const btn = screenEl.querySelector(".btn-fs");
+
+      // Close any other open screen in fullscreen
+      document.querySelectorAll(".screen.is-fullscreen").forEach((other) => {
+        if (other !== screenEl) {
+          other.classList.remove("is-fullscreen");
+          const otherBtn = other.querySelector(".btn-fs");
+          if (otherBtn) otherBtn.innerHTML = "⛶ Tela Cheia";
+        }
+      });
+
+      if (isFs) {
+        if (btn) btn.innerHTML = "✕ Sair da Tela Cheia <kbd style='margin-left:4px;background:rgba(255,255,255,0.2);padding:1px 4px;border-radius:3px;'>Esc</kbd>";
+        document.body.style.overflow = "hidden";
+        try {
+          if (!document.fullscreenElement && screenEl.requestFullscreen) {
+            screenEl.requestFullscreen().catch(() => {});
+          }
+        } catch (e) {}
+      } else {
+        if (btn) btn.innerHTML = "⛶ Tela Cheia";
+        document.body.style.overflow = "";
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          }
+        } catch (e) {}
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        document.querySelectorAll(".screen.is-fullscreen").forEach((s) => {
+          s.classList.remove("is-fullscreen");
+          const btn = s.querySelector(".btn-fs");
+          if (btn) btn.innerHTML = "⛶ Tela Cheia";
+        });
+        document.body.style.overflow = "";
+      }
+    });
+
+    document.addEventListener("fullscreenchange", () => {
+      if (!document.fullscreenElement) {
+        document.querySelectorAll(".screen.is-fullscreen").forEach((s) => {
+          s.classList.remove("is-fullscreen");
+          const btn = s.querySelector(".btn-fs");
+          if (btn) btn.innerHTML = "⛶ Tela Cheia";
+        });
+        document.body.style.overflow = "";
+      }
+    });
 
     ensureSeeded();
   </script>

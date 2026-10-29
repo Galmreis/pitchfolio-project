@@ -54,7 +54,13 @@ function InstituicoesPage() {
   const [query, setQuery] = useState("");
   const [areaFilter, setAreaFilter] = useState<string>("Todas");
   const [skillFilter, setSkillFilter] = useState<string | null>(null);
-  const [mode, setMode] = useState<"directory" | "qr_catalog">("directory");
+  const [mode, setMode] = useState<"directory" | "qr_catalog">(() => {
+    if (typeof window !== "undefined") {
+      const m = new URLSearchParams(window.location.search).get("mode");
+      if (m === "qr_catalog" || m === "qr") return "qr_catalog";
+    }
+    return "directory";
+  });
   const [originUrl, setOriginUrl] = useState("https://pitchfolio.app");
 
   useEffect(() => {
