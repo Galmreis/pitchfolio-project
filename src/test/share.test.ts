@@ -33,6 +33,17 @@ describe("buildShareUrls", () => {
     expect(linkedinUrl).toContain(encodeURIComponent("https://pitchfolio.app/p/ana-souza-demo"));
   });
 
+  it("handles Lovable preview domains (lovableproject.com/lovable.app) by mapping scraper to public domain", () => {
+    const raw = "https://preview-1234.lovableproject.com/p/ana-souza-demo";
+    const { absoluteUrl, publicUrlForScraper, isPreview, linkedinUrl, whatsappWebUrl } = buildShareUrls(raw, "Ana Souza");
+
+    expect(isPreview).toBe(true);
+    expect(absoluteUrl).toBe("https://preview-1234.lovableproject.com/p/ana-souza-demo");
+    expect(publicUrlForScraper).toBe("https://pitchfolio.app/p/ana-souza-demo");
+    expect(linkedinUrl).toContain(encodeURIComponent("https://pitchfolio.app/p/ana-souza-demo"));
+    expect(whatsappWebUrl).toContain("https://web.whatsapp.com/send?text=");
+  });
+
   it("generates valid universal WhatsApp link without wa.me redirect requirement", () => {
     const raw = "https://pitchfolio.app/p/teste";
     const { whatsappUrl } = buildShareUrls(raw);

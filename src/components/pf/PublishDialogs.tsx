@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Copy, Linkedin, MessageCircle, Loader2, Check } from "lucide-react";
+import { Copy, Linkedin, MessageCircle, Loader2, Check, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -129,36 +129,81 @@ export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; 
     }
   }, [open]);
 
-  const { absoluteUrl, isLocal, whatsappUrl, linkedinUrl } = buildShareUrls(url, name);
+  const { absoluteUrl, isPreview, shareText, whatsappUrl, whatsappWebUrl, linkedinUrl } = buildShareUrls(url, name);
   const qrSrc = absoluteUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=${encodeURIComponent(absoluteUrl)}` : "";
+  const canNativeShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(absoluteUrl);
       setCopied(true);
-      toast.success("Link copiado!");
+      toast.success("Link copiado com sucesso!");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("Não foi possível copiar o link.");
     }
   };
 
+  const handleNativeShare = async () => {
+    if (!canNativeShare) {
+      await handleCopy();
+      return;
+    }
+    try {
+      await navigator.share({
+        title: `Portfólio de ${name || "PitchFolio"}`,
+        text: shareText,
+        url: absoluteUrl,
+      });
+    } catch (err) {
+      if ((err as Error)?.name !== "AbortError") {
+        await handleCopy();
+      }
+    }
+  };
+
   const handleShareWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
-    const win = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-    if (!win) {
-      window.location.href = whatsappUrl;
+    navigator.clipboard?.writeText(shareText).catch(() => {});
+
+    const isDesktop = typeof window !== "undefined" && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const targetUrl = isDesktop ? whatsappWebUrl : whatsappUrl;
+
+    let opened = false;
+    try {
+      const win = window.open(targetUrl, "_blank", "noopener,noreferrer");
+      if (win) opened = true;
+    } catch {
+      opened = false;
+    }
+
+    if (opened) {
+      toast.success("Abrindo WhatsApp…");
+    } else {
+      toast.info("Texto copiado! Cole diretamente na conversa do WhatsApp.");
     }
   };
 
   const handleShareLinkedIn = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (isLocal) {
-      toast.info("Ambiente local: adaptamos o link para prévia pública no LinkedIn.");
+    navigator.clipboard?.writeText(shareText).catch(() => {});
+
+    let opened = false;
+    try {
+      const win = window.open(linkedinUrl, "_blank", "noopener,noreferrer");
+      if (win) opened = true;
+    } catch {
+      opened = false;
     }
-    const win = window.open(linkedinUrl, "_blank", "noopener,noreferrer");
-    if (!win) {
-      window.location.href = linkedinUrl;
+
+    if (opened) {
+      if (isPreview) {
+        toast.info("Prévia Lovable/Local: o link foi adaptado para a raspagem pública do LinkedIn e o texto copiado!");
+      } else {
+        toast.success("Abrindo LinkedIn…");
+      }
+    } else {
+      toast.info("Link e texto copiados! Cole diretamente na sua publicação do LinkedIn.");
     }
   };
 
@@ -193,6 +238,7 @@ export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; 
             {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
+
         <div className="grid gap-2 sm:grid-cols-2">
           <Button
             asChild
@@ -223,6 +269,13 @@ export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; 
             </a>
           </Button>
         </div>
+
+        {canNativeShare && (
+          <Button variant="outline" onClick={handleNativeShare} className="w-full">
+            <Share2 className="mr-2 h-4 w-4" /> Compartilhar via aplicativo do celular
+          </Button>
+        )}
+
         <Button asChild className="w-full">
           <a href={absoluteUrl} target="_blank" rel="noreferrer">
             Abrir página pública

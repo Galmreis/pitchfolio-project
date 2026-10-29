@@ -1,6 +1,7 @@
 /**
  * Utility functions for generating reliable social sharing URLs across
- * WhatsApp and LinkedIn without breaking on local development or non-public domains.
+ * WhatsApp, LinkedIn, and native device share sheets, with fallbacks
+ * for local development, Lovable preview iframes, and scraper-blocked domains.
  */
 export function buildShareUrls(rawUrl: string, name?: string) {
   let absoluteUrl = rawUrl;
@@ -14,10 +15,12 @@ export function buildShareUrls(rawUrl: string, name?: string) {
       : `https://pitchfolio.app${rawUrl.startsWith("/") ? "" : "/"}${rawUrl}`;
   }
 
-  // LinkedIn requires a publicly reachable domain (it throws a server error when scraping localhost or 127.0.0.1).
+  // Detect whether this is a local development or Lovable preview environment.
+  // External scrapers (such as LinkedInBot) cannot crawl localhost or Cloudflare-protected Lovable preview URLs.
+  const isPreview = /localhost|127\.0\.0\.1|lovableproject\.com|lovable\.app|lovable\.dev/i.test(absoluteUrl);
+
   let publicUrlForScraper = absoluteUrl;
-  const isLocal = /localhost|127\.0\.0\.1/i.test(absoluteUrl);
-  if (isLocal) {
+  if (isPreview) {
     try {
       const parsed = new URL(absoluteUrl);
       publicUrlForScraper = `https://pitchfolio.app${parsed.pathname}${parsed.search}`;
@@ -28,14 +31,17 @@ export function buildShareUrls(rawUrl: string, name?: string) {
 
   const shareText = `Confira meu portfólio e pitch deck profissional${name ? ` (${name})` : ""}: ${absoluteUrl}`;
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+  const whatsappWebUrl = `https://web.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(publicUrlForScraper)}`;
 
   return {
     absoluteUrl,
     publicUrlForScraper,
-    isLocal,
+    isPreview,
+    isLocal: isPreview,
     shareText,
     whatsappUrl,
+    whatsappWebUrl,
     linkedinUrl,
   };
 }
