@@ -43,6 +43,13 @@
       "when": 1793274868393,
       "tag": "0005_profile_email_sync_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793278750022,
+      "tag": "0006_profile_registration_sync",
+      "breakpoints": true
     }
   ]
 }
