@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listOwnedPortfolios, publishPortfolioDraft } from "@/controllers/portfolios.functions";
 import { createDeck, draftSchema, portfolioSchema, themeSchema } from "@/validators/portfolio";
-import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn, ArrowUp, ArrowDown, Upload, SlidersHorizontal, RotateCcw, QrCode } from "lucide-react";
+import { Globe, Presentation, Rocket, Plus, X, Loader2, Pencil, Eye, Printer, LogIn, ArrowUp, ArrowDown, Upload, SlidersHorizontal, RotateCcw, QrCode, MessageSquareQuote } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import { Logo } from "@/components/pf/Logo";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
+import { InterviewSimulatorDialog } from "@/components/pf/InterviewSimulatorDialog";
 import { ACCENT_COLORS, AVATAR_PRESETS, DEMO_PERSONAS, DRAFT_KEY, LAYOUT_STYLES, PROJECT_IMAGE_PRESETS, THEMES, buildPersonaPortfolio, resolveLayoutStyle, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
@@ -394,6 +395,7 @@ function Editor() {
   const [view, setView] = useState<"site" | "deck">("site");
   const [authOpen, setAuthOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [interviewOpen, setInterviewOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const publishDraft = useServerFn(publishPortfolioDraft);
   const fetchOwned = useServerFn(listOwnedPortfolios);
@@ -426,6 +428,7 @@ function Editor() {
       if (sp.get("view") === "deck") setView("deck");
       if (sp.get("modal") === "auth") setAuthOpen(true);
       if (sp.get("modal") === "share") setShareUrl(`${window.location.origin}/p/ana-souza-demo`);
+      if (sp.get("modal") === "interview") setInterviewOpen(true);
       if (sp.get("empty") === "1") {
         setLoaded(true);
         return;
@@ -717,6 +720,14 @@ function Editor() {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => setInterviewOpen(true)}
+              className="rounded-lg text-primary border-primary/30 hover:bg-primary/5"
+            >
+              <MessageSquareQuote className="mr-1.5 h-4 w-4" /> Simular Entrevista
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => {
                 const fallbackSlug = DEMO_PERSONAS.find((dp) => dp.answers.name === p.name)?.slug ?? "ana-souza-demo";
                 setShareUrl(`${window.location.origin}/p/${draft.slug ?? fallbackSlug}`);
@@ -756,6 +767,7 @@ function Editor() {
 
       <AuthDialog open={authOpen} onOpenChange={setAuthOpen} onAuthed={() => { setAuthOpen(false); publish(); }} />
       <ShareDialog open={!!shareUrl} onOpenChange={(o) => !o && setShareUrl(null)} url={shareUrl ?? ""} name={p.name} />
+      <InterviewSimulatorDialog open={interviewOpen} onOpenChange={setInterviewOpen} portfolio={p} />
     </div>
   );
 }
