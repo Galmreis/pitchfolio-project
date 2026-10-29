@@ -3,30 +3,118 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PitchFolio — Mapa Completo da Jornada (Todas as Telas)</title>
+  <title>PitchFolio — Mapa Completo da Jornada (16 Telas e Estados)</title>
   <style>
-    :root { --bg: #0c0e14; --card: #151924; --line: #262c3f; --fg: #f5f6fa; --muted: #939bb5; --accent: #b8f23a; --primary: #e85d2a; }
+    :root {
+      --bg: #0c0e14;
+      --card: #151924;
+      --line: #262c3f;
+      --fg: #f5f6fa;
+      --muted: #939bb5;
+      --accent: #b8f23a;
+      --primary: #e85d2a;
+      --blue: #3b82f6;
+    }
     * { box-sizing: border-box; margin: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--fg); padding: 24px 32px 60px; }
-    header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: rgba(12,14,20,0.92); backdrop-filter: blur(8px); padding-top: 8px; }
-    h1 { font-size: 20px; letter-spacing: -0.02em; }
+    body { background: var(--bg); color: var(--fg); padding: 24px 32px 80px; }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(12,14,20,0.94);
+      backdrop-filter: blur(10px);
+      padding-top: 10px;
+    }
+    h1 { font-size: 20px; letter-spacing: -0.02em; font-weight: 800; }
     .sub { color: var(--muted); font-size: 13px; margin-top: 3px; }
     .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    button { cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 8px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; transition: 0.15s; }
+    button {
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--fg);
+      padding: 8px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: 0.15s;
+    }
     button.primary { background: var(--accent); color: #111; border-color: var(--accent); }
     button:hover { opacity: 0.9; transform: translateY(-1px); }
-    .phase { margin-top: 32px; }
-    .phase-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; border-left: 3px solid var(--accent); padding-left: 12px; }
+    .nav-phases {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+      padding-bottom: 4px;
+    }
+    .nav-phases a {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(38,44,63,0.5);
+      border: 1px solid var(--line);
+      transition: 0.15s;
+    }
+    .nav-phases a:hover {
+      color: var(--fg);
+      border-color: var(--accent);
+      background: rgba(184,242,58,0.1);
+    }
+    .phase { margin-top: 38px; scroll-margin-top: 130px; }
+    .phase-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+    }
     .phase-header h2 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
     .phase-header span { font-size: 12px; color: var(--muted); }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 18px; }
-    .screen { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
-    .screen-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); background: #10131c; }
+    .screen {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    .screen-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #10131c;
+    }
     .screen-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .num { background: var(--primary); color: #fff; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 99px; }
-    .route { font-family: monospace; font-size: 11px; color: var(--accent); background: rgba(184,242,58,0.1); padding: 3px 8px; border-radius: 6px; text-decoration: none; }
+    .num.b2b { background: #2563eb; }
+    .num.profile { background: #8b5cf6; }
+    .route {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(184,242,58,0.1);
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
     .route:hover { text-decoration: underline; }
-    .desc { padding: 8px 14px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); background: #131722; }
+    .desc { padding: 8px 14px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); background: #131722; line-height: 1.4; }
     .viewport { position: relative; width: 100%; height: 420px; overflow: hidden; background: #fff; }
     .viewport iframe { width: 125%; height: 125%; border: 0; transform: scale(0.8); transform-origin: 0 0; }
   </style>
@@ -34,8 +122,16 @@
 <body>
   <header>
     <div>
-      <h1>PitchFolio — Storyboard Completo da Jornada do Usuário (12 Estados)</h1>
-      <p class="sub">Visão panorâmica de todas as rotas, passos, temas, modais e links públicos lado a lado.</p>
+      <h1>PitchFolio — Storyboard Completo da Jornada (16 Telas e Estados)</h1>
+      <p class="sub">Visão panorâmica de todas as rotas (B2C, B2B Institucional, Perfil do Usuário e Visualização Pública) lado a lado.</p>
+      <div class="nav-phases">
+        <a href="#fase1">Fase 1: Ingestão (01-05)</a>
+        <a href="#fase2">Fase 2: Editor & Temas (06-08)</a>
+        <a href="#fase3">Fase 3: Autenticação & Compartilhamento (09-10)</a>
+        <a href="#fase4">Fase 4: Visão do Recrutador (11-12)</a>
+        <a href="#fase5">Fase 5: Instituições & Feira QR (13-14)</a>
+        <a href="#fase6">Fase 6: Painel do Candidato (15-16)</a>
+      </div>
     </div>
     <div class="actions">
       <button class="primary" onclick="seedDemoAndReload()">Recarregar Dados Fictícios (Ana Souza)</button>
@@ -44,7 +140,7 @@
   </header>
 
   <!-- FASE 1: ENTRADA & INGESTÃO -->
-  <section class="phase">
+  <section id="fase1" class="phase">
     <div class="phase-header">
       <h2>Fase 1 · Descoberta e Ingestão (Caminho A: PDF/Texto e Caminho B: 3 Passos)</h2>
       <span>Rotas: / e /criar</span>
@@ -55,7 +151,7 @@
           <div class="screen-title"><span class="num">01</span> Landing Page</div>
           <a class="route" href="/" target="_blank">/ ↗</a>
         </div>
-        <div class="desc">Tela inicial com proposta de valor, preview de slide e CTAs para "Começar" ou "Meu portfólio".</div>
+        <div class="desc">Tela inicial com proposta de valor, vitrine interativa com personas (Dev, Gestão, Design) e CTAs para "Começar", "Meu Perfil" ou "Para Instituições".</div>
         <div class="viewport"><iframe src="/"></iframe></div>
       </div>
 
@@ -64,7 +160,7 @@
           <div class="screen-title"><span class="num">02</span> Passo 1 + Importar PDF / LinkedIn</div>
           <a class="route" href="/criar?paste=1" target="_blank">/criar (Passo 1) ↗</a>
         </div>
-        <div class="desc">Caminho A (Upload PDF ou Colar LinkedIn aberto) + Passo 1 do Caminho B ("Quem é você?").</div>
+        <div class="desc">Caminho A (Upload PDF ou Colar LinkedIn aberto com suporte a GitHub) + Passo 1 do Caminho B ("Quem é você?").</div>
         <div class="viewport"><iframe src="/criar?paste=1"></iframe></div>
       </div>
 
@@ -73,7 +169,7 @@
           <div class="screen-title"><span class="num">03</span> Passo 2 · Projeto de Maior Impacto</div>
           <a class="route" href="/criar?step=1" target="_blank">/criar?step=1 ↗</a>
         </div>
-        <div class="desc">Coleta estruturada pelo método STAR: Desafio, O que fez na prática (Ação) e Resultados.</div>
+        <div class="desc">Coleta estruturada pelo método STAR: Desafio, O que fez na prática (Ação) e Resultados mensuráveis com chips de início rápido.</div>
         <div class="viewport"><iframe src="/criar?step=1"></iframe></div>
       </div>
 
@@ -82,7 +178,7 @@
           <div class="screen-title"><span class="num">04</span> Passo 3 · Habilidades e Objetivo</div>
           <a class="route" href="/criar?step=2" target="_blank">/criar?step=2 ↗</a>
         </div>
-        <div class="desc">Top 3-5 habilidades, links de contato (LinkedIn, GitHub, E-mail), objetivo e botão "Gerar com IA".</div>
+        <div class="desc">Top 3-5 habilidades sugeridas, links de contato (LinkedIn, GitHub, E-mail), objetivo de carreira e botão "Gerar com IA".</div>
         <div class="viewport"><iframe src="/criar?step=2"></iframe></div>
       </div>
 
@@ -91,14 +187,14 @@
           <div class="screen-title"><span class="num">05</span> Estado de Processamento da IA</div>
           <a class="route" href="/criar?loading=1" target="_blank">/criar?loading=1 ↗</a>
         </div>
-        <div class="desc">Feedback visual enquanto a Lovable AI reescreve as respostas com verbos de impacto e gera os 5 slides.</div>
+        <div class="desc">Feedback visual enquanto a Lovable AI reescreve as respostas com verbos de impacto e gera os 5 slides executivos.</div>
         <div class="viewport"><iframe src="/criar?loading=1"></iframe></div>
       </div>
     </div>
   </section>
 
   <!-- FASE 2: EDITOR, TEMAS E MODOS -->
-  <section class="phase">
+  <section id="fase2" class="phase">
     <div class="phase-header">
       <h2>Fase 2 · Edição, Temas e Alternância Site vs. Pitch Deck (5 Slides)</h2>
       <span>Rota: /editor</span>
@@ -109,7 +205,7 @@
           <div class="screen-title"><span class="num">06</span> Editor · Modo Site (Tema Moderno)</div>
           <a class="route" href="/editor?theme=moderno" target="_blank">/editor (Site) ↗</a>
         </div>
-        <div class="desc">Visão dividida: formulário editável à esquerda e prévia ao vivo do Site do Portfólio à direita.</div>
+        <div class="desc">Visão dividida: formulário com fotos, STAR e ordenação à esquerda e prévia ao vivo do Dossiê Web à direita.</div>
         <div class="viewport"><iframe src="/editor?theme=moderno"></iframe></div>
       </div>
 
@@ -118,7 +214,7 @@
           <div class="screen-title"><span class="num">07</span> Editor · Modo Pitch Deck (5 Slides)</div>
           <a class="route" href="/editor?view=deck&theme=quente" target="_blank">/editor?view=deck ↗</a>
         </div>
-        <div class="desc">Modo apresentação interativa de 5 slides (navegável por setas ← → ou clique), exibido no Tema Quente.</div>
+        <div class="desc">Modo apresentação interativa de 5 slides (navegável por setas ← →, toque ou tela cheia com F), exibido no Tema Quente.</div>
         <div class="viewport"><iframe src="/editor?view=deck&theme=quente"></iframe></div>
       </div>
 
@@ -127,14 +223,14 @@
           <div class="screen-title"><span class="num">08</span> Editor · Estado Vazio / Recuperação</div>
           <a class="route" href="/editor?empty=1" target="_blank">/editor?empty=1 ↗</a>
         </div>
-        <div class="desc">Exibido quando o visitante abre /editor sem rascunho: permite criar novo, carregar demo ou fazer login.</div>
+        <div class="desc">Exibido quando o visitante abre /editor sem rascunho: permite criar novo, carregar exemplo com 1 clique ou fazer login.</div>
         <div class="viewport"><iframe src="/editor?empty=1"></iframe></div>
       </div>
     </div>
   </section>
 
   <!-- FASE 3: AUTENTICAÇÃO E COMPARTILHAMENTO -->
-  <section class="phase">
+  <section id="fase3" class="phase">
     <div class="phase-header">
       <h2>Fase 3 · Autenticação (Supabase) e Modal de Publicação</h2>
       <span>Componentes: AuthDialog & ShareDialog em /editor</span>
@@ -145,23 +241,23 @@
           <div class="screen-title"><span class="num">09</span> Modal de Cadastro / Login</div>
           <a class="route" href="/editor?modal=auth" target="_blank">/editor?modal=auth ↗</a>
         </div>
-        <div class="desc">Acionado ao clicar em "Publicar portfólio" sem sessão ativa. Suporta Criar Conta e Entrar.</div>
+        <div class="desc">Acionado ao clicar em "Publicar portfólio" sem sessão ativa. Suporta Criar Conta e Entrar com RLS.</div>
         <div class="viewport"><iframe src="/editor?modal=auth"></iframe></div>
       </div>
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num">10</span> Modal de Compartilhamento</div>
+          <div class="screen-title"><span class="num">10</span> Modal de Compartilhamento & Cartão QR</div>
           <a class="route" href="/editor?modal=share" target="_blank">/editor?modal=share ↗</a>
         </div>
-        <div class="desc">Exibido após salvar no banco via RPC: copiar link /p/:slug, enviar no WhatsApp ou publicar no LinkedIn.</div>
+        <div class="desc">Exibido após salvar no banco via RPC: Cartão de Pitch Digital com QR Code, link /p/:slug e atalhos para WhatsApp e LinkedIn.</div>
         <div class="viewport"><iframe src="/editor?modal=share"></iframe></div>
       </div>
     </div>
   </section>
 
   <!-- FASE 4: VISÃO DO RECRUTADOR (/p/$slug) -->
-  <section class="phase">
+  <section id="fase4" class="phase">
     <div class="phase-header">
       <h2>Fase 4 · Visão Pública do Recrutador (SSR)</h2>
       <span>Rota: /p/$slug</span>
@@ -172,7 +268,7 @@
           <div class="screen-title"><span class="num">11</span> Página Pública · Visão Portfólio</div>
           <a class="route" href="/p/ana-souza-demo" target="_blank">/p/ana-souza-demo ↗</a>
         </div>
-        <div class="desc">Link público que o recrutador recebe. Mostra o case estruturado, métricas, habilidades e botão PDF.</div>
+        <div class="desc">Link público que o recrutador recebe. Mostra o case estruturado, métricas em destaque, habilidades e exportação para PDF.</div>
         <div class="viewport"><iframe src="/p/ana-souza-demo"></iframe></div>
       </div>
 
@@ -181,8 +277,62 @@
           <div class="screen-title"><span class="num">12</span> Página Pública · Visão Pitch Deck</div>
           <a class="route" href="/p/ana-souza-demo?view=deck" target="_blank">/p/ana-souza-demo?view=deck ↗</a>
         </div>
-        <div class="desc">O recrutador alterna para "Pitch" no topo da página pública para navegar pelos 5 slides do candidato.</div>
+        <div class="desc">O recrutador alterna para "Pitch" no topo da página pública para navegar pelos 5 slides do candidato em modo apresentação.</div>
         <div class="viewport"><iframe src="/p/ana-souza-demo?view=deck"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FASE 5: PARA INSTITUIÇÕES & FEIRAS DE CARREIRA -->
+  <section id="fase5" class="phase">
+    <div class="phase-header">
+      <h2>Fase 5 · B2B Institucional & Feiras de Carreira</h2>
+      <span>Rota: /instituicoes</span>
+    </div>
+    <div class="grid">
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num b2b">13</span> Vitrine Institucional & Diretório STAR</div>
+          <a class="route" href="/instituicoes" target="_blank">/instituicoes ↗</a>
+        </div>
+        <div class="desc">Portal B2B para universidades e centros de carreira com métricas da turma, busca e filtros por área (Tecnologia, Gestão, Design) e competências.</div>
+        <div class="viewport"><iframe src="/instituicoes"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num b2b">14</span> Catálogo QR para Feira de Carreiras</div>
+          <a class="route" href="/instituicoes" target="_blank">/instituicoes (Modo QR) ↗</a>
+        </div>
+        <div class="desc">Modo crachás e cartões de pitch prontos para impressão em papel ou exibição em estandes, permitindo leitura direta por câmera de celular.</div>
+        <div class="viewport"><iframe src="/instituicoes"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FASE 6: PAINEL DO CANDIDATO & CONTA -->
+  <section id="fase6" class="phase">
+    <div class="phase-header">
+      <h2>Fase 6 · Painel do Candidato & Sincronização de Contatos</h2>
+      <span>Rota: /perfil</span>
+    </div>
+    <div class="grid">
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num profile">15</span> Painel do Candidato · Identidade & Contatos</div>
+          <a class="route" href="/perfil" target="_blank">/perfil ↗</a>
+        </div>
+        <div class="desc">Gestão de perfil, avatar preset/personalizado e sincronização de contatos (LinkedIn, GitHub e E-mail público) refletidos no dossiê e no Slide 5.</div>
+        <div class="viewport"><iframe src="/perfil"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num profile">16</span> Gestão de Dossiês & Pitch Decks Ativos</div>
+          <a class="route" href="/perfil" target="_blank">/perfil (Meus Dossiês) ↗</a>
+        </div>
+        <div class="desc">Visão consolidada dos portfólios publicados pelo usuário, status de sincronização, atalho rápido para edição e cartão QR.</div>
+        <div class="viewport"><iframe src="/perfil"></iframe></div>
       </div>
     </div>
   </section>
@@ -239,13 +389,17 @@
     function seedDemoAndReload() {
       localStorage.setItem("pitchfolio-answers", JSON.stringify(DEMO_ANSWERS));
       localStorage.setItem("pitchfolio-draft", JSON.stringify(DEMO_DRAFT));
-      document.querySelectorAll("iframe").forEach((f) => f.contentWindow.location.reload());
+      document.querySelectorAll("iframe").forEach((f) => {
+        try { f.contentWindow.location.reload(); } catch (e) { f.src = f.src; }
+      });
     }
 
     function clearStorageAndReload() {
       localStorage.removeItem("pitchfolio-answers");
       localStorage.removeItem("pitchfolio-draft");
-      document.querySelectorAll("iframe").forEach((f) => f.contentWindow.location.reload());
+      document.querySelectorAll("iframe").forEach((f) => {
+        try { f.contentWindow.location.reload(); } catch (e) { f.src = f.src; }
+      });
     }
 
     ensureSeeded();
