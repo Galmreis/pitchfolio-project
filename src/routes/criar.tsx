@@ -414,8 +414,16 @@ function Criar() {
                 Continuar <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             ) : (
-              <Button size="lg" className="rounded-lg transition-all active:scale-95 hover:-translate-y-0.5" disabled={!valid} onClick={generate}>
-                <Sparkles className="mr-1 h-4 w-4" /> Gerar com IA
+              <Button size="lg" className="rounded-lg transition-all active:scale-95 hover:-translate-y-0.5" disabled={!valid || loading} onClick={generate}>
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Estruturando com IA...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-1 h-4 w-4" /> Gerar com IA
+                  </>
+                )}
               </Button>
             )}
           </div>

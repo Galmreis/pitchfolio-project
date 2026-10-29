@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Copy, Linkedin, MessageCircle, Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authSchema } from "@/validators/portfolio";
+import { fireConfetti } from "./Confetti";
 
 export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; onOpenChange: (o: boolean) => void; onAuthed: () => void }) {
   const [mode, setMode] = useState<"signup" | "signin">("signup");
@@ -77,6 +78,13 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
 
 export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; onOpenChange: (o: boolean) => void; url: string; name: string }) {
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      fireConfetti();
+    }
+  }, [open]);
+
   const text = `Confira meu portfólio e pitch deck profissional${name ? ` (${name})` : ""}: ${url}`;
   const qrSrc = url ? `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=${encodeURIComponent(url)}` : "";
   return (

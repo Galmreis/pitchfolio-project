@@ -627,10 +627,10 @@ function Editor() {
   const toolbar = (
     <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
       <div className="inline-flex rounded-lg border border-border bg-card p-1 shadow-xs">
-        <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition ${view === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
+        <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition active:scale-95 ${view === "site" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
           <Globe className="h-4 w-4" /> Site do Portfólio
         </button>
-        <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition ${view === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
+        <button onClick={() => setView("deck")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition active:scale-95 ${view === "deck" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}>
           <Presentation className="h-4 w-4" /> Pitch Deck (5 Slides)
         </button>
       </div>
@@ -698,9 +698,9 @@ function Editor() {
     <div className="space-y-4">
       {toolbar}
       {view === "site" ? (
-        <div className="overflow-hidden rounded-xl border border-border shadow-lg"><PortfolioSite p={p} theme={draft.theme} /></div>
+        <div className="overflow-hidden rounded-xl border border-border shadow-lg duration-300 animate-in fade-in-50"><PortfolioSite p={p} theme={draft.theme} /></div>
       ) : (
-        <PitchDeck p={p} deck={draft.deck} theme={draft.theme} />
+        <div className="duration-300 animate-in fade-in-50"><PitchDeck p={p} deck={draft.deck} theme={draft.theme} /></div>
       )}
     </div>
   );

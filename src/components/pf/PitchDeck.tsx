@@ -48,8 +48,8 @@ function Frame({
       </div>
       <div
         key={n}
-        className={`my-auto py-4 transition-all duration-300 ease-out animate-in fade-in ${
-          direction === "next" ? "slide-in-from-right-3" : "slide-in-from-left-3"
+        className={`my-auto py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in ${
+          direction === "next" ? "slide-in-from-right-6" : "slide-in-from-left-6"
         }`}
       >
         {children}
@@ -292,7 +292,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         }}
       >
         <div className="absolute inset-0 overflow-auto">{slides[i]}</div>
-        <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all duration-300" style={{ width: `${((i + 1) / 5) * 100}%` }} />
+        <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_0_10px_currentColor]" style={{ width: `${((i + 1) / 5) * 100}%` }} />
       </div>
       <div className="hidden space-y-6 print:block">
         {slides.map((s, idx) => (
