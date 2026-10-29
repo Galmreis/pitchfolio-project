@@ -30,8 +30,10 @@ import { Logo } from "@/components/pf/Logo";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
 import {
   AVATAR_PRESETS,
+  DEMO_PERSONAS,
   DRAFT_KEY,
   THEMES,
+  buildPersonaPortfolio,
   normalizeUrl,
   type Draft,
   type Portfolio,
@@ -130,11 +132,48 @@ function PerfilPage() {
   async function loadUserData() {
     setLoading(true);
     try {
+      const sp = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const isDemo = sp?.get("demo") === "1" || sp?.get("user") === "ana";
+
       const {
         data: { user: authUser },
       } = await supabase.auth.getUser();
 
       if (!authUser) {
+        if (isDemo) {
+          const ana = DEMO_PERSONAS[0]!;
+          const anaPortfolio = buildPersonaPortfolio(ana);
+          setUser({ id: "demo-ana-souza-id", email: "ana.souza@ufpe.br" });
+          setProfile({
+            id: "demo-ana-souza-id",
+            email: "ana.souza@ufpe.br",
+            firstName: "Ana",
+            lastName: "Souza",
+            fullName: "Ana Souza",
+            phoneNumber: "+5511987654321",
+            avatarUrl: ana.avatarUrl,
+          });
+          setContacts({
+            linkedin: "https://linkedin.com/in/ana-souza-demo",
+            github: "https://github.com/anasouza-demo",
+            phone: "+55 11 98765-4321",
+            contactEmail: "ana.souza@ufpe.br",
+          });
+          setPortfolios([
+            {
+              id: "demo-portfolio-id-1",
+              slug: ana.slug,
+              name: ana.projectTitle,
+              isPublished: true,
+              selectedTheme: "moderno",
+              data: anaPortfolio,
+              updatedAt: new Date().toISOString(),
+            },
+          ]);
+          setLoading(false);
+          return;
+        }
+
         setUser(null);
         setLoading(false);
         return;

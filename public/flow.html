@@ -319,19 +319,28 @@
     <div class="grid">
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num profile">15</span> Painel do Candidato · Identidade & Contatos</div>
-          <a class="route" href="/perfil" target="_blank">/perfil ↗</a>
+          <div class="screen-title"><span class="num profile">15</span> Painel do Candidato · Identidade & Contatos (Ana Souza)</div>
+          <a class="route" href="/perfil?demo=1" target="_blank">/perfil?demo=1 ↗</a>
         </div>
-        <div class="desc">Gestão de perfil, avatar preset/personalizado e sincronização de contatos (LinkedIn, GitHub e E-mail público) refletidos no dossiê e no Slide 5.</div>
-        <div class="viewport"><iframe src="/perfil"></iframe></div>
+        <div class="desc">Painel autenticado da candidata: Nome, Sobrenome, WhatsApp, foto de perfil, presets e canais de contato sincronizados.</div>
+        <div class="viewport"><iframe src="/perfil?demo=1"></iframe></div>
       </div>
 
       <div class="screen">
         <div class="screen-top">
-          <div class="screen-title"><span class="num profile">16</span> Gestão de Dossiês & Pitch Decks Ativos</div>
-          <a class="route" href="/perfil" target="_blank">/perfil (Meus Dossiês) ↗</a>
+          <div class="screen-title"><span class="num profile">16</span> Gestão de Dossiês & Pitch Decks Ativos (Ana Souza)</div>
+          <a class="route" href="/perfil?demo=1" target="_blank">/perfil?demo=1 (Dossiês) ↗</a>
         </div>
-        <div class="desc">Visão consolidada dos portfólios publicados pelo usuário, status de sincronização, atalho rápido para edição e cartão QR.</div>
+        <div class="desc">Visão consolidada dos portfólios e decks publicados, status de sincronização, atalho rápido para o editor e cartão QR.</div>
+        <div class="viewport"><iframe src="/perfil?demo=1"></iframe></div>
+      </div>
+
+      <div class="screen">
+        <div class="screen-top">
+          <div class="screen-title"><span class="num profile">17</span> Painel do Candidato · Estado Deslogado</div>
+          <a class="route" href="/perfil" target="_blank">/perfil ↗</a>
+        </div>
+        <div class="desc">Exibido para visitantes deslogados: tela de entrada e convite para criar conta ou testar sem cadastro.</div>
         <div class="viewport"><iframe src="/perfil"></iframe></div>
       </div>
     </div>
@@ -340,15 +349,18 @@
   <script>
     const DEMO_ANSWERS = {
       name: "Ana Souza",
+      first_name: "Ana",
+      last_name: "Souza",
       area: "Engenharia de Software · UFPE",
       bio: "Estudante do 6º período focada em desenvolvimento full-stack e produtos digitais acessíveis.",
       challenge: "Mais de 400 alunos do campus dependiam de grupos desencontrados para dividir transporte diário.",
       action: "Desenvolvi uma aplicação web em React e TypeScript com rotas compartilhadas e validação por e-mail institucional.",
       result: "1.200 viagens combinadas em 4 meses e redução de 30% no gasto médio semanal dos estudantes.",
       skills: "React, TypeScript, Node.js, PostgreSQL, Pesquisa com Usuários",
-      linkedin: "linkedin.com/in/ana-souza-demo",
-      github: "github.com/anasouza-demo",
-      email: "ana.demo@exemplo.com",
+      phone: "+55 11 98765-4321",
+      linkedin: "https://linkedin.com/in/ana-souza-demo",
+      github: "https://github.com/anasouza-demo",
+      email: "ana.souza@ufpe.br",
       goal: "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário."
     };
 
@@ -359,11 +371,13 @@
         role: "Engenharia de Software · UFPE",
         headline: "Engenharia de Software · UFPE",
         bio: "Estudante do 6º período focada em desenvolvimento full-stack e produtos digitais acessíveis.",
-        projectTitle: "App de Caronas Universitárias",
+        projectTitle: "UniRota · App de Caronas Universitárias",
+        avatarUrl: "/visuals/avatar-ana.svg",
+        projectImageUrl: "/visuals/project-caronas.svg",
         challenge: "Mais de 400 alunos do campus dependiam de grupos desencontrados para dividir transporte diário.",
         action: "Desenvolvi uma aplicação web em React e TypeScript com rotas compartilhadas e validação por e-mail institucional.",
         result: "1.200 viagens combinadas em 4 meses e redução de 30% no gasto médio semanal dos estudantes.",
-        metrics: ["1.200 viagens", "4 meses", "30% economia"],
+        metrics: ["1.200 viagens", "4 meses", "-30% custo"],
         skills: ["React", "TypeScript", "Node.js", "PostgreSQL", "Pesquisa com Usuários"],
         journey: [
           "Estudante do 6º período focada em desenvolvimento full-stack e produtos digitais acessíveis.",
@@ -371,9 +385,10 @@
           "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário."
         ],
         goal: "Busco estágio em engenharia de software para construir produtos web com impacto direto no usuário.",
-        linkedin: "linkedin.com/in/ana-souza-demo",
-        github: "github.com/anasouza-demo",
-        email: "ana.demo@exemplo.com"
+        phone: "+55 11 98765-4321",
+        linkedin: "https://linkedin.com/in/ana-souza-demo",
+        github: "https://github.com/anasouza-demo",
+        email: "ana.souza@ufpe.br"
       }
     };
 
