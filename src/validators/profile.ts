@@ -2,6 +2,7 @@ import { z } from "zod";
 
 /** Removes control chars and HTML brackets, trims whitespace. */
 const cleanText = (max: number) =>
+  // eslint-disable-next-line no-control-regex
   z.string().transform((v) => v.replace(/[\u0000-\u001f\u007f<>]/g, "").trim()).pipe(z.string().min(1, "Campo obrigatório.").max(max));
 
 /**

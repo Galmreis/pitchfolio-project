@@ -53,7 +53,10 @@ export const Route = createFileRoute("/perfil")({
 interface UserProfileData {
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
   fullName: string;
+  phoneNumber: string;
   avatarUrl: string;
 }
 
@@ -77,12 +80,16 @@ function PerfilPage() {
   const [profile, setProfile] = useState<UserProfileData>({
     id: "",
     email: "",
+    firstName: "",
+    lastName: "",
     fullName: "",
+    phoneNumber: "",
     avatarUrl: "",
   });
   const [contacts, setContacts] = useState({
     linkedin: "",
     github: "",
+    phone: "",
     contactEmail: "",
   });
   const [portfolios, setPortfolios] = useState<PortfolioItemSummary[]>([]);
@@ -137,19 +144,38 @@ function PerfilPage() {
       // 1. Fetch user profile from public.profiles
       const { data: profileRow } = await supabase
         .from("profiles")
-        .select("id, email, full_name, avatar_url")
+        .select("id, email, first_name, last_name, full_name, phone_number, avatar_url, linkedin_url, github_url")
         .eq("id", authUser.id)
         .maybeSingle();
 
-      const fullName = profileRow?.full_name || (authUser.user_metadata?.['full_name'] as string | undefined) || "";
+      const firstName = profileRow?.first_name || (authUser.user_metadata?.['first_name'] as string | undefined) || "";
+      const lastName = profileRow?.last_name || (authUser.user_metadata?.['last_name'] as string | undefined) || "";
+      const fullName =
+        profileRow?.full_name ||
+        [firstName, lastName].filter(Boolean).join(" ") ||
+        (authUser.user_metadata?.['full_name'] as string | undefined) ||
+        "";
+      const phoneNumber = profileRow?.phone_number || (authUser.user_metadata?.['phone_number'] as string | undefined) || "";
       const avatarUrl = profileRow?.avatar_url || (authUser.user_metadata?.['avatar_url'] as string | undefined) || "";
 
       setProfile({
         id: authUser.id,
         email: authUser.email ?? "",
+        firstName,
+        lastName,
         fullName,
+        phoneNumber,
         avatarUrl,
       });
+
+      if (profileRow?.linkedin_url || profileRow?.github_url || profileRow?.phone_number) {
+        setContacts((c) => ({
+          ...c,
+          linkedin: profileRow.linkedin_url || c.linkedin,
+          github: profileRow.github_url || c.github,
+          phone: profileRow.phone_number || c.phone,
+        }));
+      }
 
       // 2. Fetch user's portfolios
       try {
@@ -174,11 +200,12 @@ function PerfilPage() {
           // Pre-fill contacts from latest portfolio if available
           if (validList.length > 0) {
             const latest = validList[0]!.data;
-            setContacts({
-              linkedin: latest.linkedin || "",
-              github: latest.github || "",
-              contactEmail: latest.email || authUser.email || "",
-            });
+            setContacts((c) => ({
+              ...c,
+              linkedin: latest.linkedin || c.linkedin,
+              github: latest.github || c.github,
+              contactEmail: latest.email || authUser.email || c.contactEmail,
+            }));
             if (!avatarUrl && latest.avatarUrl) {
               setProfile((p) => ({ ...p, avatarUrl: latest.avatarUrl ?? "" }));
             }
@@ -215,11 +242,12 @@ function PerfilPage() {
 
           if (validList.length > 0) {
             const latest = validList[0]!.data;
-            setContacts({
-              linkedin: latest.linkedin || "",
-              github: latest.github || "",
-              contactEmail: latest.email || authUser.email || "",
-            });
+            setContacts((c) => ({
+              ...c,
+              linkedin: latest.linkedin || c.linkedin,
+              github: latest.github || c.github,
+              contactEmail: latest.email || authUser.email || c.contactEmail,
+            }));
           }
         }
       }
@@ -235,11 +263,20 @@ function PerfilPage() {
     if (!user) return;
     setSaving(true);
     try {
+      const trimmedFirst = profile.firstName.trim();
+      const trimmedLast = profile.lastName.trim();
+      const derivedFull = [trimmedFirst, trimmedLast].filter(Boolean).join(" ") || profile.fullName.trim();
+
       // 1. Update public.profiles
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
-          full_name: profile.fullName.trim().slice(0, 120),
+          first_name: trimmedFirst || derivedFull.split(" ")[0] || "",
+          last_name: trimmedLast || derivedFull.split(" ").slice(1).join(" ") || "",
+          full_name: derivedFull.slice(0, 120),
+          phone_number: contacts.phone.trim(),
+          linkedin_url: contacts.linkedin.trim() || null,
+          github_url: contacts.github.trim() || null,
           avatar_url: profile.avatarUrl.trim() || null,
         })
         .eq("id", user.id);
@@ -252,7 +289,7 @@ function PerfilPage() {
           ...localDraft,
           portfolio: {
             ...localDraft.portfolio,
-            name: profile.fullName.trim() || localDraft.portfolio.name,
+            name: derivedFull || localDraft.portfolio.name,
             avatarUrl: profile.avatarUrl.trim() || localDraft.portfolio.avatarUrl,
             linkedin: contacts.linkedin.trim(),
             github: contacts.github.trim(),
@@ -268,7 +305,7 @@ function PerfilPage() {
         for (const item of portfolios) {
           const nextData: Portfolio = {
             ...item.data,
-            name: profile.fullName.trim() || item.data.name,
+            name: derivedFull || item.data.name,
             avatarUrl: profile.avatarUrl.trim() || item.data.avatarUrl,
             linkedin: contacts.linkedin.trim(),
             github: contacts.github.trim(),
@@ -435,14 +472,38 @@ function PerfilPage() {
                     </p>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold">Nome Completo</Label>
-                    <Input
-                      value={profile.fullName}
-                      onChange={(e) => setProfile((p) => ({ ...p, fullName: e.target.value }))}
-                      placeholder="ex: Ana Souza"
-                      required
-                    />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">Nome</Label>
+                      <Input
+                        value={profile.firstName}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setProfile((p) => ({
+                            ...p,
+                            firstName: val,
+                            fullName: [val, p.lastName].filter(Boolean).join(" "),
+                          }));
+                        }}
+                        placeholder="ex: Ana"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">Sobrenome</Label>
+                      <Input
+                        value={profile.lastName}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setProfile((p) => ({
+                            ...p,
+                            lastName: val,
+                            fullName: [p.firstName, val].filter(Boolean).join(" "),
+                          }));
+                        }}
+                        placeholder="ex: Souza"
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -491,6 +552,15 @@ function PerfilPage() {
                     <p className="text-xs text-muted-foreground">
                       Aparecem no rodapé do seu Dossiê Web e no <strong>Slide 5 (Contato)</strong> da sua apresentação executiva.
                     </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold">WhatsApp / Telefone de Contato</Label>
+                    <Input
+                      value={contacts.phone}
+                      onChange={(e) => setContacts((c) => ({ ...c, phone: e.target.value }))}
+                      placeholder="+55 11 98765-4321"
+                    />
                   </div>
 
                   <div className="space-y-2">
