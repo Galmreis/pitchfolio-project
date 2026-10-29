@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from "lucide-react";
-import { resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
+import { accentProps, resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
 import { DECK_SLIDES_METADATA, type FiveSlideDeck } from "@/types/pitchfolio";
 import { AvatarBadge, ContactLinks } from "./PortfolioSite";
 
@@ -48,7 +48,7 @@ function Frame({
       </div>
       <div
         key={n}
-        className={`my-auto min-w-0 py-3 sm:py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in ${
+        className={`my-auto min-w-0 py-3 sm:py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in print:animate-none ${
           direction === "next" ? "slide-in-from-right-6" : "slide-in-from-left-6"
         }`}
       >
@@ -110,7 +110,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
     return () => window.removeEventListener("keydown", onKey);
   }, [next, prev, toggleFullscreen]);
 
-  const accentClass = p.accentColor ? `pf-accent-${p.accentColor}` : "";
+  const accent = accentProps(p.accentColor);
   const layout = resolveLayoutStyle(theme, p.layoutStyle);
 
   const slides = [
@@ -118,7 +118,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       {layout === "split" ? (
         <div className="grid items-center gap-6 sm:grid-cols-[0.85fr_1.15fr] sm:divide-x sm:divide-pf-line">
           <div className="min-w-0 space-y-3 sm:pr-6">
-            <AvatarBadge p={p} size="lg" />
+            <AvatarBadge p={p} size="xl" />
             <span className="inline-block rounded bg-pf-accent px-2.5 py-0.5 text-xs font-semibold text-pf-accent-fg">
               {s1.role}
             </span>
@@ -134,7 +134,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       ) : layout === "indice" ? (
         <div className="grid gap-4 border-l-2 border-pf-accent pl-5 sm:grid-cols-[180px_1fr]">
           <div className="min-w-0 space-y-2.5">
-            <AvatarBadge p={p} size="md" />
+            <AvatarBadge p={p} size="xl" />
             <span className="block font-mono text-xs font-bold text-pf-accent">01 / PERFIL</span>
             <p className="truncate text-xs font-semibold text-pf-muted">{s1.role}</p>
           </div>
@@ -147,7 +147,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
           </div>
         </div>
       ) : (
-        <div className="flex flex-wrap items-center justify-between gap-6">
+        <div className="flex flex-col-reverse items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0 max-w-xl flex-1">
             <p className="text-xs font-semibold text-pf-muted sm:text-sm">{s1.role}</p>
             <h2 className="mt-2 break-words font-display text-3xl font-extrabold leading-[1.06] tracking-tight sm:text-5xl">{s1.name}</h2>
@@ -156,7 +156,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
             )}
             <p className="mt-4 break-words text-sm leading-relaxed text-pf-muted sm:text-base">{s1.bio}</p>
           </div>
-          <AvatarBadge p={p} size="lg" />
+          <AvatarBadge p={p} size="hero" />
         </div>
       )}
     </Frame>,
@@ -276,7 +276,7 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
   ];
 
   return (
-    <div className={`theme-${theme} ${accentClass}`}>
+    <div className={`theme-${theme} ${accent.className}`} style={accent.style}>
       <div
         ref={containerRef}
         className={`relative w-full overflow-hidden border border-pf-line bg-pf-bg text-pf-fg shadow-xl print:hidden ${
@@ -296,9 +296,9 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
         <div className="absolute inset-0 overflow-y-auto overflow-x-hidden">{slides[i]}</div>
         <div className="absolute bottom-0 left-0 h-1 bg-pf-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_0_10px_currentColor]" style={{ width: `${((i + 1) / 5) * 100}%` }} />
       </div>
-      <div className="hidden space-y-6 print:block">
+      <div className="pf-deck-print hidden space-y-6 print:block print:space-y-0">
         {slides.map((s, idx) => (
-          <div key={idx} className="aspect-video w-full break-inside-avoid overflow-hidden rounded-xl border border-pf-line bg-pf-bg text-pf-fg">
+          <div key={idx} className="pf-deck-print-slide aspect-video w-full break-inside-avoid overflow-hidden rounded-xl border border-pf-line bg-pf-bg text-pf-fg">
             {s}
           </div>
         ))}
