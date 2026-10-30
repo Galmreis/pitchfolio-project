@@ -145,7 +145,42 @@ pitchfolio-project/
 
 ---
 
-## 5. Modelo de Dados & Segurança (PostgreSQL RLS)
+## 5. Tecnologias, Ferramentas & Inteligência Artificial (Transparência do Edital)
+
+Em conformidade com as diretrizes e critérios de avaliação do **Hackathon Startups & Lovable 2026**, detalhamos abaixo a relação integral de modelos de IA, plataformas, linguagens e ferramentas utilizadas na concepção e desenvolvimento do PitchFolio:
+
+### 🤖 5.1. Modelos de Inteligência Artificial & Engenharia de Prompts
+- **Lovable AI Gateway**: Orquestração e inferência em tempo real para estruturação de dados não-estruturados (PDFs, textos do LinkedIn e respostas livres) no Método STAR.
+- **Simulador de Entrevista STAR com IA**: Geração situacional de perguntas comportamentais, dicas estratégicas de recrutadores e rascunhos de resposta personalizados com base no projeto submetido pelo candidato.
+- **Motor Fact-Safe de Ancoragem Factual**: Algoritmo determinístico proprietário (`groundedPortfolio` e `localStructure`) que audita vocabulário para prevenir alucinações e assegura continuidade operacional mesmo em indisponibilidade de rede.
+- **Google Antigravity & Gemini 2.5 Pro**: Ferramenta de desenvolvimento assistido para pair programming, auditoria de arquitetura, geração de testes automatizados e modelagem de segurança PostgreSQL RLS.
+
+### 💻 5.2. Frontend & Interface do Usuário
+- **React 19.2**: Biblioteca declarativa de interface com hooks modernos e transições assíncronas.
+- **TypeScript 5.8**: Tipagem estrita ponta a ponta sem anotações `any`, garantindo contratos seguros entre cliente e servidor.
+- **TanStack Start & Router**: Framework full-stack com SSR (Server-Side Rendering), roteamento baseado em arquivos e server functions tipadas.
+- **Tailwind CSS v4.2**: Motor de estilos moderno com suporte nativo a temas dinâmicos via CSS variables e regras `@media print` de alta fidelidade.
+- **Radix UI / shadcn**: Primitivas acessíveis de interface em conformidade com as normas internacionais WAI-ARIA (diálogos, abas, popovers e tooltips).
+- **Lucide Icons**: Conjunto consistente e vetorial de ícones de interface.
+- **Canvas-Confetti**: Feedback visual comemorativo para ações de publicação e compartilhamento de links.
+
+### 🗄️ 5.3. Backend, Banco de Dados & Segurança
+- **Supabase (PostgreSQL 15+)**: Banco de dados relacional gerenciado com Row-Level Security (RLS) habilitado em 100% das tabelas públicas.
+- **Procedimentos Armazenados & Triggers PL/pgSQL**:
+  - `sync_profile_to_portfolio`: Trigger atômica para sincronização imediata de dados do perfil aos dossiês e slides 1 e 5.
+  - `publish_pitchfolio_draft`: Transação SQL RPC para atomicidade completa entre dossiê web e deck de slides.
+- **Drizzle ORM**: Definição tipada de esquemas e controle de versões de migrações SQL.
+- **Zod 3**: Validação client-safe compartilhada para sanitização rigorosa de entradas de usuário e blindagem contra injeção de HTML/scripts.
+
+### 🚀 5.4. DevOps, Testes & Infraestrutura
+- **Vitest 4**: Suíte automatizada de testes unitários e de integração cobrindo fluxos de compartilhamento, simulador STAR, perfis, temas e roteamento (39 testes aprovados).
+- **Docker & Docker Compose**: Containerização de produção multi-stage com Node 22 Alpine, healthchecks (`/api/healthz`, `/api/readyz`) e execução com usuário restrito.
+- **GitHub Actions (CI/CD)**: Pipeline automático para validação estática de tipos, linting ESLint, suíte de testes e varredura de credenciais com TruffleHog.
+- **Lovable.dev**: Ambiente oficial de deploy contínuo, prototipação ágil e hospedagem de produção em alta disponibilidade.
+
+---
+
+## 6. Modelo de Dados & Segurança (PostgreSQL RLS)
 
 - **Persistência Local-First**: O candidato cria e refina seu portfólio no `localStorage` sem precisar de cadastro prévio.
 - **Transação Atômica (`publish_pitchfolio_draft`)**: A publicação grava o portfólio e gera o deck derivado de 5 slides em uma única transação SQL autenticada.
@@ -156,7 +191,7 @@ pitchfolio-project/
 
 ---
 
-## 6. Como Executar Localmente
+## 7. Como Executar Localmente
 
 ### Pré-requisitos
 - **Node.js**: versão 20 ou superior
@@ -213,7 +248,7 @@ Para facilitar a triagem dos avaliadores sem necessidade de criar conta pessoal:
 
 ---
 
-## 7. Equipe "Los Penguinos"
+## 8. Equipe "Los Penguinos"
 
 Desenvolvido com dedicação para o **Hackathon Startups & Lovable 2026**:
 
