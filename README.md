@@ -2,8 +2,10 @@
 
 > **Portfólio estruturado pelo Método STAR e Pitch Deck executivo de 5 slides gerados em minutos.**  
 > Projeto desenvolvido para o **Hackathon Startups & Lovable (UNIFAL-MG · 2026)**  
-> **Case 3: Empregabilidade e Carreira** · Equipe **Los Penguinos**
+> **Case 3: Empregabilidade e Carreira** · Equipe **Los Penguinos**  
+> 🚀 **Aplicação no Ar (Produção)**: [https://pitchfolio.lovable.app](https://pitchfolio.lovable.app)
 
+[![Deploy on Lovable](https://img.shields.io/badge/Deploy-pitchfolio.lovable.app-ff3366.svg)](https://pitchfolio.lovable.app)
 [![React 19](https://img.shields.io/badge/React-19.2-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6.svg)](https://www.typescriptlang.org/)
 [![TanStack Start](https://img.shields.io/badge/TanStack-Start%20%26%20Router-ff4154.svg)](https://tanstack.com/start)
@@ -199,13 +201,15 @@ npm run build
 
 Para facilitar a triagem dos avaliadores sem necessidade de criar conta pessoal:
 
+- **Aplicação no Ar (Produção Lovable)**: [https://pitchfolio.lovable.app](https://pitchfolio.lovable.app)
 - **E-mail de Teste**: `demo@pitchfolio.app`
 - **Senha**: `DemoUser2026!`
 - **Acesso com 1 Clique no App**: Nos modais de autenticação (`/editor` e `/perfil`), utilize o botão *"Preencher dados"* para carregar as credenciais instantaneamente.
-- **Painel do Candidato Pré-Carregado**: Acesse a rota `/perfil?demo=1` para visualizar a conta demonstrativa da Ana Souza com dossiês STAR e decks de 5 slides já publicados.
-- **Dossiê & Pitch Deck Publicado**: Acesse a rota `/p/ana-souza-demo` para avaliar a visão pública do dossiê web e o pitch deck interativo de 5 slides.
-- **Pitch Deck da Solução / Roadmap**: Acesse `/proximos-passos` (pressione `F` para apresentação de slides 16:9).
-- **Jornada Completa Interativa (19 Telas)**: Acesse `/flow.html` para navegar pelo mapa panorâmico de todas as rotas com modo tela cheia interativo.
+- **Painel do Candidato Pré-Carregado**: Acesse [`pitchfolio.lovable.app/perfil?demo=1`](https://pitchfolio.lovable.app/perfil?demo=1) para visualizar a conta demonstrativa da Ana Souza com dossiês STAR e decks de 5 slides já publicados.
+- **Dossiê & Pitch Deck Publicado**: Acesse [`pitchfolio.lovable.app/p/ana-souza-demo`](https://pitchfolio.lovable.app/p/ana-souza-demo) para avaliar a visão pública do dossiê web e o pitch deck interativo de 5 slides.
+- **Pitch Deck da Solução / Roadmap**: Acesse [`pitchfolio.lovable.app/proximos-passos`](https://pitchfolio.lovable.app/proximos-passos) (pressione `F` para apresentação de slides 16:9).
+- **Portal B2B & Feiras de Carreira**: Acesse [`pitchfolio.lovable.app/instituicoes`](https://pitchfolio.lovable.app/instituicoes) para catálogo de talentos e crachás QR.
+- **Jornada Completa Interativa (19 Telas)**: Acesse [`pitchfolio.lovable.app/flow.html`](https://pitchfolio.lovable.app/flow.html) para navegar pelo mapa panorâmico de todas as rotas com modo tela cheia interativo.
 
 ---
 
