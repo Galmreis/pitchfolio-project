@@ -201,6 +201,7 @@ Desenvolvido com dedicação para o **Hackathon Startups & Lovable 2026**:
 - **Fabine Regina Moura Dutra**
 - **Gabriel do Vale Mendes**
 - **Guilherme de Almeida Reis**
+- **Ana Carolina Ramalho de Matos**
 
 ---
 
