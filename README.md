@@ -147,15 +147,22 @@ pitchfolio-project/
 
 ## 5. Tecnologias, Ferramentas & Inteligência Artificial (Transparência do Edital)
 
-Em conformidade com as diretrizes e critérios de avaliação do **Hackathon Startups & Lovable 2026**, detalhamos abaixo a relação integral de modelos de IA, plataformas, linguagens e ferramentas utilizadas na concepção e desenvolvimento do PitchFolio:
+Em conformidade com as diretrizes e critérios de avaliação do **Hackathon Startups & Lovable 2026**, detalhamos abaixo a relação integral de ferramentas proprietárias da Lovable, modelos de IA, plataformas, linguagens e bibliotecas utilizadas na concepção e desenvolvimento do PitchFolio:
 
-### 🤖 5.1. Modelos de Inteligência Artificial & Engenharia de Prompts
-- **Lovable AI Gateway**: Orquestração e inferência em tempo real para estruturação de dados não-estruturados (PDFs, textos do LinkedIn e respostas livres) no Método STAR.
-- **Simulador de Entrevista STAR com IA**: Geração situacional de perguntas comportamentais, dicas estratégicas de recrutadores e rascunhos de resposta personalizados com base no projeto submetido pelo candidato.
-- **Motor Fact-Safe de Ancoragem Factual**: Algoritmo determinístico proprietário (`groundedPortfolio` e `localStructure`) que audita vocabulário para prevenir alucinações e assegura continuidade operacional mesmo em indisponibilidade de rede.
+### 💜 5.1. Ecossistema & Ferramentas Proprietárias Lovable
+- **Lovable.dev (Builder & Cloud Hosting)**: Plataforma principal de prototipação acelerada, sincronização bidirecional Git contínua e deploy de borda com alta disponibilidade em [pitchfolio.lovable.app](https://pitchfolio.lovable.app).
+- **Lovable AI Gateway (`https://ai.gateway.lovable.dev/v1/responses`)**: Gateway oficial da Lovable para streaming de inferência e estruturação de respostas JSON com validação de esquema estrito. Utilizado no processamento de currículos, LinkedIn e simulação de entrevistas.
+- **Configuração Oficial Vite + TanStack Start (`@lovable.dev/vite-tanstack-config`)**: Adapter proprietário da Lovable para SSR no Vite, hidratação de rotas do TanStack Start e orquestração de bundles de produção.
+- **Lovable Preview Auth Broker (`previewAuthStorage.ts`)**: Mecanismo de persistência e comunicação cross-domain postMessage para orquestrar sessões Supabase entre o sandbox de edição no Lovable e o domínio de produção.
+- **Lovable Error Reporting & Telemetry Bridge (`lovable-error-reporting.ts`)**: Telemetria nativa conectada ao Error Boundary global (`src/routes/__root.tsx`) via `__lovableReportRuntimeError` e `__lovableEvents.captureException` para diagnóstico de falhas em tempo real.
+
+### 🤖 5.2. Modelos de Inteligência Artificial & Engenharia de Prompts
+- **Estruturação Semântica STAR**: Orquestração via Lovable AI Gateway para converter experiências brutas (PDFs, textos do LinkedIn e questionário guiado) em casos de impacto estruturados com métricas quantitativas.
+- **Simulador de Entrevista STAR com IA**: Geração situacional sob demanda de perguntas comportamentais de recrutador, dicas estratégicas e roteiros de resposta (*diferencial do Case 3*).
+- **Motor Fact-Safe de Ancoragem Factual**: Algoritmo determinístico proprietário (`groundedPortfolio` e `localStructure`) que audita vocabulário para prevenir alucinações e assegura continuidade operacional mesmo em modo offline.
 - **Google Antigravity & Gemini 2.5 Pro**: Ferramenta de desenvolvimento assistido para pair programming, auditoria de arquitetura, geração de testes automatizados e modelagem de segurança PostgreSQL RLS.
 
-### 💻 5.2. Frontend & Interface do Usuário
+### 💻 5.3. Frontend & Interface do Usuário
 - **React 19.2**: Biblioteca declarativa de interface com hooks modernos e transições assíncronas.
 - **TypeScript 5.8**: Tipagem estrita ponta a ponta sem anotações `any`, garantindo contratos seguros entre cliente e servidor.
 - **TanStack Start & Router**: Framework full-stack com SSR (Server-Side Rendering), roteamento baseado em arquivos e server functions tipadas.
@@ -164,7 +171,7 @@ Em conformidade com as diretrizes e critérios de avaliação do **Hackathon Sta
 - **Lucide Icons**: Conjunto consistente e vetorial de ícones de interface.
 - **Canvas-Confetti**: Feedback visual comemorativo para ações de publicação e compartilhamento de links.
 
-### 🗄️ 5.3. Backend, Banco de Dados & Segurança
+### 🗄️ 5.4. Backend, Banco de Dados & Segurança
 - **Supabase (PostgreSQL 15+)**: Banco de dados relacional gerenciado com Row-Level Security (RLS) habilitado em 100% das tabelas públicas.
 - **Procedimentos Armazenados & Triggers PL/pgSQL**:
   - `sync_profile_to_portfolio`: Trigger atômica para sincronização imediata de dados do perfil aos dossiês e slides 1 e 5.
@@ -172,11 +179,10 @@ Em conformidade com as diretrizes e critérios de avaliação do **Hackathon Sta
 - **Drizzle ORM**: Definição tipada de esquemas e controle de versões de migrações SQL.
 - **Zod 3**: Validação client-safe compartilhada para sanitização rigorosa de entradas de usuário e blindagem contra injeção de HTML/scripts.
 
-### 🚀 5.4. DevOps, Testes & Infraestrutura
+### 🚀 5.5. DevOps, Testes & Infraestrutura
 - **Vitest 4**: Suíte automatizada de testes unitários e de integração cobrindo fluxos de compartilhamento, simulador STAR, perfis, temas e roteamento (39 testes aprovados).
 - **Docker & Docker Compose**: Containerização de produção multi-stage com Node 22 Alpine, healthchecks (`/api/healthz`, `/api/readyz`) e execução com usuário restrito.
 - **GitHub Actions (CI/CD)**: Pipeline automático para validação estática de tipos, linting ESLint, suíte de testes e varredura de credenciais com TruffleHog.
-- **Lovable.dev**: Ambiente oficial de deploy contínuo, prototipação ágil e hospedagem de produção em alta disponibilidade.
 
 ---
 
