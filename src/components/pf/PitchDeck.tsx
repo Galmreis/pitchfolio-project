@@ -48,7 +48,7 @@ function Frame({
       </div>
       <div
         key={n}
-        className={`my-auto min-w-0 py-3 sm:py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in print:animate-none ${
+        className={`my-auto min-w-0 py-3 sm:py-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] animate-in fade-in print:animate-none print:opacity-100 print:transform-none ${
           direction === "next" ? "slide-in-from-right-6" : "slide-in-from-left-6"
         }`}
       >
@@ -298,7 +298,12 @@ export function PitchDeck({ p, deck, theme }: { p: Portfolio; deck?: FiveSlideDe
       </div>
       <div className="pf-deck-print hidden space-y-6 print:block print:space-y-0">
         {slides.map((s, idx) => (
-          <div key={idx} className="pf-deck-print-slide aspect-video w-full break-inside-avoid overflow-hidden rounded-xl border border-pf-line bg-pf-bg text-pf-fg">
+          <div
+            key={idx}
+            className={`pf-deck-print-slide flex flex-col aspect-video w-full break-inside-avoid overflow-hidden rounded-xl border border-pf-line bg-pf-bg text-pf-fg shadow-xl print:shadow-none print:rounded-lg print:border-pf-line/40 print:overflow-visible ${
+              idx < slides.length - 1 ? "print-slide-page print:mb-0" : ""
+            }`}
+          >
             {s}
           </div>
         ))}

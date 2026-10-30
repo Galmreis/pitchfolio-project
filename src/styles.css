@@ -268,6 +268,36 @@
   .pf-deck-print-slide:last-child {
     break-after: auto;
   }
+
+  /* Global Print Hardening: force visibility & disable animation freezes */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .animate-in,
+  .fade-in,
+  .fade-in-50,
+  [class*="slide-in-from-"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Slide page breaks for presentation export */
+  .print-slide-page {
+    break-after: page !important;
+    page-break-after: always !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
 }
 
 @layer components {

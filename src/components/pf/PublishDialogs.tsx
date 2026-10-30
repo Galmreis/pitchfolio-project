@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Copy, Linkedin, MessageCircle, Loader2, Check } from "lucide-react";
+import { Copy, Linkedin, MessageCircle, Loader2, Check, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authSchema } from "@/validators/portfolio";
 import { signupSchema } from "@/validators/profile";
+import { buildShareUrls } from "@/lib/share";
 import { fireConfetti } from "./Confetti";
 
 export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; onOpenChange: (o: boolean) => void; onAuthed: () => void }) {
@@ -128,8 +129,84 @@ export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; 
     }
   }, [open]);
 
-  const text = `Confira meu portfólio e pitch deck profissional${name ? ` (${name})` : ""}: ${url}`;
-  const qrSrc = url ? `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=${encodeURIComponent(url)}` : "";
+  const { absoluteUrl, isPreview, shareText, whatsappUrl, whatsappWebUrl, linkedinUrl } = buildShareUrls(url, name);
+  const qrSrc = absoluteUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=${encodeURIComponent(absoluteUrl)}` : "";
+  const canNativeShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(absoluteUrl);
+      setCopied(true);
+      toast.success("Link copiado com sucesso!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Não foi possível copiar o link.");
+    }
+  };
+
+  const handleNativeShare = async () => {
+    if (!canNativeShare) {
+      await handleCopy();
+      return;
+    }
+    try {
+      await navigator.share({
+        title: `Portfólio de ${name || "PitchFolio"}`,
+        text: shareText,
+        url: absoluteUrl,
+      });
+    } catch (err) {
+      if ((err as Error)?.name !== "AbortError") {
+        await handleCopy();
+      }
+    }
+  };
+
+  const handleShareWhatsApp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard?.writeText(shareText).catch(() => {});
+
+    const isDesktop = typeof window !== "undefined" && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const targetUrl = isDesktop ? whatsappWebUrl : whatsappUrl;
+
+    let opened = false;
+    try {
+      const win = window.open(targetUrl, "_blank", "noopener,noreferrer");
+      if (win) opened = true;
+    } catch {
+      opened = false;
+    }
+
+    if (opened) {
+      toast.success("Abrindo WhatsApp…");
+    } else {
+      toast.info("Texto copiado! Cole diretamente na conversa do WhatsApp.");
+    }
+  };
+
+  const handleShareLinkedIn = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard?.writeText(shareText).catch(() => {});
+
+    let opened = false;
+    try {
+      const win = window.open(linkedinUrl, "_blank", "noopener,noreferrer");
+      if (win) opened = true;
+    } catch {
+      opened = false;
+    }
+
+    if (opened) {
+      if (isPreview) {
+        toast.info("Prévia Lovable/Local: o link foi adaptado para a raspagem pública do LinkedIn e o texto copiado!");
+      } else {
+        toast.success("Abrindo LinkedIn…");
+      }
+    } else {
+      toast.info("Link e texto copiados! Cole diretamente na sua publicação do LinkedIn.");
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -138,7 +215,7 @@ export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; 
           <DialogDescription>Compartilhe seu link ou mostre o QR Code em entrevistas e feiras de carreira.</DialogDescription>
         </DialogHeader>
 
-        {url && (
+        {absoluteUrl && (
           <div className="flex items-center gap-4 rounded-2xl border border-border bg-muted/40 p-4">
             <img
               src={qrSrc}
@@ -156,20 +233,54 @@ export function ShareDialog({ open, onOpenChange, url, name }: { open: boolean; 
         )}
 
         <div className="flex gap-2">
-          <Input readOnly value={url} onFocus={(e) => e.target.select()} />
-          <Button variant="outline" onClick={async () => { await navigator.clipboard.writeText(url); setCopied(true); toast.success("Link copiado!"); setTimeout(() => setCopied(false), 2000); }}>
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          <Input readOnly value={absoluteUrl} onFocus={(e) => e.target.select()} />
+          <Button variant="outline" onClick={handleCopy} title="Copiar link">
+            {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
           </Button>
         </div>
+
         <div className="grid gap-2 sm:grid-cols-2">
-          <Button asChild variant="secondary">
-            <a href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noreferrer"><MessageCircle className="mr-2 h-4 w-4" /> WhatsApp</a>
+          <Button
+            asChild
+            variant="secondary"
+            className="cursor-pointer transition hover:bg-[#25D366]/15 hover:text-[#25D366] hover:border-[#25D366]/30"
+          >
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={handleShareWhatsApp}
+            >
+              <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp
+            </a>
           </Button>
-          <Button asChild variant="secondary">
-            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`} target="_blank" rel="noreferrer"><Linkedin className="mr-2 h-4 w-4" /> LinkedIn</a>
+          <Button
+            asChild
+            variant="secondary"
+            className="cursor-pointer transition hover:bg-[#0A66C2]/15 hover:text-[#0A66C2] hover:border-[#0A66C2]/30"
+          >
+            <a
+              href={linkedinUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={handleShareLinkedIn}
+            >
+              <Linkedin className="mr-2 h-4 w-4" /> LinkedIn
+            </a>
           </Button>
         </div>
-        <Button asChild><a href={url} target="_blank" rel="noreferrer">Abrir página pública</a></Button>
+
+        {canNativeShare && (
+          <Button variant="outline" onClick={handleNativeShare} className="w-full">
+            <Share2 className="mr-2 h-4 w-4" /> Compartilhar via aplicativo do celular
+          </Button>
+        )}
+
+        <Button asChild className="w-full">
+          <a href={absoluteUrl} target="_blank" rel="noreferrer">
+            Abrir página pública
+          </a>
+        </Button>
       </DialogContent>
     </Dialog>
   );

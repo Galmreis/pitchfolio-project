@@ -70,7 +70,7 @@ function PublicPage() {
       {view === "site" ? (
         <PortfolioSite p={portfolio} theme={theme} sections={sections} />
       ) : (
-        <div className="mx-auto max-w-5xl px-4 py-8"><PitchDeck p={portfolio} deck={deck} theme={theme} /></div>
+        <div className="mx-auto max-w-5xl px-4 py-8 print:max-w-none print:p-0"><PitchDeck p={portfolio} deck={deck} theme={theme} /></div>
       )}
       <p className="py-6 text-center text-xs text-pf-muted print:hidden">
         Feito com <Link to="/" className="underline">PitchFolio</Link>
