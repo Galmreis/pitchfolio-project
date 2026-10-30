@@ -1,10 +1,20 @@
 import { Award, Github, Globe, Linkedin, Mail } from "lucide-react";
-import { normalizeUrl, resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
+import { accentProps, normalizeUrl, resolveLayoutStyle, type Portfolio, type ThemeName } from "@/lib/portfolio";
 import type { PortfolioSections } from "@/services/portfolioSections.service";
+import { PrintResume } from "./PrintResume";
 
-export function AvatarBadge({ p, size = "md" }: { p: Portfolio; size?: "sm" | "md" | "lg" }) {
+// xl/hero grow with the viewport so the photo fills roomy headers without crowding phones.
+const AVATAR_DIMS = {
+  sm: "h-11 w-11 rounded-lg text-xs",
+  md: "h-14 w-14 rounded-xl text-sm",
+  lg: "h-16 w-16 rounded-xl text-base",
+  xl: "h-24 w-24 rounded-2xl text-2xl sm:h-28 sm:w-28",
+  hero: "h-28 w-28 rounded-2xl text-3xl sm:h-40 sm:w-40 sm:text-4xl md:h-48 md:w-48 md:text-5xl",
+} as const;
+
+export function AvatarBadge({ p, size = "md" }: { p: Portfolio; size?: keyof typeof AVATAR_DIMS }) {
   const initials = p.name.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-  const dim = size === "lg" ? "h-16 w-16 rounded-xl text-base" : size === "sm" ? "h-11 w-11 rounded-lg text-xs" : "h-14 w-14 rounded-xl text-sm";
+  const dim = AVATAR_DIMS[size];
   if (p.avatarUrl) {
     return (
       <img
@@ -34,8 +44,20 @@ function ProjectVisual({ p }: { p: Portfolio }) {
   );
 }
 
+/** On screen: the themed site. When printing / exporting PDF: the A4 résumé. */
 export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: ThemeName; sections?: PortfolioSections | undefined }) {
-  const accentClass = p.accentColor ? `pf-accent-${p.accentColor}` : "";
+  return (
+    <>
+      <div className="print:hidden">
+        <PortfolioSiteScreen p={p} theme={theme} sections={sections} />
+      </div>
+      <PrintResume p={p} theme={theme} sections={sections} />
+    </>
+  );
+}
+
+function PortfolioSiteScreen({ p, theme, sections }: { p: Portfolio; theme: ThemeName; sections?: PortfolioSections | undefined }) {
+  const accent = accentProps(p.accentColor);
   const journeyFirst = p.sectionOrder === "journey_first";
   const layout = resolveLayoutStyle(theme, p.layoutStyle);
 
@@ -117,11 +139,11 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
     ) : null;
 
     return (
-      <div className={`theme-${theme} ${accentClass} bg-pf-bg text-pf-fg`}>
+      <div className={`theme-${theme} ${accent.className} bg-pf-bg text-pf-fg`} style={accent.style}>
         <div className="mx-auto grid max-w-5xl gap-10 px-6 py-12 md:grid-cols-[280px_1fr] md:px-10 md:py-16">
           {/* Left Sticky Profile Column */}
           <aside className="min-w-0 space-y-6 md:sticky md:top-8 md:self-start rounded-xl border border-pf-line bg-pf-card p-6">
-            <AvatarBadge p={p} size="lg" />
+            <AvatarBadge p={p} size="xl" />
             <div>
               <h1 className="break-words font-display text-2xl font-bold leading-tight tracking-tight">{p.name || "Seu nome"}</h1>
               <p className="mt-1 break-words text-xs font-semibold text-pf-muted">{p.role || "Área de atuação"}</p>
@@ -237,11 +259,11 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
     );
 
     return (
-      <div className={`theme-${theme} ${accentClass} bg-pf-bg text-pf-fg`}>
+      <div className={`theme-${theme} ${accent.className} bg-pf-bg text-pf-fg`} style={accent.style}>
         <div className="mx-auto max-w-4xl px-6 py-12 md:px-10 md:py-16">
           <header className="grid gap-6 pb-10 md:grid-cols-[200px_1fr]">
             <div className="min-w-0">
-              <AvatarBadge p={p} size="md" />
+              <AvatarBadge p={p} size="xl" />
               <p className="mt-3 truncate text-xs font-semibold text-pf-muted">{p.role || "Área de atuação"}</p>
             </div>
             <div className="min-w-0">
@@ -359,13 +381,13 @@ export function PortfolioSite({ p, theme, sections }: { p: Portfolio; theme: The
   );
 
   return (
-    <div className={`theme-${theme} ${accentClass} bg-pf-bg text-pf-fg`}>
+    <div className={`theme-${theme} ${accent.className} bg-pf-bg text-pf-fg`} style={accent.style}>
       {/* Bento Dossier Header */}
       <section className="mx-auto max-w-4xl px-6 pb-14 pt-12 md:px-10 md:pt-16">
         <div className="grid gap-4 md:grid-cols-[1.35fr_0.85fr]">
           <div className="min-w-0 rounded-xl border border-pf-line bg-pf-card p-6">
-            <div className="flex items-center gap-4">
-              <AvatarBadge p={p} size="md" />
+            <div className="flex items-center gap-4 sm:gap-5">
+              <AvatarBadge p={p} size="xl" />
               <div className="min-w-0">
                 <h1 className="break-words font-display text-2xl font-bold leading-tight tracking-tight md:text-3xl">{p.name || "Seu nome"}</h1>
                 <p className="mt-0.5 truncate text-sm font-medium text-pf-muted">{p.role || "Área de atuação"}</p>

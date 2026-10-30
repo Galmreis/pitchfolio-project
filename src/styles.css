@@ -115,6 +115,10 @@
 }
 
 .theme-moderno {
+  --pf-base-bg: oklch(0.16 0.018 45);
+  --pf-base-card: oklch(0.21 0.022 45);
+  --pf-base-muted: oklch(0.72 0.02 60);
+  --pf-tint: 32%;
   --pf-bg: oklch(0.16 0.018 45);
   --pf-fg: oklch(0.97 0.008 75);
   --pf-muted: oklch(0.72 0.02 60);
@@ -124,6 +128,10 @@
   --pf-line: oklch(1 0 0 / 12%);
 }
 .theme-quente {
+  --pf-base-bg: oklch(0.96 0.022 75);
+  --pf-base-card: oklch(0.985 0.012 75);
+  --pf-base-muted: oklch(0.46 0.04 42);
+  --pf-tint: 22%;
   --pf-bg: oklch(0.96 0.022 75);
   --pf-fg: oklch(0.21 0.04 40);
   --pf-muted: oklch(0.46 0.04 42);
@@ -133,6 +141,10 @@
   --pf-line: oklch(0.21 0.04 40 / 13%);
 }
 .theme-minimal {
+  --pf-base-bg: oklch(0.997 0.002 75);
+  --pf-base-card: oklch(0.965 0.008 70);
+  --pf-base-muted: oklch(0.47 0.02 45);
+  --pf-tint: 16%;
   --pf-bg: oklch(0.997 0.002 75);
   --pf-fg: oklch(0.16 0.015 45);
   --pf-muted: oklch(0.47 0.02 45);
@@ -181,6 +193,16 @@
 .pf-accent-grafite {
   --pf-accent: oklch(0.50 0.025 250);
   --pf-accent-fg: oklch(0.99 0.005 250);
+}
+
+/* A chosen accent recolors the surfaces too, not just details. Mixing in oklab
+ * (not oklch, whose hue interpolation can swing through unrelated hues) stays
+ * close to each theme's lightness, so text contrast matches the base theme. */
+.pf-tinted {
+  --pf-bg: color-mix(in oklab, var(--pf-accent) var(--pf-tint), var(--pf-base-bg));
+  --pf-card: color-mix(in oklab, var(--pf-accent) calc(var(--pf-tint) * 0.6), var(--pf-base-card));
+  --pf-muted: color-mix(in oklab, var(--pf-accent) 22%, var(--pf-base-muted));
+  --pf-line: color-mix(in oklab, var(--pf-accent) 30%, transparent);
 }
 
 .dark {
@@ -234,12 +256,40 @@
   }
 }
 
-/* =========================================================================
-   Print & PDF Generation Hardening
-   Ensures pitch deck slides, badges, and portfolio pages print crisply
-   without browser background-stripping, animation freezes, or white-out.
-   ========================================================================= */
+/* Print résumé (PrintResume.tsx). Display comes from the `hidden print:grid`
+ * utilities, so nothing here sets `display` on .pf-resume itself. */
+@page pf-resume {
+  size: A4;
+  margin: 0;
+}
+/* Put the whole document on the résumé page: otherwise any later sibling (even
+ * an empty toast container) switches back to the default page and adds a blank sheet. */
 @media print {
+  body:has(.pf-resume) {
+    page: pf-resume;
+  }
+}
+
+/* Deck PDF: one slide per landscape sheet, printed with its real theme colors
+ * (light text on a dark theme would vanish if the background were dropped). */
+@page pf-deck {
+  size: A4 landscape;
+  margin: 8mm;
+}
+@media print {
+  body:has(.pf-deck-print) {
+    page: pf-deck;
+  }
+  .pf-deck-print-slide {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    break-after: page;
+  }
+  .pf-deck-print-slide:last-child {
+    break-after: auto;
+  }
+
+  /* Global Print Hardening: force visibility & disable animation freezes */
   *,
   *::before,
   *::after {
@@ -249,21 +299,12 @@
     transition: none !important;
   }
 
-  /* Force immediate visibility on any Tailwind animate-in enter states */
   .animate-in,
   .fade-in,
   .fade-in-50,
   [class*="slide-in-from-"] {
     opacity: 1 !important;
     transform: none !important;
-  }
-
-  html,
-  body {
-    background-color: var(--pf-bg, #ffffff) !important;
-    color: var(--pf-fg, #0f172a) !important;
-    margin: 0 !important;
-    padding: 0 !important;
   }
 
   /* Slide page breaks for presentation export */
@@ -274,9 +315,155 @@
     page-break-inside: avoid !important;
   }
 
-  /* Suppress scrollbars and unneeded print artifacts */
   ::-webkit-scrollbar {
     display: none !important;
   }
 }
 
+@layer components {
+  .pf-resume {
+    page: pf-resume;
+    --r-side: color-mix(in oklab, var(--pf-accent) 42%, #15110e);
+    --r-head: color-mix(in oklab, var(--pf-accent) 78%, #000);
+    grid-template-columns: 66mm 1fr;
+    /* A hair under A4: exactly 297mm rounds up and prints an empty extra page. */
+    min-height: calc(297mm - 2px);
+    background: #fff;
+    color: #1d1b1a;
+    font-family: var(--font-sans);
+    font-size: 9.5pt;
+    line-height: 1.5;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .pf-resume-side,
+  .pf-resume-main {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    min-width: 0;
+  }
+  /* Fixed boxes repeat on every printed page, so the sidebar color fills each
+   * sheet top to bottom even when the résumé runs onto a second page. */
+  .pf-resume-side-bg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 66mm;
+    background: var(--r-side);
+  }
+  .pf-resume-side {
+    position: relative;
+    padding: 14mm 7mm 12mm 9mm;
+    color: #f4efea;
+    font-size: 8.5pt;
+    line-height: 1.45;
+  }
+  .pf-resume-side > * + * {
+    margin-top: 6mm;
+  }
+  .pf-resume-main {
+    padding: 14mm 13mm 12mm 11mm;
+  }
+  .pf-resume-photo {
+    width: 32mm;
+    height: 32mm;
+    border-radius: 4mm;
+    object-fit: cover;
+    border: 1px solid rgb(255 255 255 / 0.25);
+  }
+  .pf-resume-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--pf-accent);
+    color: var(--pf-accent-fg);
+    font-family: var(--font-display);
+    font-size: 22pt;
+    font-weight: 800;
+  }
+  .pf-resume-side-title {
+    margin-bottom: 2mm;
+    color: #fff;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .pf-resume-side-label {
+    display: block;
+    color: rgb(244 239 234 / 0.68);
+    font-size: 7.5pt;
+  }
+  .pf-resume-metric {
+    border-left: 2px solid var(--pf-accent);
+    padding-left: 2mm;
+    font-weight: 600;
+  }
+  .pf-resume-name {
+    color: #141210;
+    font-size: 25pt;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .pf-resume-role {
+    margin-top: 1.5mm;
+    color: #3d3936;
+    font-size: 10.5pt;
+    font-weight: 600;
+  }
+  .pf-resume-headline {
+    margin-top: 1mm;
+    color: var(--r-head);
+    font-size: 10.5pt;
+  }
+  .pf-resume-block + .pf-resume-block {
+    margin-top: 6mm;
+  }
+  .pf-resume-main-title {
+    margin-bottom: 2.5mm;
+    padding-bottom: 1.5mm;
+    border-bottom: 1.5px solid color-mix(in oklab, var(--pf-accent) 35%, #fff);
+    color: var(--r-head);
+    font-size: 12.5pt;
+    font-weight: 700;
+    break-after: avoid;
+  }
+  .pf-resume-item-title {
+    color: #141210;
+    font-size: 10.5pt;
+    font-weight: 700;
+    break-after: avoid;
+  }
+  .pf-resume-meta {
+    color: #6b6560;
+    font-size: 8.5pt;
+  }
+  .pf-resume-kicker {
+    display: block;
+    color: var(--r-head);
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .pf-resume-star {
+    border-left: 2.5px solid var(--pf-accent);
+    padding-left: 3mm;
+    break-inside: avoid;
+  }
+  .pf-resume-list {
+    list-style: disc;
+    padding-left: 4.5mm;
+  }
+  .pf-resume-list > li + li {
+    margin-top: 1mm;
+  }
+  .pf-resume-avoid {
+    break-inside: avoid;
+  }
+  .pf-resume a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

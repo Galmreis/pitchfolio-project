@@ -1,5 +1,7 @@
+import type { CSSProperties } from "react";
+
 export type ThemeName = "moderno" | "quente" | "minimal";
-export type AccentColor =
+export type AccentPreset =
   | "laranja"
   | "azul"
   | "esmeralda"
@@ -10,6 +12,8 @@ export type AccentColor =
   | "indigo"
   | "lima"
   | "grafite";
+/** A preset id or a custom color normalized to lowercase `#rrggbb`. */
+export type AccentColor = AccentPreset | `#${string}`;
 export type SectionOrder = "project_first" | "journey_first";
 export type LayoutStyle = "bento" | "split" | "indice";
 
@@ -32,7 +36,7 @@ export function resolveLayoutStyle(theme: ThemeName, custom?: LayoutStyle): Layo
   return "bento";
 }
 
-export const ACCENT_COLORS: { id: AccentColor; label: string; swatch: string }[] = [
+export const ACCENT_COLORS: { id: AccentPreset; label: string; swatch: string }[] = [
   { id: "laranja", label: "Terracota", swatch: "#c84b16" },
   { id: "azul", label: "Cobalto", swatch: "#2563eb" },
   { id: "esmeralda", label: "Esmeralda", swatch: "#059669" },
@@ -44,6 +48,34 @@ export const ACCENT_COLORS: { id: AccentColor; label: string; swatch: string }[]
   { id: "lima", label: "Verde Lima", swatch: "#65a30d" },
   { id: "grafite", label: "Grafite Minimal", swatch: "#475569" },
 ];
+
+export const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
+
+/** Picks near-white or near-black text, whichever contrasts more with the hex background (WCAG luminance). */
+export function readableTextOn(hex: string): string {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  }) as [number, number, number];
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return (1.05 / (lum + 0.05)) >= ((lum + 0.05) / 0.05) ? "#fdfbf8" : "#17120f";
+}
+
+/**
+ * Class and inline vars for a portfolio's accent. Any chosen accent also tints
+ * backgrounds, cards and lines (`pf-tinted` in styles.css); no accent keeps the
+ * theme's original surfaces. Custom colors only reach `style` after the hex check.
+ */
+export function accentProps(accent?: AccentColor): { className: string; style?: CSSProperties } {
+  if (!accent) return { className: "" };
+  if (HEX_COLOR_RE.test(accent)) {
+    return {
+      className: "pf-tinted",
+      style: { "--pf-accent": accent, "--pf-accent-fg": readableTextOn(accent) } as CSSProperties,
+    };
+  }
+  return ACCENT_COLORS.some((c) => c.id === accent) ? { className: `pf-accent-${accent} pf-tinted` } : { className: "" };
+}
 
 export const AVATAR_PRESETS: { label: string; url: string }[] = [
   { label: "Ilustração 1", url: "/visuals/avatar-ana.svg" },

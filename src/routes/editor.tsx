@@ -16,6 +16,7 @@ import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 import { AuthDialog, ShareDialog } from "@/components/pf/PublishDialogs";
 import { InterviewSimulatorDialog } from "@/components/pf/InterviewSimulatorDialog";
+import { AccentColorPicker } from "@/components/pf/AccentColorPicker";
 import { ACCENT_COLORS, AVATAR_PRESETS, DEMO_PERSONAS, DRAFT_KEY, LAYOUT_STYLES, PROJECT_IMAGE_PRESETS, THEMES, buildPersonaPortfolio, resolveLayoutStyle, type Draft, type Portfolio } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/editor")({
@@ -700,7 +701,7 @@ function Editor() {
         <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1.5 shadow-xs" role="group" aria-label="Cor de destaque">
           <span className="mr-1 text-xs font-medium text-muted-foreground">Cor:</span>
           {ACCENT_COLORS.map((c) => {
-            const active = (p.accentColor ?? "laranja") === c.id;
+            const active = p.accentColor === c.id;
             return (
               <button
                 key={c.id}
@@ -715,6 +716,8 @@ function Editor() {
               />
             );
           })}
+          <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
+          <AccentColorPicker value={p.accentColor} onChange={(accentColor) => upd({ accentColor })} />
         </div>
       </div>
     </div>
@@ -724,7 +727,7 @@ function Editor() {
     <div className="space-y-4 print:space-y-0">
       {toolbar}
       {view === "site" ? (
-        <div className="overflow-hidden rounded-xl border border-border shadow-lg duration-300 animate-in fade-in-50 print:duration-0 print:animate-none print:opacity-100 print:border-0 print:shadow-none"><PortfolioSite p={p} theme={draft.theme} /></div>
+        <div className="overflow-hidden rounded-xl border border-border shadow-lg duration-300 animate-in fade-in-50 print:duration-0 print:animate-none print:opacity-100 print:overflow-visible print:rounded-none print:border-0 print:shadow-none"><PortfolioSite p={p} theme={draft.theme} /></div>
       ) : (
         <div className="duration-300 animate-in fade-in-50 print:duration-0 print:animate-none print:opacity-100 print:border-0 print:shadow-none"><PitchDeck p={p} deck={draft.deck} theme={draft.theme} /></div>
       )}
