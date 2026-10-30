@@ -45,10 +45,39 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
         const { error } = await supabase.auth.signInWithPassword(credentials);
         if (error) throw error;
       }
+      onOpenChange(false);
       onAuthed();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "";
       toast.error(msg.includes("Invalid login") ? "E-mail ou senha incorretos." : msg.includes("Email not confirmed") ? "Confirme seu e-mail antes de entrar." : "Algo deu errado. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleQuickDemoLogin() {
+    setLoading(true);
+    try {
+      setMode("signin");
+      setEmail("demo@pitchfolio.app");
+      setPassword("DemoUser2026!");
+      const { error } = await supabase.auth.signInWithPassword({
+        email: "demo@pitchfolio.app",
+        password: "DemoUser2026!",
+      });
+      if (error) throw error;
+      toast.success("Conectado como conta de demonstração!");
+      onOpenChange(false);
+      onAuthed();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.includes("Email not confirmed")) {
+        toast.error("Conta demo requer confirmação no Supabase.");
+      } else if (msg.includes("Invalid login")) {
+        toast.error("Credenciais demo incorretas no Supabase.");
+      } else {
+        toast.error("Não foi possível autenticar a conta demo.");
+      }
     } finally {
       setLoading(false);
     }
@@ -99,19 +128,35 @@ export function AuthDialog({ open, onOpenChange, onAuthed }: { open: boolean; on
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-foreground">Credenciais de Teste (Edital):</span>
-                <button
+                <span className="font-mono text-[11px] text-foreground/80">demo@pitchfolio.app</span>
+              </div>
+              <p className="mt-1 font-mono text-[11px] text-muted-foreground">Senha: DemoUser2026!</p>
+              <div className="mt-2.5 flex items-center justify-end gap-2">
+                <Button
                   type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs"
                   onClick={() => {
                     setMode("signin");
                     setEmail("demo@pitchfolio.app");
                     setPassword("DemoUser2026!");
+                    toast.message("Credenciais preenchidas no formulário.");
                   }}
-                  className="font-semibold text-primary hover:underline"
                 >
-                  Preencher dados
-                </button>
+                  Preencher campos
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-7 text-xs"
+                  disabled={loading}
+                  onClick={handleQuickDemoLogin}
+                >
+                  {loading && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
+                  Entrar como Demo
+                </Button>
               </div>
-              <p className="mt-1 font-mono text-[11px] text-foreground/80">demo@pitchfolio.app · DemoUser2026!</p>
             </div>
           </>
         )}

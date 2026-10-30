@@ -748,7 +748,7 @@ function PerfilPage() {
         )}
       </main>
 
-      <AuthDialog open={authOpen} onOpenChange={setAuthOpen} onAuthed={() => loadUserData()} />
+      <AuthDialog open={authOpen} onOpenChange={setAuthOpen} onAuthed={() => { setAuthOpen(false); loadUserData(); }} />
       <ShareDialog open={!!shareUrl} onOpenChange={(o) => !o && setShareUrl(null)} url={shareUrl ?? ""} name={profile.fullName} />
     </div>
   );
