@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowRight,
@@ -18,6 +18,7 @@ import {
   Rocket,
   Save,
   Sparkles,
+  Upload,
   User as UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -40,6 +41,7 @@ import {
 } from "@/lib/portfolio";
 import { portfolioSchema } from "@/validators/portfolio";
 import { githubUrlSchema, linkedinUrlSchema, phoneSchema } from "@/validators/profile";
+import { processImageFile } from "@/lib/image";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({
@@ -100,6 +102,23 @@ function PerfilPage() {
   const [authOpen, setAuthOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [selectedPreset, setSelectedPreset] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  async function handleAvatarUpload(file?: File) {
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const dataUrl = await processImageFile(file, 160, 160);
+      setProfile((p) => ({ ...p, avatarUrl: dataUrl }));
+      toast.success("Foto carregada com sucesso! Lembre-se de salvar as alterações.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Não foi possível carregar a imagem.";
+      toast.error(msg);
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
 
   useEffect(() => {
     // Read local draft if present
@@ -565,11 +584,44 @@ function PerfilPage() {
 
                   {/* Avatar & Preset Selector */}
                   <div className="space-y-2.5">
-                    <Label className="text-xs font-semibold">Foto / Ícone de Perfil</Label>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-semibold">Foto / Ícone de Perfil</Label>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            handleAvatarUpload(e.target.files?.[0]);
+                            e.target.value = "";
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="h-7 text-xs"
+                          disabled={uploadingAvatar}
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          {uploadingAvatar ? (
+                            <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+                          ) : (
+                            <Upload className="mr-1.5 h-3 w-3" />
+                          )}
+                          Enviar arquivo
+                        </Button>
+                      </div>
+                    </div>
                     <Input
-                      value={profile.avatarUrl}
+                      value={profile.avatarUrl.startsWith("data:image/") ? "" : profile.avatarUrl}
                       onChange={(e) => setProfile((p) => ({ ...p, avatarUrl: e.target.value }))}
-                      placeholder="Cole o link da sua foto (https://…)"
+                      placeholder={
+                        profile.avatarUrl.startsWith("data:image/")
+                          ? "Imagem personalizada aplicada (cole um link para substituir)"
+                          : "Cole o link da sua foto (https://…)"
+                      }
                     />
                     <div className="flex flex-wrap items-center gap-1.5 pt-1">
                       <span className="text-[11px] text-muted-foreground mr-1">Ou use um preset:</span>
