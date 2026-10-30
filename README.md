@@ -9,7 +9,7 @@
 [![TanStack Start](https://img.shields.io/badge/TanStack-Start%20%26%20Router-ff4154.svg)](https://tanstack.com/start)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4.2-38bdf8.svg)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Backend-Supabase%20PostgreSQL%20RLS-3ecf8e.svg)](https://supabase.com/)
-[![Vitest](https://img.shields.io/badge/Tests-28%20Passed-brightgreen.svg)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Tests-39%20Passed-brightgreen.svg)](https://vitest.dev/)
 
 ---
 
@@ -88,6 +88,18 @@ O **PitchFolio** elimina a barreira de entrada transformando experiências bruta
 ### 🗺️ 3.6. Storyboard Interativo da Jornada (`/flow.html`)
 - Mapa visual completo cobrindo **19 telas e estados reais da aplicação** lado a lado com **modo tela cheia interativo em 100% de resolução**.
 
+### 🎨 3.7. Customização Visual de Cores & Destaque
+- **10 Cores de Destaque Pré-definidas**: Paleta harmonizada para contraste e acessibilidade (Coral, Esmeralda, Índigo, Âmbar, Violeta, Safira, Rosa, Teal, Carvão, Ardósia).
+- **Seletor Livre com Validação Zod**: Suporte completo para cores personalizadas em formato HEX, RGB e HSL, com sincronização em tempo real entre dossiê web, slides e currículo impresso.
+
+### 📄 3.8. Exportação Executiva A4 (Currículo Impresso & PDF)
+- Exportação dedicada de currículo executivo no padrão A4 via [`PrintResume.tsx`](src/components/pf/PrintResume.tsx).
+- CSS de impressão endurecido (`@media print`): neutralização de animações Tailwind, quebra de página inteligente (`page-break-inside: avoid`) e remoção de margens parasitas que causavam páginas em branco.
+
+### 🚀 3.9. Visão de Futuro & Pitch Deck da Solução (`/proximos-passos`)
+- Apresentação interativa de slides 16:9 desenhada para a banca avaliadora do Hackathon.
+- Navegação fluida por teclado (← / →), modo tela cheia (`F`) e tópicos detalhados sobre evolução técnica, monetização B2B e expansão institucional.
+
 ---
 
 ## 4. Arquitetura do Repositório
@@ -99,7 +111,7 @@ pitchfolio-project/
 ├── public/                     # Ativos estáticos e Storyboard completo (flow.html)
 ├── src/
 │   ├── components/
-│   │   ├── pf/                 # Componentes de domínio (PortfolioSite, PitchDeck, InterviewSimulator, PublishDialogs)
+│   │   ├── pf/                 # Componentes de domínio (PortfolioSite, PitchDeck, PrintResume, InterviewSimulator, PublishDialogs)
 │   │   └── ui/                 # Primitivas acessíveis Radix UI / shadcn
 │   ├── config/                 # Configurações de nuvem, limites e instâncias server-side
 │   ├── controllers/            # Server functions tipadas (portfolios, uploads, profile, curation)
@@ -113,6 +125,7 @@ pitchfolio-project/
 │   │   ├── editor.tsx          # Editor split-view com simulador STAR e preview ao vivo
 │   │   ├── instituicoes.tsx    # Portal B2B e Catálogo QR para feiras de carreiras
 │   │   ├── perfil.tsx          # Painel do candidato e sincronização de contatos
+│   │   ├── proximos-passos.tsx # Roadmap de produto e Pitch Deck executivo da solução (Slides 16:9)
 │   │   ├── p.$slug.tsx         # Rota pública do dossiê e deck de 5 slides
 │   │   └── api/                # Endpoints REST autenticados (/api/auth, /api/profile, etc.)
 │   ├── services/               # Lógica de negócio (IA, GitHub API, LinkedIn parser, publicação)
@@ -169,7 +182,7 @@ A aplicação estará acessível em `http://localhost:3000`.
 ### Verificação de Qualidade e Testes
 
 ```bash
-# Executar a suíte de testes unitários e de integração (28 testes)
+# Executar a suíte de testes unitários e de integração (39 testes automatizados)
 npm test
 
 # Verificação estática de tipos TypeScript
@@ -189,8 +202,10 @@ Para facilitar a triagem dos avaliadores sem necessidade de criar conta pessoal:
 - **E-mail de Teste**: `demo@pitchfolio.app`
 - **Senha**: `DemoUser2026!`
 - **Acesso com 1 Clique no App**: Nos modais de autenticação (`/editor` e `/perfil`), utilize o botão *"Preencher dados"* para carregar as credenciais instantaneamente.
-- **Painel do Candidato Pré-Carregado**: Acesse diretamente [`/perfil?demo=1`](http://localhost:3000/perfil?demo=1) para visualizar a conta da Ana Souza com dossiês STAR e decks de 5 slides já publicados.
-- **Jornada Completa Interativa (19 Telas)**: Acesse [`/flow.html`](http://localhost:3000/flow.html) para navegar pelo mapa panorâmico de todas as rotas com modo tela cheia interativo.
+- **Painel do Candidato Pré-Carregado**: Acesse a rota `/perfil?demo=1` para visualizar a conta demonstrativa da Ana Souza com dossiês STAR e decks de 5 slides já publicados.
+- **Dossiê & Pitch Deck Publicado**: Acesse a rota `/p/ana-souza-demo` para avaliar a visão pública do dossiê web e o pitch deck interativo de 5 slides.
+- **Pitch Deck da Solução / Roadmap**: Acesse `/proximos-passos` (pressione `F` para apresentação de slides 16:9).
+- **Jornada Completa Interativa (19 Telas)**: Acesse `/flow.html` para navegar pelo mapa panorâmico de todas as rotas com modo tela cheia interativo.
 
 ---
 
