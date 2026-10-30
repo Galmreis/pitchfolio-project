@@ -14,4 +14,10 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it("matches the roadmap and pitch presentation route /proximos-passos", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    const matches = router.matchRoutes("/proximos-passos");
+    expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
+  });
 });

@@ -14,6 +14,7 @@ import { Route as CriarRouteImport } from './routes/criar'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as InstituicoesRouteImport } from './routes/instituicoes'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as ProximosPassosRouteImport } from './routes/proximos-passos'
 import { Route as ApiHealthzRouteImport } from './routes/api/healthz'
 import { Route as ApiReadyzRouteImport } from './routes/api/readyz'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
@@ -47,6 +48,11 @@ const InstituicoesRoute = InstituicoesRouteImport.update({
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProximosPassosRoute = ProximosPassosRouteImport.update({
+  id: '/proximos-passos',
+  path: '/proximos-passos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHealthzRoute = ApiHealthzRouteImport.update({
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/editor': typeof EditorRoute
   '/instituicoes': typeof InstituicoesRoute
   '/perfil': typeof PerfilRoute
+  '/proximos-passos': typeof ProximosPassosRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
   '/instituicoes': typeof InstituicoesRoute
   '/perfil': typeof PerfilRoute
+  '/proximos-passos': typeof ProximosPassosRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/editor': typeof EditorRoute
   '/instituicoes': typeof InstituicoesRoute
   '/perfil': typeof PerfilRoute
+  '/proximos-passos': typeof ProximosPassosRoute
   '/api/healthz': typeof ApiHealthzRoute
   '/api/readyz': typeof ApiReadyzRoute
   '/p/$slug': typeof PSlugRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/instituicoes'
     | '/perfil'
+    | '/proximos-passos'
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/instituicoes'
     | '/perfil'
+    | '/proximos-passos'
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/instituicoes'
     | '/perfil'
+    | '/proximos-passos'
     | '/api/healthz'
     | '/api/readyz'
     | '/p/$slug'
@@ -204,6 +216,7 @@ export interface RootRouteChildren {
   EditorRoute: typeof EditorRoute
   InstituicoesRoute: typeof InstituicoesRoute
   PerfilRoute: typeof PerfilRoute
+  ProximosPassosRoute: typeof ProximosPassosRoute
   ApiHealthzRoute: typeof ApiHealthzRoute
   ApiReadyzRoute: typeof ApiReadyzRoute
   PSlugRoute: typeof PSlugRoute
@@ -248,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proximos-passos': {
+      id: '/proximos-passos'
+      path: '/proximos-passos'
+      fullPath: '/proximos-passos'
+      preLoaderRoute: typeof ProximosPassosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/healthz': {
@@ -336,6 +356,7 @@ const rootRouteChildren: RootRouteChildren = {
   EditorRoute: EditorRoute,
   InstituicoesRoute: InstituicoesRoute,
   PerfilRoute: PerfilRoute,
+  ProximosPassosRoute: ProximosPassosRoute,
   ApiHealthzRoute: ApiHealthzRoute,
   ApiReadyzRoute: ApiReadyzRoute,
   PSlugRoute: PSlugRoute,

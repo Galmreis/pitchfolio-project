@@ -117,6 +117,7 @@ function Index() {
         <Logo />
         <div className="flex items-center gap-1.5 sm:gap-2">
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><Link to="/instituicoes">Para Instituições</Link></Button>
+          <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex"><Link to="/proximos-passos">Próximos Passos</Link></Button>
           <Button asChild variant="ghost" size="sm"><Link to="/perfil">Meu Perfil</Link></Button>
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex"><Link to="/editor">Editor</Link></Button>
           <Button asChild size="sm"><Link to="/criar">Começar</Link></Button>
@@ -461,7 +462,11 @@ function Index() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-sm text-muted-foreground">
           <span>PitchFolio · Hackathon Startups & Lovable — Case 3: Empregabilidade e Carreira</span>
-          <Link to="/criar" className="font-semibold text-foreground hover:underline">Começar agora →</Link>
+          <div className="flex items-center gap-4">
+            <Link to="/proximos-passos" className="font-semibold text-foreground hover:underline">Próximos Passos (Roadmap)</Link>
+            <Link to="/instituicoes" className="text-muted-foreground hover:underline">Para Instituições</Link>
+            <Link to="/criar" className="font-semibold text-primary hover:underline">Começar agora →</Link>
+          </div>
         </div>
       </footer>
     </div>
