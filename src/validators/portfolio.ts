@@ -21,7 +21,10 @@ const imageRef = text(15000).refine((s) => {
   } catch { return false; }
 }, "Informe uma imagem válida.");
 export const themeSchema = z.enum(["moderno", "quente", "minimal"]);
-export const accentColorSchema = z.enum(["laranja", "azul", "esmeralda", "violeta", "rosa"]);
+export const accentColorSchema = z.union([
+  z.enum(["laranja", "azul", "esmeralda", "violeta", "rosa"]),
+  z.string().regex(/^#[0-9a-f]{6}$/i).transform((s) => s.toLowerCase() as `#${string}`),
+]);
 export const sectionOrderSchema = z.enum(["project_first", "journey_first"]);
 export const layoutStyleSchema = z.enum(["bento", "split", "indice"]);
 export const inputMethodSchema = z.enum(["pdf_upload", "linkedin_text", "guided_questions"]);

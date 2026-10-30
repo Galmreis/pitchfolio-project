@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Globe, Mail, Presentation, Printer } from "lucide-react";
 import { getPublicPortfolio } from "@/lib/public.functions";
-import { normalizeUrl } from "@/lib/portfolio";
+import { accentProps, normalizeUrl } from "@/lib/portfolio";
 import { PortfolioSite } from "@/components/pf/PortfolioSite";
 import { PitchDeck } from "@/components/pf/PitchDeck";
 
@@ -42,14 +42,14 @@ function PublicPage() {
   const [view, setView] = useState<"site" | "deck">(() =>
     typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "deck" ? "deck" : "site"
   );
-  const accentClass = portfolio.accentColor ? `pf-accent-${portfolio.accentColor}` : "";
+  const accent = accentProps(portfolio.accentColor);
   const contactHref = portfolio.email
     ? `mailto:${portfolio.email}`
     : portfolio.linkedin
       ? normalizeUrl(portfolio.linkedin)
       : "";
   return (
-    <div className={`theme-${theme} ${accentClass} min-h-screen bg-pf-bg`}>
+    <div className={`theme-${theme} ${accent.className} min-h-screen bg-pf-bg print:min-h-0 print:bg-white`} style={accent.style}>
       <div className="sticky top-0 z-10 flex justify-center py-3 print:hidden">
         <div className="inline-flex items-center gap-0.5 rounded-lg border border-pf-line bg-pf-card p-1 text-pf-fg shadow-sm">
           <button onClick={() => setView("site")} className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition ${view === "site" ? "bg-pf-accent text-pf-accent-fg shadow-xs" : "text-pf-muted hover:text-pf-fg"}`}><Globe className="h-4 w-4" /> Portfólio</button>
